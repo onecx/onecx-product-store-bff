@@ -1,0 +1,493 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-product-store-bff
+  description: Backend-For-Frontend (BFF) service for onecx product store.
+  version: "1.0"
+  contact:
+    email: "tkit_dev@1000kit.org"
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: "http://onecx-product-store-bff:8080"
+tags:
+  - name: OneCX Product Store
+paths:
+  /products:
+    post:
+      tags:
+        - Products
+      description: Create new product
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        "201":
+          description: New product created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/search:
+    post:
+      tags:
+        - Products
+      description: Search for products by search criteria
+      operationId: searchProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSearchCriteria'
+      responses:
+        "200":
+          description: Corresponding products (by search criteria)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      description: Return product by ID
+      operationId: getProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Not found
+    put:
+      tags:
+        - Products
+      description: Update product by ID
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        "204":
+          description: Product updated
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Product not found
+    delete:
+      tags:
+        - Products
+      description: Delete product by ID
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+  schemas:
+    ProductPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    ProductSearchCriteria:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          minimum: 1
+          exclusiveMinimum: false
+          type: integer
+    CreateProductRequest:
+      type: object
+      required:
+        - name
+        - basePath
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        basePath:
+          type: string
+    UpdateProductRequest:
+      type: object
+      required:
+        - name
+        - basePath
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        basePath:
+          type: string
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - operator
+        - basePath
+      properties:
+        id:
+          type: string
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        operator:
+          type: boolean
+        imageUrl:
+          type: string
+        basePath:
+          type: string
+    MicrofrontendPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Microfrontend'
+    MicrofrontendSearchCriteria:
+      type: object
+      properties:
+        displayName:
+          type: string
+        productName:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          type: integer
+    CreateMicrofrontendRequest:
+      required:
+        - remoteEntry
+        - remoteName
+        - exposedModule
+        - displayName
+        - moduleType
+        - remoteBaseUrl
+        - productName
+        - basePath
+        - mfeId
+      type: object
+      properties:
+        mfeId:
+          minLength: 2
+          type: string
+        basePath:
+          minLength: 2
+          type: string
+        productName:
+          minLength: 2
+          type: string
+        remoteEntry:
+          minLength: 2
+          type: string
+        remoteName:
+          minLength: 2
+          type: string
+        exposedModule:
+          minLength: 2
+          type: string
+        displayName:
+          minLength: 2
+          type: string
+        moduleType:
+          $ref: '#/components/schemas/ModuleType'
+        i18nPath:
+          minLength: 2
+          type: string
+        wcTagName:
+          type: string
+        appId:
+          type: string
+        appVersion:
+          type: string
+        note:
+          type: string
+        contact:
+          type: string
+        remoteBaseUrl:
+          minLength: 2
+          type: string
+    UpdateMicrofrontendRequest:
+      required:
+        - remoteEntry
+        - remoteName
+        - exposedModule
+        - displayName
+        - moduleType
+        - remoteBaseUrl
+        - productName
+        - basePath
+        - mfeId
+      type: object
+      properties:
+        mfeId:
+          minLength: 2
+          type: string
+        basePath:
+          minLength: 2
+          type: string
+        productName:
+          minLength: 2
+          type: string
+        remoteEntry:
+          minLength: 2
+          type: string
+        remoteName:
+          minLength: 2
+          type: string
+        exposedModule:
+          minLength: 2
+          type: string
+        displayName:
+          minLength: 2
+          type: string
+        moduleType:
+          $ref: '#/components/schemas/ModuleType'
+        i18nPath:
+          minLength: 2
+          type: string
+        wcTagName:
+          type: string
+        appId:
+          type: string
+        appVersion:
+          type: string
+        note:
+          type: string
+        contact:
+          type: string
+        remoteBaseUrl:
+          minLength: 2
+          type: string
+    Microfrontend:
+      required:
+        - remoteEntry
+        - remoteName
+        - exposedModule
+        - displayName
+        - moduleType
+        - remoteBaseUrl
+        - productName
+        - mfeId
+        - operator
+        - basePath
+      type: object
+      properties:
+        mfeId:
+          minLength: 2
+          type: string
+        basePath:
+          minLength: 2
+          type: string
+        operator:
+          type: boolean
+        productName:
+          minLength: 2
+          type: string
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        remoteEntry:
+          minLength: 2
+          type: string
+        remoteName:
+          minLength: 2
+          type: string
+        exposedModule:
+          minLength: 2
+          type: string
+        displayName:
+          minLength: 2
+          type: string
+        moduleType:
+          $ref: '#/components/schemas/ModuleType'
+        i18nPath:
+          minLength: 2
+          type: string
+        wcTagName:
+          type: string
+        appId:
+          type: string
+        appVersion:
+          type: string
+        note:
+          type: string
+        contact:
+          type: string
+        remoteBaseUrl:
+          minLength: 2
+          type: string
+    ModuleType:
+      enum:
+        - ANGULAR
+        - WEBCOMPONENT
+      type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string

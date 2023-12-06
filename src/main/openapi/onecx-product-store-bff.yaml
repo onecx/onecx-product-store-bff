@@ -166,7 +166,7 @@ components:
         stream:
           type: array
           items:
-            $ref: '#/components/schemas/Product'
+            $ref: '#/components/schemas/ProductAbstract'
     ProductSearchCriteria:
       type: object
       properties:
@@ -212,6 +212,23 @@ components:
         imageUrl:
           type: string
         basePath:
+          type: string
+    ProductAbstract:
+      type: object
+      description: A product abstract contains a reduced
+        number of fields compared to the basic product entity.
+      required:
+        - id
+        - name
+        - basePath
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
           type: string
     Product:
       type: object

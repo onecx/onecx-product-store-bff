@@ -9,6 +9,7 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.io.github.onecx.product.store.bff.clients.model.Product;
 import gen.io.github.onecx.product.store.bff.clients.model.ProductPageResult;
+import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductAbstractDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductPageResultDTO;
 
@@ -36,13 +37,24 @@ public class ResponseMapper {
         return productDTO;
     }
 
+    public ProductAbstractDTO mapProductAbstract(Product product) {
+
+        ProductAbstractDTO productAbstractDTO = new ProductAbstractDTO();
+        productAbstractDTO.setId(product.getId());
+        productAbstractDTO.setName(product.getName());
+        productAbstractDTO.setDescription(product.getDescription());
+        productAbstractDTO.setImageUrl(product.getImageUrl());
+
+        return productAbstractDTO;
+    }
+
     public ProductPageResultDTO mapProductSearchPageResponse(ProductPageResult searchResults) {
 
         ProductPageResultDTO searchResultsDTO = new ProductPageResultDTO();
         searchResultsDTO.setNumber(searchResults.getNumber());
         searchResultsDTO.setStream(searchResults.getStream() != null
-                ? searchResults.getStream().stream().map(this::mapCreateProductResponse).toList()
-                : new ArrayList<ProductDTO>());
+                ? searchResults.getStream().stream().map(this::mapProductAbstract).toList()
+                : new ArrayList<>());
         searchResultsDTO.setSize(searchResults.getSize());
         searchResultsDTO.setTotalElements(searchResults.getTotalElements());
         searchResultsDTO.setTotalPages(searchResults.getTotalPages());

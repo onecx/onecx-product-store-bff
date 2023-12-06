@@ -35,8 +35,6 @@ import io.quarkus.test.junit.QuarkusTest;
 @TestHTTPEndpoint(ProductsRestController.class)
 class ProductsRestControllerTest extends AbstractTest {
 
-    // TODO Date-Dinger lösen
-
     private static final String PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH = "/internal/products";
 
     @InjectMockServerClient
@@ -51,10 +49,11 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void getProduct_shouldReturnProduct() {
-        //OffsetDateTime dateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
-        LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.systemDefault());
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(offsetDateTime.toInstant(), ZoneOffset.systemDefault());
+
+       // LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.systemDefault());
         OffsetDateTimeMapper mapper = new OffsetDateTimeMapper();
-        //LocalDateTime localDateTime = LocalDateTime.of(2023, 11, 30, 15, 30);
         OffsetDateTime dateTime = mapper.map(localDateTime);
         Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", 0, dateTime, null, dateTime,
                 null, "test-appl2", "Here is some description 2", false,
@@ -87,9 +86,9 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getBasePath(), response.getBasePath());
         Assertions.assertEquals(data.getDescription(), response.getDescription());
         Assertions.assertEquals(data.getVersion(), response.getVersion());
-        //Assertions.assertEquals(mapper.map(data.getCreationDate()), response.getCreationDate());
+        Assertions.assertEquals(mapper.map(data.getCreationDate()), response.getCreationDate());
         Assertions.assertEquals(data.getCreationUser(), response.getCreationUser());
-        //Assertions.assertEquals(mapper.map(data.getModificationDate()), response.getModificationDate());
+        Assertions.assertEquals(mapper.map(data.getModificationDate()), response.getModificationDate());
         Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
 
     }
@@ -128,15 +127,15 @@ class ProductsRestControllerTest extends AbstractTest {
     void createProduct_shouldAddNewProduct_whenNameAndBasePathAreUnique() {
 
         OffsetDateTime dateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
-        Product data = this.createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", 0, dateTime, null, dateTime,
+        Product data = this.createProduct("ABCee705-8fd0-47b0-8205-b2a5f6540b9e", 0, dateTime, null, dateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
                 "/app3");
 
         CreateProductRequest request = new CreateProductRequest();
-        request.setBasePath("/app3");
-        request.setDescription("Here is some description 2");
-        request.setName("test-appl2");
+        request.setBasePath("/app35");
+        request.setDescription("Here is some more description");
+        request.setName("test-appl35");
         request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
 
         // create mock rest endpoint
@@ -148,9 +147,9 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(data)));
 
         CreateProductRequestDTO requestDTO = new CreateProductRequestDTO();
-        requestDTO.basePath("/app3");
-        requestDTO.setDescription("Here is some description 2");
-        requestDTO.setName("test-appl2");
+        requestDTO.basePath("/app35");
+        requestDTO.setDescription("Here is some more description");
+        requestDTO.setName("test-appl35");
         requestDTO
                 .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
 
@@ -332,7 +331,7 @@ class ProductsRestControllerTest extends AbstractTest {
     }
 
     @Test
-    @Disabled // not yet implemented
+    @Disabled("not yet implemented")
     void createProduct_shouldReturnInternalServerError_whenRunningIntoRuntimeIssues() {
 
     }
@@ -449,26 +448,21 @@ class ProductsRestControllerTest extends AbstractTest {
 
         Assertions.assertNotNull(response);
 
-        List<ProductDTO> productsResults = response.getStream();
-        Optional<ProductDTO> responseProduct1 = productsResults.stream().filter(e -> e.getName().equals(product.getName()))
+        List<ProductAbstractDTO> productsResults = response.getStream();
+        Optional<ProductAbstractDTO> responseProduct1 = productsResults.stream()
+                .filter(e -> e.getName().equals(product.getName()))
                 .findFirst();
 
         Assertions.assertEquals(1, productsResults.size());
         Assertions.assertTrue(responseProduct1.isPresent());
         Assertions.assertEquals(product.getName(), responseProduct1.get().getName());
         Assertions.assertEquals(product.getImageUrl(), responseProduct1.get().getImageUrl());
-        Assertions.assertEquals(product.getBasePath(), responseProduct1.get().getBasePath());
         Assertions.assertEquals(product.getDescription(), responseProduct1.get().getDescription());
         Assertions.assertEquals(product.getId(), responseProduct1.get().getId());
-        Assertions.assertEquals(product.getVersion(), responseProduct1.get().getVersion());
-        //Assertions.assertEquals(productOne.getCreationDate(), responseProduct1.get().getCreationDate());
-        Assertions.assertEquals(product.getCreationUser(), responseProduct1.get().getCreationUser());
-        //Assertions.assertEquals(productOne.getModificationDate(), responseProduct1.get().getModificationDate());
-        Assertions.assertEquals(product.getModificationUser(), responseProduct1.get().getModificationUser());
     }
 
     @Test
-    @Disabled // not yet implemented
+    @Disabled("not yet implemented")
     void searchProducts_shouldReturnInternalServerError_whenRunningIntoRuntimeIssues() {
 
     }
@@ -538,10 +532,12 @@ class ProductsRestControllerTest extends AbstractTest {
 
         Assertions.assertNotNull(response);
 
-        List<ProductDTO> productsResults = response.getStream();
-        Optional<ProductDTO> responseProduct1 = productsResults.stream().filter(e -> e.getName().equals(productOne.getName()))
+        List<ProductAbstractDTO> productsResults = response.getStream();
+        Optional<ProductAbstractDTO> responseProduct1 = productsResults.stream()
+                .filter(e -> e.getName().equals(productOne.getName()))
                 .findFirst();
-        Optional<ProductDTO> responseProduct2 = productsResults.stream().filter(e -> e.getName().equals(productTwo.getName()))
+        Optional<ProductAbstractDTO> responseProduct2 = productsResults.stream()
+                .filter(e -> e.getName().equals(productTwo.getName()))
                 .findFirst();
 
         Assertions.assertTrue(responseProduct1.isPresent());
@@ -550,26 +546,14 @@ class ProductsRestControllerTest extends AbstractTest {
         // first product
         Assertions.assertEquals(productOne.getName(), responseProduct1.get().getName());
         Assertions.assertEquals(productOne.getImageUrl(), responseProduct1.get().getImageUrl());
-        Assertions.assertEquals(productOne.getBasePath(), responseProduct1.get().getBasePath());
         Assertions.assertEquals(productOne.getDescription(), responseProduct1.get().getDescription());
         Assertions.assertEquals(productOne.getId(), responseProduct1.get().getId());
-        Assertions.assertEquals(productOne.getVersion(), responseProduct1.get().getVersion());
-        //Assertions.assertEquals(productOne.getCreationDate(), responseProduct1.get().getCreationDate());
-        Assertions.assertEquals(productOne.getCreationUser(), responseProduct1.get().getCreationUser());
-        //Assertions.assertEquals(productOne.getModificationDate(), responseProduct1.get().getModificationDate());
-        Assertions.assertEquals(productOne.getModificationUser(), responseProduct1.get().getModificationUser());
 
         // second product
         Assertions.assertEquals(productTwo.getName(), responseProduct2.get().getName());
         Assertions.assertEquals(productTwo.getImageUrl(), responseProduct2.get().getImageUrl());
-        Assertions.assertEquals(productTwo.getBasePath(), responseProduct2.get().getBasePath());
         Assertions.assertEquals(productTwo.getDescription(), responseProduct2.get().getDescription());
         Assertions.assertEquals(productTwo.getId(), responseProduct2.get().getId());
-        Assertions.assertEquals(productTwo.getVersion(), responseProduct2.get().getVersion());
-        //Assertions.assertEquals(productTwo.getCreationDate(), responseProduct2.get().getCreationDate());
-        Assertions.assertEquals(productTwo.getCreationUser(), responseProduct2.get().getCreationUser());
-        //Assertions.assertEquals(productTwo.getModificationDate(), responseProduct2.get().getModificationDate());
-        Assertions.assertEquals(productTwo.getModificationUser(), responseProduct2.get().getModificationUser());
 
         // general structure
         Assertions.assertEquals(pageSizeRequest, response.getSize());

@@ -1,20 +1,13 @@
 package io.github.onecx.product.store.bff.rs;
 
-import static io.restassured.RestAssured.given;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import gen.io.github.onecx.product.store.bff.clients.model.*;
+import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
+import io.quarkiverse.mockserver.test.InjectMockServerClient;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.core.Response;
-
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -24,11 +17,15 @@ import org.mockserver.model.MediaType;
 import org.tkit.quarkus.log.cdi.LogService;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.io.github.onecx.product.store.bff.clients.model.*;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
-import io.quarkiverse.mockserver.test.InjectMockServerClient;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static io.restassured.RestAssured.given;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
 @LogService
@@ -49,13 +46,10 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void getProduct_shouldReturnProduct() {
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(offsetDateTime.toInstant(), ZoneOffset.systemDefault());
 
-       // LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.systemDefault());
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
         OffsetDateTimeMapper mapper = new OffsetDateTimeMapper();
-        OffsetDateTime dateTime = mapper.map(localDateTime);
-        Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", 0, dateTime, null, dateTime,
+        Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", 0, offsetDateTime, null, offsetDateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
                 "/app3");
@@ -86,9 +80,9 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getBasePath(), response.getBasePath());
         Assertions.assertEquals(data.getDescription(), response.getDescription());
         Assertions.assertEquals(data.getVersion(), response.getVersion());
-        Assertions.assertEquals(mapper.map(data.getCreationDate()), response.getCreationDate());
+        Assertions.assertEquals(mapper.map(data.getCreationDate()), mapper.map(response.getCreationDate()));
         Assertions.assertEquals(data.getCreationUser(), response.getCreationUser());
-        Assertions.assertEquals(mapper.map(data.getModificationDate()), response.getModificationDate());
+        Assertions.assertEquals(mapper.map(data.getModificationDate()), mapper.map(response.getModificationDate()));
         Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
 
     }
@@ -101,6 +95,7 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void getProduct_shouldReturnNotFound_whenProductIdDoesNotExist() {
+
         String id = "notExisting";
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id)
@@ -126,8 +121,9 @@ class ProductsRestControllerTest extends AbstractTest {
     @Test
     void createProduct_shouldAddNewProduct_whenNameAndBasePathAreUnique() {
 
-        OffsetDateTime dateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
-        Product data = this.createProduct("ABCee705-8fd0-47b0-8205-b2a5f6540b9e", 0, dateTime, null, dateTime,
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
+        OffsetDateTimeMapper mapper = new OffsetDateTimeMapper();
+        Product data = this.createProduct("ABCee705-8fd0-47b0-8205-b2a5f6540b9e", 0, offsetDateTime, null, offsetDateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
                 "/app3");
@@ -140,7 +136,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                .withBody(JsonBody.json(request)))
+                        .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.CREATED.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -170,9 +166,9 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getBasePath(), response.getBasePath());
         Assertions.assertEquals(data.getDescription(), response.getDescription());
         Assertions.assertEquals(data.getVersion(), response.getVersion());
-        //Assertions.assertEquals(data.getCreationDate(), response.getCreationDate());
+        Assertions.assertEquals(mapper.map(data.getCreationDate()), mapper.map(response.getCreationDate()));
         Assertions.assertEquals(data.getCreationUser(), response.getCreationUser());
-        //Assertions.assertEquals(data.getModificationDate(), response.getModificationDate());
+        Assertions.assertEquals(mapper.map(data.getModificationDate()), mapper.map(response.getModificationDate()));
         Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
     }
 
@@ -185,16 +181,21 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void createProduct_shouldReturnBadRequest_whenBasePathIsNotUnique() {
+
         ProblemDetailResponse data = new ProblemDetailResponse();
         data.setErrorCode("PERSIST_ENTITY_FAILED");
         data.setDetail(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_base_path'  Detail: Key (base_path)=(/app6) already exists.");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_base_path'  Detail: "
+                        +
+                        "Key (base_path)=(/app6) already exists.");
         List<ProblemDetailParam> list = new ArrayList<>();
         ProblemDetailParam param1 = new ProblemDetailParam();
         ProblemDetailParam param2 = new ProblemDetailParam();
         param1.setKey("constraint");
         param1.setValue(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_base_path'  Detail: Key (base_path)=(/app6) already exists.");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_base_path'  Detail: "
+                        +
+                        "Key (base_path)=(/app6) already exists.");
         param2.setKey("constraintName");
         param2.setValue("ui_ps_product_base_path");
         list.add(param1);
@@ -210,7 +211,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                .withBody(JsonBody.json(request)))
+                        .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -262,16 +263,21 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void createProduct_shouldReturnBadRequest_whenNameIsNotUnique() {
+
         ProblemDetailResponse data = new ProblemDetailResponse();
         data.setErrorCode("PERSIST_ENTITY_FAILED");
         data.setDetail(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_name'  Detail: Key (name)=(test-appl2) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_name'  Detail: Key "
+                        +
+                        "(name)=(test-appl2) already exists.]");
         List<ProblemDetailParam> list = new ArrayList<>();
         ProblemDetailParam param1 = new ProblemDetailParam();
         ProblemDetailParam param2 = new ProblemDetailParam();
         param1.setKey("constraint");
         param1.setValue(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_name'  Detail: Key (name)=(test-appl2) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_name'  Detail: Key "
+                        +
+                        "(name)=(test-appl2) already exists.]");
         param2.setKey("constraintName");
         param2.setValue("ui_ps_product_name");
         list.add(param1);
@@ -287,7 +293,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                .withBody(JsonBody.json(request)))
+                        .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -399,6 +405,7 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void searchProducts_shouldReturnProductList_whenSearchCriteriaDoesMatch() {
+
         OffsetDateTime dateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
 
         int pageSizeRequest = 10;
@@ -465,6 +472,42 @@ class ProductsRestControllerTest extends AbstractTest {
     @Disabled("not yet implemented")
     void searchProducts_shouldReturnInternalServerError_whenRunningIntoRuntimeIssues() {
 
+    }
+
+    @Test
+    void searchProducts_shouldReturnInternalServerError_whenDownStreamServiceRunsIntoRuntimeIssues() {
+
+        ProductSearchCriteria request = new ProductSearchCriteria();
+        request.setName("");
+        request.setPageNumber(0);
+        request.setPageSize(0);
+
+        JSONObject responseBody = new JSONObject();
+        responseBody.put("details",
+                "Error id 1e82bc38-185a-40c7-bf51-7524fcbe2e37-2, org.tkit.quarkus.jpa.exceptions.DAOException: ErrorKeys," +
+                        "key:ERROR_FIND_PRODUCTS_BY_CRITERIA,parameters:[],namedParameters:{}");
+        responseBody.put("stack", "ERROR_FIND_PRODUCTS_BY_CRITERIA\\n\\ta");
+
+        mockServerClient
+                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
+                        .withBody(JsonBody.json(request)))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(responseBody)));
+
+        ProductSearchCriteriaDTO requestDTO = new ProductSearchCriteriaDTO();
+        requestDTO.setName("");
+        requestDTO.setPageNumber(0);
+        requestDTO.setPageSize(0);
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/search")
+                .then()
+                .statusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
     /**
@@ -570,7 +613,8 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void deleteProduct_shouldDeleteProduct() {
-        String id = "82789c64-9473-457e-b30a-8749d784b287";
+
+        String id = "82789c64-9473-5555-b30a-8749d784b287";
 
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.DELETE))
@@ -585,6 +629,36 @@ class ProductsRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
+    }
+
+    /**
+     * Scenario: Delete product by existing product id.
+     * Given
+     * When I try to delete a product by existing product id
+     * Then I get a 'No Content' response code back
+     */
+    @Test
+    void deleteProduct_shouldReturnInternalServerError_whenDownStreamServiceRunsIntoRuntimeIssues() {
+
+        String id = "82789c64-9473-457e-b30a-8749d784b287";
+        JSONObject responseBody = new JSONObject();
+        responseBody.put("details", "Error id 1e82bc38-185a-40c7-bf51-7524fcbe2e37-2, org.tkit.quarkus.jpa.exceptions");
+        responseBody.put("stack", "SOME RUNTIME ERROR\\n\\ta");
+
+        mockServerClient
+                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.DELETE))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(responseBody)));
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", id)
+                .delete("/{id}")
+                .then()
+                .statusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
     /**
@@ -605,7 +679,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
-                .withBody(JsonBody.json(request)))
+                        .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NO_CONTENT.getStatusCode()));
 
@@ -635,6 +709,7 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void updateProduct_shouldReturnNotFound_whenProductIdDoesNotExist() {
+
         String id = "notExisting";
 
         UpdateProductRequest request = new UpdateProductRequest();
@@ -644,7 +719,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
-                .withBody(JsonBody.json(request)))
+                        .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode()));
 
@@ -673,18 +748,23 @@ class ProductsRestControllerTest extends AbstractTest {
      */
     @Test
     void updateProduct_shouldReturnNotFound_whenRunningIntoValidationConstraints() {
+
         String id = "7a0ee705-8fd0-47b0-8205-b2a5f6540b9e";
 
         ProblemDetailResponse data = new ProblemDetailResponse();
         data.setErrorCode("PERSIST_ENTITY_FAILED");
         data.setDetail(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_base_path'  Detail: Key (base_path)=(/app15) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_base_path'  Detail: "
+                        +
+                        "Key (base_path)=(/app15) already exists.]");
         List<ProblemDetailParam> list = new ArrayList<>();
         ProblemDetailParam param1 = new ProblemDetailParam();
         ProblemDetailParam param2 = new ProblemDetailParam();
         param1.setKey("constraint");
         param1.setValue(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_base_path'  Detail: Key (base_path)=(/app15) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_base_path'  Detail: "
+                        +
+                        "Key (base_path)=(/app15) already exists.]");
         param2.setKey("constraintName");
         param2.setValue("ui_ps_product_base_path");
         list.add(param1);
@@ -700,7 +780,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
-                .withBody(JsonBody.json(request)))
+                        .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -745,22 +825,22 @@ class ProductsRestControllerTest extends AbstractTest {
     /**
      * Helper method to create products
      *
-     * @param id unique id of the product
-     * @param version version number
-     * @param creationDateTime datetime of creation
-     * @param creationUser user name
+     * @param id                   unique id of the product
+     * @param version              version number
+     * @param creationDateTime     datetime of creation
+     * @param creationUser         user name
      * @param modificationDateTime datetime of modification
-     * @param modificationUser user name
-     * @param productName unique name of product
-     * @param productDescription general product description
-     * @param operator whether system- or manually created (boolean)
-     * @param productImageUrl url for product image
-     * @param productBasePath uri for base path
+     * @param modificationUser     user name
+     * @param productName          unique name of product
+     * @param productDescription   general product description
+     * @param operator             whether system- or manually created (boolean)
+     * @param productImageUrl      url for product image
+     * @param productBasePath      uri for base path
      * @return instantiate Product-Object with attributes for given values
      */
     private Product createProduct(String id, int version, OffsetDateTime creationDateTime, String creationUser,
-            OffsetDateTime modificationDateTime, String modificationUser, String productName,
-            String productDescription, boolean operator, String productImageUrl, String productBasePath) {
+                                  OffsetDateTime modificationDateTime, String modificationUser, String productName,
+                                  String productDescription, boolean operator, String productImageUrl, String productBasePath) {
 
         Product product = new Product();
         product.setId(id);

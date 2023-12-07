@@ -1,23 +1,17 @@
 package io.github.onecx.product.store.bff.rs.mappers;
 
-import java.util.ArrayList;
-
-import jakarta.inject.Inject;
-
-import org.mapstruct.Mapper;
-import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
-
 import gen.io.github.onecx.product.store.bff.clients.model.Product;
 import gen.io.github.onecx.product.store.bff.clients.model.ProductPageResult;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductAbstractDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductPageResultDTO;
+import org.mapstruct.Mapper;
+import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-@Mapper(uses = { OffsetDateTimeMapper.class })
+import java.util.ArrayList;
+
+@Mapper(uses = {OffsetDateTimeMapper.class})
 public class ResponseMapper {
-
-    @Inject
-    ProductsMapper mapper;
 
     public ProductDTO mapCreateProductResponse(Product product) {
 

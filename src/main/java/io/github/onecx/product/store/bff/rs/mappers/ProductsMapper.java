@@ -1,8 +1,5 @@
 package io.github.onecx.product.store.bff.rs.mappers;
 
-import org.mapstruct.Mapper;
-import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
-
 import gen.io.github.onecx.product.store.bff.clients.model.CreateProductRequest;
 import gen.io.github.onecx.product.store.bff.clients.model.Product;
 import gen.io.github.onecx.product.store.bff.clients.model.ProductSearchCriteria;
@@ -11,15 +8,20 @@ import gen.io.github.onecx.product.store.bff.rs.internal.model.CreateProductRequ
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductSearchCriteriaDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.UpdateProductRequestDTO;
+import org.mapstruct.Mapper;
+import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-@Mapper(uses = { OffsetDateTimeMapper.class })
+import java.text.ParseException;
+
+@Mapper(uses = {OffsetDateTimeMapper.class})
 public interface ProductsMapper {
-    CreateProductRequest mapCreateProduct(CreateProductRequestDTO createProduct);
 
-    UpdateProductRequest mapUpdateProduct(UpdateProductRequestDTO updateProduct);
+    CreateProductRequest mapCreateProduct(CreateProductRequestDTO createProduct) throws ParseException;
 
-    ProductSearchCriteria mapProductSearchCriteria(ProductSearchCriteriaDTO productSearchCriteria);
+    UpdateProductRequest mapUpdateProduct(UpdateProductRequestDTO updateProduct) throws ParseException;
 
-    ProductDTO mapProduct(Product product);
+    ProductSearchCriteria mapProductSearchCriteria(ProductSearchCriteriaDTO productSearchCriteria) throws ParseException;
+
+    ProductDTO mapProduct(Product product) throws ParseException;
 
 }

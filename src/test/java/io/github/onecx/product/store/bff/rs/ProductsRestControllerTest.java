@@ -17,10 +17,9 @@ import org.mockserver.model.MediaType;
 import org.tkit.quarkus.log.cdi.LogService;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
+import java.text.ParseException;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -49,10 +48,13 @@ class ProductsRestControllerTest extends AbstractTest {
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
         OffsetDateTimeMapper mapper = new OffsetDateTimeMapper();
-        Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", 0, offsetDateTime, null, offsetDateTime,
+        Set<String> classificationSet = new HashSet<>();
+        classificationSet.add("Themes");
+        classificationSet.add("Menu");
+        Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
-                "/app3");
+                "/app3", 0, "Product ABC", "Sun", classificationSet);
 
         // create mock rest endpoint
         mockServerClient
@@ -84,6 +86,10 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getCreationUser(), response.getCreationUser());
         Assertions.assertEquals(mapper.map(data.getModificationDate()), mapper.map(response.getModificationDate()));
         Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
+        Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
+        Assertions.assertEquals(data.getDisplayName(), response.getDisplayName());
+        Assertions.assertEquals(data.getIconName(), response.getIconName());
+        Assertions.assertEquals(data.getClassifications().size(), response.getClassifications().size());
 
     }
 
@@ -123,16 +129,23 @@ class ProductsRestControllerTest extends AbstractTest {
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
         OffsetDateTimeMapper mapper = new OffsetDateTimeMapper();
-        Product data = this.createProduct("ABCee705-8fd0-47b0-8205-b2a5f6540b9e", 0, offsetDateTime, null, offsetDateTime,
-                null, "test-appl2", "Here is some description 2", false,
+        Set<String> classificationSet = new HashSet<>();
+        classificationSet.add("Themes");
+        classificationSet.add("Menu");
+        Product data = this.createProduct("ABCee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
+                null, "test-appl35", "Here is some description", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
-                "/app3");
+                "/app35", 0, "Product ABC", "Sun", classificationSet);
 
         CreateProductRequest request = new CreateProductRequest();
         request.setBasePath("/app35");
         request.setDescription("Here is some more description");
         request.setName("test-appl35");
         request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+        request.setDisplayName("Product ABC");
+        request.setIconName("Sun");
+        request.setVersion("0");
+        request.setClassifications(classificationSet);
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
@@ -148,6 +161,10 @@ class ProductsRestControllerTest extends AbstractTest {
         requestDTO.setName("test-appl35");
         requestDTO
                 .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+        requestDTO.setDisplayName("Product ABC");
+        requestDTO.setIconName("Sun");
+        requestDTO.setVersion("0");
+        requestDTO.setClassifications(classificationSet);
 
         var response = given()
                 .when()
@@ -170,6 +187,10 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getCreationUser(), response.getCreationUser());
         Assertions.assertEquals(mapper.map(data.getModificationDate()), mapper.map(response.getModificationDate()));
         Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
+        Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
+        Assertions.assertEquals(data.getDisplayName(), response.getDisplayName());
+        Assertions.assertEquals(data.getIconName(), response.getIconName());
+        Assertions.assertEquals(data.getClassifications().size(), response.getClassifications().size());
     }
 
     /**
@@ -338,8 +359,45 @@ class ProductsRestControllerTest extends AbstractTest {
 
     @Test
     @Disabled("not yet implemented")
-    void createProduct_shouldReturnInternalServerError_whenRunningIntoRuntimeIssues() {
+    void createProduct_shouldReturnInternalServerError_whenRunningIntoRuntimeIssues() throws ParseException {
 
+        /*
+         * org.opentest4j.AssertionFailedError: Expected java.text.ParseException to be thrown, but nothing was thrown.
+         * ProductsMapper mapper = new ProductsMapperImpl();
+         * ResponseMapper resMapper = new ResponseMapperImpl();
+         * ProblemDetailMapper problemMapper = new ProblemDetailMapperImpl();
+         * ProductsRestController controller = new ProductsRestController(mapper, resMapper, problemMapper);
+         * CreateProductRequestDTO request = new CreateProductRequestDTO();
+         *
+         * Exception exception = Assertions.assertThrows(ParseException.class, () -> {
+         * controller.createProduct(request);
+         * });
+         *
+         * String expectedMessage = "For input string";
+         * String actualMessage = exception.getMessage();
+         * Assertions.assertEquals("Exception Message", exception.getMessage());
+         */
+
+        /*
+         * CreateProductRequestDTO requestDTO = new CreateProductRequestDTO();
+         * requestDTO.basePath("/app3");
+         * requestDTO.setDescription("Here is some description 2");
+         * requestDTO.setName("test-appl2");
+         * requestDTO
+         * .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+         *
+         * when(mapper.mapCreateProduct(requestDTO)).thenThrow(ParseException.class);
+         *
+         * var response = given()
+         * .when()
+         * .contentType(APPLICATION_JSON)
+         * .body(requestDTO)
+         * .post()
+         * .then()
+         * .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+         * .contentType(APPLICATION_JSON)
+         * .extract().as(ProblemDetailResponseDTO.class);
+         */
     }
 
     /**
@@ -362,7 +420,7 @@ class ProductsRestControllerTest extends AbstractTest {
         data.setSize(1);
         data.setTotalElements(0L);
         data.setTotalPages(0L);
-        List<Product> list = new ArrayList<>();
+        List<ProductPageItem> list = new ArrayList<>();
         data.setStream(list);
 
         mockServerClient
@@ -415,17 +473,17 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setPageNumber(0);
         request.setPageSize(pageSizeRequest);
 
-        List<Product> stream = new ArrayList<>();
+        List<ProductPageItem> stream = new ArrayList<>();
 
-        Product product = this.createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", 0, dateTime, null, dateTime,
+        ProductPageItem productPageItem = this.createProductPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", dateTime, null, dateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
-                "/app3");
+                "/app3", 0, "MyName", "Times");
 
         ProductPageResult data = new ProductPageResult();
         data.setNumber(0);
         data.setSize(pageSizeRequest);
-        stream.add(product);
+        stream.add(productPageItem);
         data.setTotalElements((long) stream.size());
         data.setTotalPages(1L);
         data.setStream(stream);
@@ -455,17 +513,17 @@ class ProductsRestControllerTest extends AbstractTest {
 
         Assertions.assertNotNull(response);
 
-        List<ProductAbstractDTO> productsResults = response.getStream();
-        Optional<ProductAbstractDTO> responseProduct1 = productsResults.stream()
-                .filter(e -> e.getName().equals(product.getName()))
+        List<ProductPageItemDTO> productPageItemResults = response.getStream();
+        Optional<ProductPageItemDTO> responseProductPageItem = productPageItemResults.stream()
+                .filter(e -> e.getName().equals(productPageItem.getName()))
                 .findFirst();
 
-        Assertions.assertEquals(1, productsResults.size());
-        Assertions.assertTrue(responseProduct1.isPresent());
-        Assertions.assertEquals(product.getName(), responseProduct1.get().getName());
-        Assertions.assertEquals(product.getImageUrl(), responseProduct1.get().getImageUrl());
-        Assertions.assertEquals(product.getDescription(), responseProduct1.get().getDescription());
-        Assertions.assertEquals(product.getId(), responseProduct1.get().getId());
+        Assertions.assertEquals(1, productPageItemResults.size());
+        Assertions.assertTrue(responseProductPageItem.isPresent());
+        Assertions.assertEquals(productPageItem.getName(), responseProductPageItem.get().getName());
+        Assertions.assertEquals(productPageItem.getImageUrl(), responseProductPageItem.get().getImageUrl());
+        Assertions.assertEquals(productPageItem.getDescription(), responseProductPageItem.get().getDescription());
+        Assertions.assertEquals(productPageItem.getId(), responseProductPageItem.get().getId());
     }
 
     @Test
@@ -529,23 +587,25 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setPageNumber(0);
         request.setPageSize(pageSizeRequest);
 
-        List<Product> stream = new ArrayList<>();
+        List<ProductPageItem> stream = new ArrayList<>();
 
-        Product productOne = this.createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", 0, dateTime, null, dateTime,
+        ProductPageItem productPageItemOne = this.createProductPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", dateTime, null,
+                dateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
-                "/app3");
+                "/app3", 0, "Product 1", "Icon");
 
-        Product productTwo = this.createProduct("e72a1699-9e60-4531-9422-8c325bed7e6a", 0, dateTime, "CSommer", dateTime,
+        ProductPageItem productPageItemTwo = this.createProductPageItem("e72a1699-9e60-4531-9422-8c325bed7e6a", "0", dateTime, "CSommer",
+                dateTime,
                 "CSommer", "test-appl5", "Here is some description 5", true,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
-                "/app5");
+                "/app5", 1, "Product 2", "Sunny");
 
         ProductPageResult data = new ProductPageResult();
         data.setNumber(0);
         data.setSize(pageSizeRequest);
-        stream.add(productOne);
-        stream.add(productTwo);
+        stream.add(productPageItemOne);
+        stream.add(productPageItemTwo);
         data.setTotalElements((long) stream.size());
         data.setTotalPages(1L);
         data.setStream(stream);
@@ -575,28 +635,28 @@ class ProductsRestControllerTest extends AbstractTest {
 
         Assertions.assertNotNull(response);
 
-        List<ProductAbstractDTO> productsResults = response.getStream();
-        Optional<ProductAbstractDTO> responseProduct1 = productsResults.stream()
-                .filter(e -> e.getName().equals(productOne.getName()))
+        List<ProductPageItemDTO> productsResults = response.getStream();
+        Optional<ProductPageItemDTO> responseProduct1 = productsResults.stream()
+                .filter(e -> e.getName().equals(productPageItemOne.getName()))
                 .findFirst();
-        Optional<ProductAbstractDTO> responseProduct2 = productsResults.stream()
-                .filter(e -> e.getName().equals(productTwo.getName()))
+        Optional<ProductPageItemDTO> responseProduct2 = productsResults.stream()
+                .filter(e -> e.getName().equals(productPageItemTwo.getName()))
                 .findFirst();
 
         Assertions.assertTrue(responseProduct1.isPresent());
         Assertions.assertTrue(responseProduct2.isPresent());
 
         // first product
-        Assertions.assertEquals(productOne.getName(), responseProduct1.get().getName());
-        Assertions.assertEquals(productOne.getImageUrl(), responseProduct1.get().getImageUrl());
-        Assertions.assertEquals(productOne.getDescription(), responseProduct1.get().getDescription());
-        Assertions.assertEquals(productOne.getId(), responseProduct1.get().getId());
+        Assertions.assertEquals(productPageItemOne.getName(), responseProduct1.get().getName());
+        Assertions.assertEquals(productPageItemOne.getImageUrl(), responseProduct1.get().getImageUrl());
+        Assertions.assertEquals(productPageItemOne.getDescription(), responseProduct1.get().getDescription());
+        Assertions.assertEquals(productPageItemOne.getId(), responseProduct1.get().getId());
 
         // second product
-        Assertions.assertEquals(productTwo.getName(), responseProduct2.get().getName());
-        Assertions.assertEquals(productTwo.getImageUrl(), responseProduct2.get().getImageUrl());
-        Assertions.assertEquals(productTwo.getDescription(), responseProduct2.get().getDescription());
-        Assertions.assertEquals(productTwo.getId(), responseProduct2.get().getId());
+        Assertions.assertEquals(productPageItemTwo.getName(), responseProduct2.get().getName());
+        Assertions.assertEquals(productPageItemTwo.getImageUrl(), responseProduct2.get().getImageUrl());
+        Assertions.assertEquals(productPageItemTwo.getDescription(), responseProduct2.get().getDescription());
+        Assertions.assertEquals(productPageItemTwo.getId(), responseProduct2.get().getId());
 
         // general structure
         Assertions.assertEquals(pageSizeRequest, response.getSize());
@@ -838,9 +898,10 @@ class ProductsRestControllerTest extends AbstractTest {
      * @param productBasePath      uri for base path
      * @return instantiate Product-Object with attributes for given values
      */
-    private Product createProduct(String id, int version, OffsetDateTime creationDateTime, String creationUser,
+    private Product createProduct(String id, String version, OffsetDateTime creationDateTime, String creationUser,
                                   OffsetDateTime modificationDateTime, String modificationUser, String productName,
-                                  String productDescription, boolean operator, String productImageUrl, String productBasePath) {
+                                  String productDescription, boolean operator, String productImageUrl, String productBasePath,
+                                  int modificationCount, String displayName, String iconName, Set<String> classifications) {
 
         Product product = new Product();
         product.setId(id);
@@ -854,6 +915,54 @@ class ProductsRestControllerTest extends AbstractTest {
         product.setOperator(operator);
         product.setImageUrl(productImageUrl);
         product.setBasePath(productBasePath);
+        product.setModificationCount(modificationCount);
+        product.setDisplayName(displayName);
+        product.setIconName(iconName);
+        product.setClassifications(classifications);
         return product;
     }
+
+    /**
+     * Helper method to create ProductPageItem
+     *
+     * @param id                   unique id of the product
+     * @param version              version number
+     * @param creationDateTime     datetime of creation
+     * @param creationUser         user name
+     * @param modificationDateTime datetime of modification
+     * @param modificationUser     user name
+     * @param productName          unique name of product
+     * @param productDescription   general product description
+     * @param operator             whether system- or manually created (boolean)
+     * @param productImageUrl      url for product image
+     * @param productBasePath      uri for base path
+     * @param displayName          name of the product used for displaying to user
+     * @param iconName             Identifier of PrimeNG icon lib, z.b. trash, times
+     * @param modificationCount    Counter representing the amount of modifications (updates)
+     * @return instantiate ProductPageItem-Object with attributes for given values
+     */
+    private ProductPageItem createProductPageItem(String id, String version, OffsetDateTime creationDateTime, String creationUser,
+                                                  OffsetDateTime modificationDateTime, String modificationUser, String productName,
+                                                  String productDescription, boolean operator, String productImageUrl,
+                                                  String productBasePath, int modificationCount, String displayName, String iconName) {
+
+        ProductPageItem productPageItem = new ProductPageItem();
+        productPageItem.setId(id);
+        productPageItem.setVersion(version);
+        productPageItem.setCreationDate(creationDateTime);
+        productPageItem.setCreationUser(creationUser);
+        productPageItem.setModificationDate(modificationDateTime);
+        productPageItem.setModificationUser(modificationUser);
+        productPageItem.setName(productName);
+        productPageItem.setDescription(productDescription);
+        productPageItem.setOperator(operator);
+        productPageItem.setImageUrl(productImageUrl);
+        productPageItem.setBasePath(productBasePath);
+        productPageItem.setModificationCount(modificationCount);
+        productPageItem.setDisplayName(displayName);
+        productPageItem.setIconName(iconName);
+        return productPageItem;
+    }
+
+
 }

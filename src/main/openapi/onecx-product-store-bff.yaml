@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: onecx-product-store-bff
   description: Backend-For-Frontend (BFF) service for onecx product store.
-  version: "1.0"
+  version: 1.0.0
   contact:
     email: "tkit_dev@1000kit.org"
   license:
@@ -40,7 +40,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Product'
         "400":
-          description: Bad request
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -65,7 +65,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductPageResult'
         "400":
-          description: Bad request
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -90,13 +90,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Product'
         "400":
-          description: Internal Server Error
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
-          description: Not found
+          description: Not Found
     put:
       tags:
         - Products
@@ -118,7 +118,7 @@ paths:
         "204":
           description: Product updated
         "400":
-          description: Bad request
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -140,7 +140,7 @@ paths:
         "204":
           description: No Content
         "400":
-          description: Bad request
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -152,21 +152,43 @@ components:
       properties:
         totalElements:
           format: int64
-          description: The total elements in the resource.
+          description: The total elements in the resource (counted items in resultset).
           type: integer
         number:
           format: int32
           type: integer
+          description: Number of page which has been queried (e.g. 2 of 10)
         size:
           format: int32
           type: integer
+          description: correlated to the input (pagesize)), how many products should be shown on a single page.
         totalPages:
           format: int64
           type: integer
+          description: representing the total amount of pages based on the size provided in the request.
         stream:
           type: array
+          description: result set of the given search criteria.
           items:
-            $ref: '#/components/schemas/ProductAbstract'
+            $ref: '#/components/schemas/ProductPageItem'
+    ProductPageItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: technical id for a product (unique). Can be used to fetch further product details.
+        description:
+          type: string
+          description: textual description for a product.
+        imageUrl:
+          type: string
+          description: product image as url.
+        name:
+          type: string
+          description: business key for identifying product
+        displayName:
+          type: string
+          description: name of the product used for displaying to user.
     ProductSearchCriteria:
       type: object
       properties:
@@ -189,9 +211,12 @@ components:
       type: object
       required:
         - name
+        - version
         - basePath
       properties:
         name:
+          type: string
+        version:
           type: string
         description:
           type: string
@@ -199,13 +224,25 @@ components:
           type: string
         basePath:
           type: string
+        displayName:
+          type: string
+        iconName:
+          type: string
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
     UpdateProductRequest:
       type: object
       required:
         - name
+        - version
         - basePath
       properties:
         name:
+          type: string
+        version:
           type: string
         description:
           type: string
@@ -213,36 +250,24 @@ components:
           type: string
         basePath:
           type: string
-    ProductAbstract:
-      type: object
-      description: A product abstract contains a reduced
-        number of fields compared to the basic product entity.
-      required:
-        - id
-        - name
-        - basePath
-      properties:
-        id:
+        displayName:
           type: string
-        name:
+        iconName:
           type: string
-        description:
-          type: string
-        imageUrl:
-          type: string
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
     Product:
       type: object
       required:
         - id
         - name
-        - operator
         - basePath
       properties:
         id:
           type: string
-        version:
-          format: int32
-          type: integer
         creationDate:
           $ref: '#/components/schemas/OffsetDateTime'
         creationUser:
@@ -251,230 +276,30 @@ components:
           $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
+        modificationCount:
+          format: int32
+          type: integer
         name:
-          type: string
-        description:
           type: string
         operator:
           type: boolean
+        version:
+          type: string
+        description:
+          type: string
         imageUrl:
           type: string
         basePath:
           type: string
-    MicrofrontendPageResult:
-      type: object
-      properties:
-        totalElements:
-          format: int64
-          description: The total elements in the resource.
-          type: integer
-        number:
-          format: int32
-          type: integer
-        size:
-          format: int32
-          type: integer
-        totalPages:
-          format: int64
-          type: integer
-        stream:
+        displayName:
+          type: string
+        iconName:
+          type: string
+        classifications:
           type: array
+          uniqueItems: true
           items:
-            $ref: '#/components/schemas/Microfrontend'
-    MicrofrontendSearchCriteria:
-      type: object
-      properties:
-        displayName:
-          type: string
-        productName:
-          type: string
-        pageNumber:
-          format: int32
-          description: The number of page.
-          default: 0
-          type: integer
-        pageSize:
-          format: int32
-          description: The size of page
-          default: 10
-          type: integer
-    CreateMicrofrontendRequest:
-      required:
-        - remoteEntry
-        - remoteName
-        - exposedModule
-        - displayName
-        - moduleType
-        - remoteBaseUrl
-        - productName
-        - basePath
-        - mfeId
-      type: object
-      properties:
-        mfeId:
-          minLength: 2
-          type: string
-        basePath:
-          minLength: 2
-          type: string
-        productName:
-          minLength: 2
-          type: string
-        remoteEntry:
-          minLength: 2
-          type: string
-        remoteName:
-          minLength: 2
-          type: string
-        exposedModule:
-          minLength: 2
-          type: string
-        displayName:
-          minLength: 2
-          type: string
-        moduleType:
-          $ref: '#/components/schemas/ModuleType'
-        i18nPath:
-          minLength: 2
-          type: string
-        wcTagName:
-          type: string
-        appId:
-          type: string
-        appVersion:
-          type: string
-        note:
-          type: string
-        contact:
-          type: string
-        remoteBaseUrl:
-          minLength: 2
-          type: string
-    UpdateMicrofrontendRequest:
-      required:
-        - remoteEntry
-        - remoteName
-        - exposedModule
-        - displayName
-        - moduleType
-        - remoteBaseUrl
-        - productName
-        - basePath
-        - mfeId
-      type: object
-      properties:
-        mfeId:
-          minLength: 2
-          type: string
-        basePath:
-          minLength: 2
-          type: string
-        productName:
-          minLength: 2
-          type: string
-        remoteEntry:
-          minLength: 2
-          type: string
-        remoteName:
-          minLength: 2
-          type: string
-        exposedModule:
-          minLength: 2
-          type: string
-        displayName:
-          minLength: 2
-          type: string
-        moduleType:
-          $ref: '#/components/schemas/ModuleType'
-        i18nPath:
-          minLength: 2
-          type: string
-        wcTagName:
-          type: string
-        appId:
-          type: string
-        appVersion:
-          type: string
-        note:
-          type: string
-        contact:
-          type: string
-        remoteBaseUrl:
-          minLength: 2
-          type: string
-    Microfrontend:
-      required:
-        - remoteEntry
-        - remoteName
-        - exposedModule
-        - displayName
-        - moduleType
-        - remoteBaseUrl
-        - productName
-        - mfeId
-        - operator
-        - basePath
-      type: object
-      properties:
-        mfeId:
-          minLength: 2
-          type: string
-        basePath:
-          minLength: 2
-          type: string
-        operator:
-          type: boolean
-        productName:
-          minLength: 2
-          type: string
-        version:
-          format: int32
-          type: integer
-        creationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        creationUser:
-          type: string
-        modificationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        modificationUser:
-          type: string
-        id:
-          type: string
-        remoteEntry:
-          minLength: 2
-          type: string
-        remoteName:
-          minLength: 2
-          type: string
-        exposedModule:
-          minLength: 2
-          type: string
-        displayName:
-          minLength: 2
-          type: string
-        moduleType:
-          $ref: '#/components/schemas/ModuleType'
-        i18nPath:
-          minLength: 2
-          type: string
-        wcTagName:
-          type: string
-        appId:
-          type: string
-        appVersion:
-          type: string
-        note:
-          type: string
-        contact:
-          type: string
-        remoteBaseUrl:
-          minLength: 2
-          type: string
-    ModuleType:
-      enum:
-        - ANGULAR
-        - WEBCOMPONENT
-      type: string
+            type: string
     OffsetDateTime:
       format: date-time
       type: string

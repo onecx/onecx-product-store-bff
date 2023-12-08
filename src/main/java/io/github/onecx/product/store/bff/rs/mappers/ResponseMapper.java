@@ -1,9 +1,10 @@
 package io.github.onecx.product.store.bff.rs.mappers;
 
 import gen.io.github.onecx.product.store.bff.clients.model.Product;
+import gen.io.github.onecx.product.store.bff.clients.model.ProductPageItem;
 import gen.io.github.onecx.product.store.bff.clients.model.ProductPageResult;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductAbstractDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductDTO;
+import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductPageItemDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductPageResultDTO;
 import org.mapstruct.Mapper;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -27,19 +28,25 @@ public class ResponseMapper {
         productDTO.setOperator(product.getOperator());
         productDTO.setImageUrl(product.getImageUrl());
         productDTO.setBasePath(product.getBasePath());
+        productDTO.setClassifications(product.getClassifications());
+        productDTO.setDisplayName(product.getDisplayName());
+        productDTO.setIconName(product.getIconName());
+        productDTO.setVersion(product.getVersion());
+        productDTO.setModificationCount(product.getModificationCount());
 
         return productDTO;
     }
 
-    public ProductAbstractDTO mapProductAbstract(Product product) {
+    public ProductPageItemDTO mapProductPageItem(ProductPageItem productPageItem) {
 
-        ProductAbstractDTO productAbstractDTO = new ProductAbstractDTO();
-        productAbstractDTO.setId(product.getId());
-        productAbstractDTO.setName(product.getName());
-        productAbstractDTO.setDescription(product.getDescription());
-        productAbstractDTO.setImageUrl(product.getImageUrl());
+        ProductPageItemDTO productPageItemDTO = new ProductPageItemDTO();
+        productPageItemDTO.setId(productPageItem.getId());
+        productPageItemDTO.setName(productPageItem.getName());
+        productPageItemDTO.setDescription(productPageItem.getDescription());
+        productPageItemDTO.setImageUrl(productPageItem.getImageUrl());
+        productPageItemDTO.setDisplayName(productPageItem.getDisplayName());
 
-        return productAbstractDTO;
+        return productPageItemDTO;
     }
 
     public ProductPageResultDTO mapProductSearchPageResponse(ProductPageResult searchResults) {
@@ -47,7 +54,7 @@ public class ResponseMapper {
         ProductPageResultDTO searchResultsDTO = new ProductPageResultDTO();
         searchResultsDTO.setNumber(searchResults.getNumber());
         searchResultsDTO.setStream(searchResults.getStream() != null
-                ? searchResults.getStream().stream().map(this::mapProductAbstract).toList()
+                ? searchResults.getStream().stream().map(this::mapProductPageItem).toList()
                 : new ArrayList<>());
         searchResultsDTO.setSize(searchResults.getSize());
         searchResultsDTO.setTotalElements(searchResults.getTotalElements());

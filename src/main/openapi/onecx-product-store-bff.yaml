@@ -170,25 +170,7 @@ components:
           type: array
           description: result set of the given search criteria.
           items:
-            $ref: '#/components/schemas/ProductPageItem'
-    ProductPageItem:
-      type: object
-      properties:
-        id:
-          type: string
-          description: technical id for a product (unique). Can be used to fetch further product details.
-        description:
-          type: string
-          description: textual description for a product.
-        imageUrl:
-          type: string
-          description: product image as url.
-        name:
-          type: string
-          description: business key for identifying product
-        displayName:
-          type: string
-          description: name of the product used for displaying to user.
+            $ref: '#/components/schemas/ProductAbstract'
     ProductSearchCriteria:
       type: object
       properties:
@@ -300,6 +282,27 @@ components:
           uniqueItems: true
           items:
             type: string
+    ProductAbstract:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          description: technical id for a product (unique). Can be used to fetch further product details.
+        name:
+          type: string
+          description: business key for identifying product
+        description:
+          type: string
+          description: textual description for a product.
+        imageUrl:
+          type: string
+          description: product image as url.
+        displayName:
+          type: string
+          description: name of the product used for displaying to user.
     OffsetDateTime:
       format: date-time
       type: string

@@ -38,8 +38,8 @@ public class ProductsRestController implements ProductsApiService {
 
     private final ProblemDetailMapper problemDetailMapper;
 
-    private final static String UNEXPECTED_ERROR_LOG_MESSAGE = "Unexpected exception occurred: ";
-    private final static String PARSE_EXCEPTION_LOG_MESSAGE = "Exception occurred while processing the request: ";
+    private static final String UNEXPECTED_ERROR_LOG_MESSAGE = "Unexpected exception occurred: ";
+    private static final String PARSE_EXCEPTION_LOG_MESSAGE = "Exception occurred while processing the request: ";
 
     @Inject
     public ProductsRestController(ProductsMapper mapper, ResponseMapper responseMapper,

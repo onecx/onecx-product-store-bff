@@ -475,7 +475,8 @@ class ProductsRestControllerTest extends AbstractTest {
 
         List<ProductPageItem> stream = new ArrayList<>();
 
-        ProductPageItem productPageItem = this.createProductPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", dateTime, null, dateTime,
+        ProductPageItem productPageItem = this.createProductPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", dateTime,
+                null, dateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
                 "/app3", 0, "MyName", "Times");
@@ -589,13 +590,15 @@ class ProductsRestControllerTest extends AbstractTest {
 
         List<ProductPageItem> stream = new ArrayList<>();
 
-        ProductPageItem productPageItemOne = this.createProductPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", dateTime, null,
+        ProductPageItem productPageItemOne = this.createProductPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", dateTime,
+                null,
                 dateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
                 "/app3", 0, "Product 1", "Icon");
 
-        ProductPageItem productPageItemTwo = this.createProductPageItem("e72a1699-9e60-4531-9422-8c325bed7e6a", "0", dateTime, "CSommer",
+        ProductPageItem productPageItemTwo = this.createProductPageItem("e72a1699-9e60-4531-9422-8c325bed7e6a", "0", dateTime,
+                "CSommer",
                 dateTime,
                 "CSommer", "test-appl5", "Here is some description 5", true,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
@@ -941,7 +944,8 @@ class ProductsRestControllerTest extends AbstractTest {
      * @param modificationCount    Counter representing the amount of modifications (updates)
      * @return instantiate ProductPageItem-Object with attributes for given values
      */
-    private ProductPageItem createProductPageItem(String id, String version, OffsetDateTime creationDateTime, String creationUser,
+    private ProductPageItem createProductPageItem(String id, String version, OffsetDateTime creationDateTime,
+                                                  String creationUser,
                                                   OffsetDateTime modificationDateTime, String modificationUser, String productName,
                                                   String productDescription, boolean operator, String productImageUrl,
                                                   String productBasePath, int modificationCount, String displayName, String iconName) {
@@ -963,6 +967,5 @@ class ProductsRestControllerTest extends AbstractTest {
         productPageItem.setIconName(iconName);
         return productPageItem;
     }
-
 
 }

@@ -1,5 +1,19 @@
 package io.github.onecx.product.store.bff.rs;
 
+import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+
+import java.text.ParseException;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.tkit.quarkus.log.cdi.LogService;
+
 import gen.io.github.onecx.product.store.bff.clients.api.ProductsInternalApi;
 import gen.io.github.onecx.product.store.bff.clients.model.*;
 import gen.io.github.onecx.product.store.bff.rs.internal.ProductsApiService;
@@ -7,19 +21,7 @@ import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
 import io.github.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
 import io.github.onecx.product.store.bff.rs.mappers.ProductsMapper;
 import io.github.onecx.product.store.bff.rs.mappers.ResponseMapper;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.tkit.quarkus.log.cdi.LogService;
-
-import java.text.ParseException;
-
-import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @LogService
@@ -43,7 +45,7 @@ public class ProductsRestController implements ProductsApiService {
 
     @Inject
     public ProductsRestController(ProductsMapper mapper, ResponseMapper responseMapper,
-                                  ProblemDetailMapper problemDetailMapper) {
+            ProblemDetailMapper problemDetailMapper) {
 
         this.mapper = mapper;
         this.responseMapper = responseMapper;

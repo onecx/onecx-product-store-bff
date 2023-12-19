@@ -1,0 +1,76 @@
+[
+  {
+    "id": "1",
+    "httpRequest": {
+      "path": "/internal/products/search",
+      "method": "POST"
+    },
+    "httpResponse": {
+      "body": {
+        "type": "JSON",
+        "json": {
+          "totalElements": 2,
+          "number": 0,
+          "size": 10,
+          "totalPages": 1,
+          "stream": [
+            {
+              "id": "7a0ee705-8fd0-47b0-8205-b2a5f6540b9e",
+              "version": 0,
+              "creationDate": "2023-11-27T13:16:41.334684+01:00",
+              "creationUser": null,
+              "modificationDate": "2023-11-27T13:16:41.334684+01:00",
+              "modificationUser": null,
+              "name": "test-appl2",
+              "description": "Here is some description 2",
+              "operator": false,
+              "imageUrl": "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+              "basePath": "/app2"
+            },
+            {
+              "id": "e72a1699-9e60-4531-9422-8c325bed7e6a",
+              "version": 0,
+              "creationDate": "2023-11-27T13:15:59.317934+01:00",
+              "creationUser": null,
+              "modificationDate": "2023-11-27T13:15:59.317934+01:00",
+              "modificationUser": null,
+              "name": "test-appl1",
+              "description": "Here is some description",
+              "operator": false,
+              "imageUrl": null,
+              "basePath": "/app1"
+            }
+          ]
+        }
+      },
+      "contentType": "application/json"
+    }
+  },
+  {
+    "id": "2",
+    "httpRequest": {
+      "method": "POST",
+      "path": "/internal/products"
+    },
+    "httpResponse": {
+      "body": {
+        "type": "JSON",
+        "json": {
+              "id": "7a0ee705-8fd0-47b0-8205-b2a5f6540b9e",
+              "version": 0,
+              "creationDate": "2023-11-27T13:16:41.334684+01:00",
+              "creationUser": null,
+              "modificationDate": "2023-11-27T13:16:41.334684+01:00",
+              "modificationUser": null,
+              "name": "test-appl2",
+              "description": "Here is some description 2",
+              "operator": false,
+              "imageUrl": "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+              "basePath": "/app3"
+            }
+        }
+      },
+      "contentType": "application/json",
+      "statusCode": 201
+    }
+]

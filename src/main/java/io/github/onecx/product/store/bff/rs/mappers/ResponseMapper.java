@@ -1,40 +1,48 @@
 package io.github.onecx.product.store.bff.rs.mappers;
 
+import java.util.ArrayList;
+
+import jakarta.inject.Inject;
+
+import org.mapstruct.Mapper;
+import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
+
 import gen.io.github.onecx.product.store.bff.clients.model.Product;
 import gen.io.github.onecx.product.store.bff.clients.model.ProductAbstract;
 import gen.io.github.onecx.product.store.bff.clients.model.ProductPageResult;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductAbstractDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductDTO;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.ProductPageResultDTO;
-import org.mapstruct.Mapper;
-import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import java.util.ArrayList;
-
-@Mapper(uses = {OffsetDateTimeMapper.class})
+@Mapper(uses = { OffsetDateTimeMapper.class })
 public class ResponseMapper {
+    @Inject
+    ProductsMapper mapper;
 
     public ProductDTO mapCreateProductResponse(Product product) {
 
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(product.getId());
-        productDTO.setVersion(product.getVersion());
-        productDTO.setCreationDate(product.getCreationDate());
-        productDTO.setCreationUser(product.getCreationUser());
-        productDTO.setModificationDate(product.getModificationDate());
-        productDTO.setModificationUser(product.getModificationUser());
-        productDTO.setName(product.getName());
-        productDTO.setDescription(product.getDescription());
-        productDTO.setOperator(product.getOperator());
-        productDTO.setImageUrl(product.getImageUrl());
-        productDTO.setBasePath(product.getBasePath());
-        productDTO.setClassifications(product.getClassifications());
-        productDTO.setDisplayName(product.getDisplayName());
-        productDTO.setIconName(product.getIconName());
-        productDTO.setVersion(product.getVersion());
-        productDTO.setModificationCount(product.getModificationCount());
+        /*
+         * ProductDTO productDTO = new ProductDTO();
+         * productDTO.setId(product.getId());
+         * productDTO.setVersion(product.getVersion());
+         * productDTO.setCreationDate(product.getCreationDate());
+         * productDTO.setCreationUser(product.getCreationUser());
+         * productDTO.setModificationDate(product.getModificationDate());
+         * productDTO.setModificationUser(product.getModificationUser());
+         * productDTO.setName(product.getName());
+         * productDTO.setDescription(product.getDescription());
+         * productDTO.setOperator(product.getOperator());
+         * productDTO.setImageUrl(product.getImageUrl());
+         * productDTO.setBasePath(product.getBasePath());
+         * productDTO.setClassifications(product.getClassifications());
+         * productDTO.setDisplayName(product.getDisplayName());
+         * productDTO.setIconName(product.getIconName());
+         * productDTO.setVersion(product.getVersion());
+         * productDTO.setModificationCount(product.getModificationCount());
+         */
 
-        return productDTO;
+        //return productDTO;
+        return mapper.mapProduct(product);
     }
 
     public ProductAbstractDTO mapProductAbstract(ProductAbstract productAbstract) {

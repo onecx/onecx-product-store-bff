@@ -1,13 +1,17 @@
 package io.github.onecx.product.store.bff.rs;
 
-import gen.io.github.onecx.product.store.bff.clients.model.*;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
-import io.quarkiverse.mockserver.test.InjectMockServerClient;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
+import static io.restassured.RestAssured.given;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+
+import java.text.ParseException;
+import java.time.OffsetDateTime;
+import java.util.*;
+
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.core.Response;
-import net.minidev.json.JSONObject;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -17,14 +21,13 @@ import org.mockserver.model.MediaType;
 import org.tkit.quarkus.log.cdi.LogService;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import java.text.ParseException;
-import java.time.OffsetDateTime;
-import java.util.*;
-
-import static io.restassured.RestAssured.given;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import gen.io.github.onecx.product.store.bff.clients.model.*;
+import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
+import io.github.onecx.product.store.bff.rs.controllers.ProductsRestController;
+import io.quarkiverse.mockserver.test.InjectMockServerClient;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
+import net.minidev.json.JSONObject;
 
 @QuarkusTest
 @LogService
@@ -149,7 +152,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.CREATED.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -239,7 +242,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -332,7 +335,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -767,7 +770,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setIconName("Sunny");
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NO_CONTENT.getStatusCode()));
 
@@ -813,7 +816,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setVersion("1.0.0");
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode()));
 
@@ -880,7 +883,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -928,27 +931,27 @@ class ProductsRestControllerTest extends AbstractTest {
     /**
      * Helper method to create products
      *
-     * @param id                   unique id of the product
-     * @param version              version number
-     * @param creationDateTime     datetime of creation
-     * @param creationUser         user name
+     * @param id unique id of the product
+     * @param version version number
+     * @param creationDateTime datetime of creation
+     * @param creationUser user name
      * @param modificationDateTime datetime of modification
-     * @param modificationUser     user name
-     * @param productName          unique name of product
-     * @param productDescription   general product description
-     * @param operator             whether system- or manually created (boolean)
-     * @param productImageUrl      url for product image
-     * @param productBasePath      uri for base path
-     * @param modificationCount    counted modification of the entity
-     * @param displayName          dedicated name for displaying to user
-     * @param iconName             identifier of PrimeNG icon lib, z.b. trash, times
-     * @param classifications      tags for product
+     * @param modificationUser user name
+     * @param productName unique name of product
+     * @param productDescription general product description
+     * @param operator whether system- or manually created (boolean)
+     * @param productImageUrl url for product image
+     * @param productBasePath uri for base path
+     * @param modificationCount counted modification of the entity
+     * @param displayName dedicated name for displaying to user
+     * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
+     * @param classifications tags for product
      * @return
      */
     private Product createProduct(String id, String version, OffsetDateTime creationDateTime, String creationUser,
-                                  OffsetDateTime modificationDateTime, String modificationUser, String productName,
-                                  String productDescription, boolean operator, String productImageUrl, String productBasePath,
-                                  int modificationCount, String displayName, String iconName, Set<String> classifications) {
+            OffsetDateTime modificationDateTime, String modificationUser, String productName,
+            String productDescription, boolean operator, String productImageUrl, String productBasePath,
+            int modificationCount, String displayName, String iconName, Set<String> classifications) {
 
         Product product = new Product();
         product.setId(id);
@@ -972,28 +975,28 @@ class ProductsRestControllerTest extends AbstractTest {
     /**
      * Helper method to create productAbstracts (a subset of product entity)
      *
-     * @param id                   unique id of the product
-     * @param version              version number
-     * @param creationDateTime     datetime of creation
-     * @param creationUser         user name
+     * @param id unique id of the product
+     * @param version version number
+     * @param creationDateTime datetime of creation
+     * @param creationUser user name
      * @param modificationDateTime datetime of modification
-     * @param modificationUser     user name
-     * @param productName          unique name of product
-     * @param productDescription   general product description
-     * @param operator             whether system- or manually created (boolean)
-     * @param productImageUrl      url for product image
-     * @param productBasePath      uri for base path
-     * @param modificationCount    counted modification of the entity
-     * @param displayName          dedicated name for displaying to user
-     * @param iconName             identifier of PrimeNG icon lib, z.b. trash, times
+     * @param modificationUser user name
+     * @param productName unique name of product
+     * @param productDescription general product description
+     * @param operator whether system- or manually created (boolean)
+     * @param productImageUrl url for product image
+     * @param productBasePath uri for base path
+     * @param modificationCount counted modification of the entity
+     * @param displayName dedicated name for displaying to user
+     * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
      * @return
      */
     private ProductAbstract createProductAbstract(String id, String version, OffsetDateTime creationDateTime,
-                                                  String creationUser,
-                                                  OffsetDateTime modificationDateTime, String modificationUser, String productName,
-                                                  String productDescription, boolean operator, String productImageUrl,
-                                                  String productBasePath,
-                                                  int modificationCount, String displayName, String iconName) {
+            String creationUser,
+            OffsetDateTime modificationDateTime, String modificationUser, String productName,
+            String productDescription, boolean operator, String productImageUrl,
+            String productBasePath,
+            int modificationCount, String displayName, String iconName) {
 
         ProductAbstract productAbstract = new ProductAbstract();
         productAbstract.setId(id);

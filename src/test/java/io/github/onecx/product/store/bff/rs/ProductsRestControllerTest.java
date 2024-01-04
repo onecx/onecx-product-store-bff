@@ -98,11 +98,18 @@ class ProductsRestControllerTest extends AbstractTest {
 
     }
 
+    /**
+     * Scenario: Receive 404 Not Found when product with id is not existing in backend service.
+     * Given
+     * When I query GET endpoint with a non-existing id
+     * Then I get a 'Not Found' response code back
+     * AND problem details are within the response body
+     */
     @Test
     void getProduct_shouldReturnNotFound_whenProductIdDoesNotExist() {
 
         ProblemDetailResponse problemDetailResponse = new ProblemDetailResponse();
-        problemDetailResponse.setErrorCode("404");
+        problemDetailResponse.setErrorCode(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()));
 
         String id = "notExisting";
         mockServerClient

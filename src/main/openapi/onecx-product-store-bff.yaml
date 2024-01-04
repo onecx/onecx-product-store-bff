@@ -2,7 +2,7 @@
 openapi: 3.0.3
 info:
   title: onecx-product-store-bff
-  description: Backend-For-Frontend (BFF) service for onecx product store.
+  description: Backend-For-Frontend (BFF) service for onecx product store. With this API you can manage applications (technical microfrontend(s)) and product(s) as logical abstraction. A Product is a versioned cover for a collection of applications (versioned) to be used within workspaces. Microfrontends (applications) which have reference to exposed/registered modules
   version: 1.0.0
   contact:
     email: "tkit_dev@1000kit.org"
@@ -14,6 +14,132 @@ servers:
 tags:
   - name: OneCX Product Store
 paths:
+  /microfrontends:
+    post:
+      tags:
+        - Microfrontends
+      description: Create microfrontend
+      operationId: createMicrofrontend
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMicrofrontendRequest'
+      responses:
+        "201":
+          description: New microfrontend created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microfrontend'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /microfrontends/search:
+    post:
+      tags:
+        - Microfrontends
+      description: Search for microfrontend(s) by search criteria
+      operationId: searchMicrofrontends
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicrofrontendSearchCriteria'
+      responses:
+        "200":
+          description: Corresponding microfrontends
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrofrontendPageResult'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /microfrontends/{id}:
+    get:
+      tags:
+        - Microfrontends
+      description: Return microfrontend by ID
+      operationId: getMicrofrontend
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microfrontend'
+        "404":
+          description: Not Found
+    put:
+      tags:
+        - Microfrontends
+      description: Update microfrontend by ID
+      operationId: updateMicrofrontend
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMicrofrontendRequest'
+      responses:
+        "204":
+          description: Microfrontend updated
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Microfrontend not found
+    delete:
+      tags:
+        - Microfrontends
+      description: Delete microfrontend by ID
+      operationId: deleteMicrofrontend
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+
   /products:
     post:
       tags:
@@ -343,4 +469,243 @@ components:
         name:
           type: string
         message:
+          type: string
+    MicrofrontendPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrofrontendAbstract'
+    MicrofrontendAbstract:
+      required:
+        - id
+        - remoteBaseUrl
+        - productName
+        - appId
+        - appName
+      type: object
+      properties:
+        id:
+          type: string
+        appId:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        remoteBaseUrl:
+          type: string
+        productName:
+          type: string
+    MicrofrontendSearchCriteria:
+      type: object
+      properties:
+        appId:
+          type: string
+          nullable: true
+        appName:
+          type: string
+          nullable: true
+        productName:
+          type: string
+          nullable: true
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          minimum: 1
+          exclusiveMinimum: false
+          type: integer
+    CreateMicrofrontendRequest:
+      required:
+        - remoteEntry
+        - remoteBaseUrl
+        - productName
+        - appId
+        - appVersion
+        - appName
+      type: object
+      properties:
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        remoteBaseUrl:
+          type: string
+        remoteEntry:
+          type: string
+        technology:
+          type: string
+        productName:
+          type: string
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        contact:
+          type: string
+        iconName:
+          type: string
+        note:
+          type: string
+        exposedModule:
+          type: string
+        endpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateUIEndpoint"
+    CreateUIEndpoint:
+      required:
+        - path
+        - name
+      type: object
+      properties:
+        path:
+          type: string
+        name:
+          type: string
+    UpdateMicrofrontendRequest:
+      required:
+        - remoteEntry
+        - remoteBaseUrl
+        - productName
+        - appId
+        - appVersion
+        - appName
+      type: object
+      properties:
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        remoteBaseUrl:
+          type: string
+        remoteEntry:
+          type: string
+        productName:
+          type: string
+        technology:
+          type: string
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        contact:
+          type: string
+        iconName:
+          type: string
+        note:
+          type: string
+        exposedModule:
+          type: string
+        endpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpdateUIEndpoint"
+    UpdateUIEndpoint:
+      required:
+        - path
+        - name
+      type: object
+      properties:
+        path:
+          type: string
+        name:
+          type: string
+    Microfrontend:
+      required:
+        - remoteEntry
+        - remoteBaseUrl
+        - productName
+        - appId
+        - appVersion
+        - appName
+      type: object
+      properties:
+        id:
+          type: string
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        modificationCount:
+          format: int32
+          type: integer
+        operator:
+          type: boolean
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        technology:
+          type: string
+        remoteBaseUrl:
+          type: string
+        remoteEntry:
+          type: string
+        productName:
+          type: string
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        contact:
+          type: string
+        iconName:
+          type: string
+        note:
+          type: string
+        exposedModule:
+          type: string
+        endpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/UIEndpoint"
+    UIEndpoint:
+      required:
+        - path
+        - name
+      type: object
+      properties:
+        path:
+          type: string
+        name:
           type: string

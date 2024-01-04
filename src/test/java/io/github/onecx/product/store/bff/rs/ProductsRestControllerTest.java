@@ -808,8 +808,8 @@ class ProductsRestControllerTest extends AbstractTest {
 
     /**
      * Scenario: Return 400-status code with exception when trying to update product by an already used product name.
-     * Given Product-ID is not existing
-     * When I try to update a product by a non-existing product id "nonExisting"
+     * Given Product-ID does existing
+     * When I try to update a product by used value for product name
      * Then I get a 'Bad Request' response code back
      * AND a ProblemDetailResponseObject is returned
      */

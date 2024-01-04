@@ -318,100 +318,70 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
     }
 
-    //         /**
-    //          * Scenario: Throw 400 Bad Request exception when provided product name is already used for another product.
-    //          * Given
-    //          * When I try to create a product with used (in backend) product name
-    //          * Then I get a 'Bad Request' response code back
-    //          * AND problem details are within the response body
-    //          */
-    //         @Test
-    //         void createProduct_shouldReturnBadRequest_whenNameIsNotUnique() {
-    //
-    //             Set<String> classificationSet = new HashSet<>();
-    //             classificationSet.add("Themes");
-    //             classificationSet.add("Menu");
-    //             ProblemDetailResponse data = new ProblemDetailResponse();
-    //             data.setErrorCode("PERSIST_ENTITY_FAILED");
-    //             data.setDetail(
-    //                     "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_name'
-    //                     Detail: Key "
-    //                             +
-    //                             "(name)=(test-appl2) already exists.]");
-    //             List<ProblemDetailParam> list = new ArrayList<>();
-    //             ProblemDetailParam param1 = new ProblemDetailParam();
-    //             ProblemDetailParam param2 = new ProblemDetailParam();
-    //             param1.setKey("constraint");
-    //             param1.setValue(
-    //                     "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_ps_product_name'
-    //                     Detail: Key "
-    //                             +
-    //                             "(name)=(test-appl2) already exists.]");
-    //             param2.setKey("constraintName");
-    //             param2.setValue("ui_ps_product_name");
-    //             list.add(param1);
-    //             list.add(param2);
-    //             data.setParams(list);
-    //             data.setInvalidParams(null);
-    //
-    //             CreateProductRequest request = new CreateProductRequest();
-    //             request.setBasePath("/app3");
-    //             request.setDescription("Here is some description 2");
-    //             request.setName("test-appl2");
-    //             request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
-    //             request.setDisplayName("Product ABC");
-    //             request.setIconName("Sun");
-    //             request.setVersion("0");
-    //             request.setClassifications(classificationSet);
-    //
-    //             // create mock rest endpoint
-    //             mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-    //                     .withBody(JsonBody.json(request)))
-    //                     .withPriority(100)
-    //                     .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-    //                             .withContentType(MediaType.APPLICATION_JSON)
-    //                             .withBody(JsonBody.json(data)));
-    //
-    //             CreateProductRequestDTO requestDTO = new CreateProductRequestDTO();
-    //             requestDTO.basePath("/app3");
-    //             requestDTO.setDescription("Here is some description 2");
-    //             requestDTO.setName("test-appl2");
-    //             requestDTO
-    //                     .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
-    //             requestDTO.setDisplayName("Product ABC");
-    //             requestDTO.setIconName("Sun");
-    //             requestDTO.setVersion("0");
-    //             requestDTO.setClassifications(classificationSet);
-    //
-    //             var response = given()
-    //                     .when()
-    //                     .contentType(APPLICATION_JSON)
-    //                     .body(requestDTO)
-    //                     .post()
-    //                     .then()
-    //                     .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
-    //                     .contentType(APPLICATION_JSON)
-    //                     .extract().as(ProblemDetailResponseDTO.class);
-    //
-    //             Assertions.assertNotNull(response);
-    //             List<ProblemDetailParamDTO> problemDetailsParams = response.getParams();
-    //             Optional<ProblemDetailParamDTO> paramConstraint = problemDetailsParams.stream()
-    //                     .filter(e -> e.getKey().equals("constraint")
-    //                     .findFirst());
-    //             Optional<ProblemDetailParamDTO> paramConstraintName = problemDetailsParams.stream()
-    //                     .filter(e -> e.getKey().equals("constraintName"))
-    //                     .findFirst();
-    //
-    //             Assertions.assertTrue(paramConstraint.isPresent());
-    //             Assertions.assertTrue(paramConstraintName.isPresent());
-    //
-    //             Assertions.assertEquals(data.getErrorCode(), response.getErrorCode());
-    //             Assertions.assertEquals(data.getDetail(), response.getDetail());
-    //             Assertions.assertEquals(param1.getValue(), paramConstraint.get().getValue());
-    //             Assertions.assertEquals(param2.getValue(), paramConstraintName.get().getValue());
-    //             Assertions.assertNull(response.getInvalidParams());
-    //
-    //         }
+    /**
+     * Scenario: Throw 400 Bad Request when mandatory field(s) is/are missing.
+     * Given
+     * When I try to create a mfe without setting all mandatory fields
+     * Then I get a 'Bad Request' response code back
+     * AND problem details are within the response body
+     */
+    @Test
+    void createMicrofrontend_shouldReturnBadRequest_whenRunningIntoValidationConstraints() {
+
+        ProblemDetailResponse data = new ProblemDetailResponse();
+        data.setErrorCode("CONSTRAINT_VIOLATIONS");
+        data.setDetail(
+                "createMicrofrontend.arg0.productName: must not be null");
+        List<ProblemDetailInvalidParam> list = new ArrayList<>();
+        ProblemDetailInvalidParam param1 = new ProblemDetailInvalidParam();
+        param1.setName("createMicrofrontend.arg0.productName");
+        param1.setMessage("must not be null");
+        list.add(param1);
+
+        data.setParams(null);
+        data.setInvalidParams(list);
+
+        CreateMicrofrontendRequest request = createMicrofrontendRequestSVC("App-ID", "1.0.0",
+                "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", null, null,
+                "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", null);
+
+        // create mock rest endpoint
+        mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
+                        .withBody(JsonBody.json(request)))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(data)));
+
+        CreateMicrofrontendRequestDTO requestDTO = createMicrofrontendRequestBFF("App-ID", "1.0.0",
+                "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", null, null,
+                "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", null);
+
+        var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post()
+                .then()
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        Assertions.assertNotNull(response);
+        List<ProblemDetailInvalidParamDTO> problemDetailsParams = response.getInvalidParams();
+        Optional<ProblemDetailInvalidParamDTO> invalidParamConstraint = problemDetailsParams.stream().findFirst();
+
+        Assertions.assertTrue(invalidParamConstraint.isPresent());
+
+        Assertions.assertEquals(data.getErrorCode(), response.getErrorCode());
+        Assertions.assertEquals(data.getDetail(), response.getDetail());
+        Assertions.assertEquals(param1.getMessage(), invalidParamConstraint.get().getMessage());
+        Assertions.assertEquals(param1.getName(), invalidParamConstraint.get().getName());
+        Assertions.assertNull(response.getParams());
+
+    }
 
     /**
      * Scenario: Search request for non-matching criteria results into successful response with empty mfe list.

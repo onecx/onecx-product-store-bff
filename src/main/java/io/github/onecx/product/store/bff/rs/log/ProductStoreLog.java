@@ -16,37 +16,25 @@ public class ProductStoreLog implements LogParam {
 
         return List.of(
                 this.item(10, CreateMicrofrontendRequestDTO.class,
-                        x -> "CreateMicrofrontendRequestDTO[ appId: " +
+                        x -> "CreateMicrofrontendRequestDTO[appId:" +
                                 ((CreateMicrofrontendRequestDTO) x).getAppId()
-                                + ", AppName: " + ((CreateMicrofrontendRequestDTO) x).getAppName()
-                                + ", remoteBaseUrl: " + ((CreateMicrofrontendRequestDTO) x).getRemoteBaseUrl()
-                                + ", remoteEntry: " + ((CreateMicrofrontendRequestDTO) x).getRemoteEntry()
-                                + ", productName: " + ((CreateMicrofrontendRequestDTO) x).getProductName()
-                                + " ]"),
+                                + "]"),
                 this.item(10, UpdateMicrofrontendRequestDTO.class,
-                        x -> "UpdateMicrofrontendRequestDTO[ appId: " +
+                        x -> "UpdateMicrofrontendRequestDTO[appId:" +
                                 ((UpdateMicrofrontendRequestDTO) x).getAppId()
-                                + ", AppName: " + ((UpdateMicrofrontendRequestDTO) x).getAppName()
-                                + ", remoteBaseUrl: " + ((UpdateMicrofrontendRequestDTO) x).getRemoteBaseUrl()
-                                + ", remoteEntry: " + ((UpdateMicrofrontendRequestDTO) x).getRemoteEntry()
-                                + ", productName: " + ((UpdateMicrofrontendRequestDTO) x).getProductName()
-                                + " ]"),
+                                + "]"),
                 this.item(10, MicrofrontendSearchCriteriaDTO.class,
-                        x -> "MicrofrontendSearchCriteriaDTO[ appId: " +
+                        x -> "MicrofrontendSearchCriteriaDTO[appId:" +
                                 ((MicrofrontendSearchCriteriaDTO) x).getAppId()
-                                + ", AppName: " + ((MicrofrontendSearchCriteriaDTO) x).getAppName()
-                                + ", productName: " + ((MicrofrontendSearchCriteriaDTO) x).getProductName()
-                                + " ]"),
+                                + "]"),
                 this.item(10, CreateProductRequestDTO.class,
-                        x -> "CreateProductRequestDTO[ name: " +
-                                ((CreateProductRequestDTO) x).getName()
-                                + ", basePath: " + ((CreateProductRequestDTO) x).getBasePath() + " ]"),
+                        x -> "CreateProductRequestDTO[name:" +
+                                ((CreateProductRequestDTO) x).getName() + "]"),
                 this.item(10, UpdateProductRequestDTO.class,
-                        x -> "UpdateProductRequestDTO[ name: " + ((UpdateProductRequestDTO) x).getName()
-                                + ", basePath: " + ((UpdateProductRequestDTO) x).getBasePath() + " ]"),
+                        x -> "UpdateProductRequestDTO[name:" + ((UpdateProductRequestDTO) x).getName() + "]"),
                 this.item(10, ProductSearchCriteriaDTO.class,
-                        x -> "ProductSearchCriteriaDTO[ name: " + ((ProductSearchCriteriaDTO) x).getName()
-                                + " ]"));
+                        x -> "ProductSearchCriteriaDTO[name:" + ((ProductSearchCriteriaDTO) x).getName()
+                                + "]"));
     }
 
 }

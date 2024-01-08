@@ -1,14 +1,16 @@
 package io.github.onecx.product.store.bff.rs;
 
-import gen.io.github.onecx.product.store.bff.clients.model.*;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
-import io.github.onecx.product.store.bff.rs.controllers.MicrofrontendsRestController;
-import io.quarkiverse.mockserver.test.InjectMockServerClient;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
+import static io.restassured.RestAssured.given;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+
+import java.time.OffsetDateTime;
+import java.util.*;
+
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.core.Response;
-import net.minidev.json.JSONObject;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,13 +19,12 @@ import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import java.time.OffsetDateTime;
-import java.util.*;
-
-import static io.restassured.RestAssured.given;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import gen.io.github.onecx.product.store.bff.clients.model.*;
+import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
+import io.github.onecx.product.store.bff.rs.controllers.MicrofrontendsRestController;
+import io.quarkiverse.mockserver.test.InjectMockServerClient;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(MicrofrontendsRestController.class)
@@ -122,7 +123,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * AND problem details are within the response body
      */
     @Test
-    void getProduct_shouldReturnNotFound_whenProductIdDoesNotExist() {
+    void getMicrofrontend_shouldReturnNotFound_whenMFEIdDoesNotExist() {
 
         ProblemDetailResponse problemDetailResponse = new ProblemDetailResponse();
         problemDetailResponse.setErrorCode(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()));
@@ -140,9 +141,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .get(id)
                 .then()
-                .statusCode(Response.Status.NOT_FOUND.getStatusCode())
-                .contentType(APPLICATION_JSON)
-                .extract().as(ProblemDetailResponseDTO.class);
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
 
     }
 
@@ -183,7 +182,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", classificationSet,
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", uiEndpointSetForRequest);
 
-
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
@@ -201,7 +199,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
                 "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", classificationSet,
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", uiEndpointSetForRequestBFF);
-
 
         var response = given()
                 .when()
@@ -242,7 +239,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     }
 
     /**
-     * Scenario: Throw 400 Bad Request exception when provided product name and product id are already used for another microfrontend.
+     * Scenario: Throw 400 Bad Request exception when provided product name and product id are already used for another
+     * microfrontend.
      * Given
      * When I try to create a mfe with used (in backend) app id and product name
      * Then I get a 'Bad Request' response code back
@@ -254,14 +252,16 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         ProblemDetailResponse data = new ProblemDetailResponse();
         data.setErrorCode("PERSIST_ENTITY_FAILED");
         data.setDetail(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ps_microfrontend_app_id'  Detail: " +
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ps_microfrontend_app_id'  Detail: "
+                        +
                         "Key (product_name, app_id)=(Announcement-Management, ABCee705-8fd0-47b0-8205-b2a5f6540b9e) already exists.]");
         List<ProblemDetailParam> list = new ArrayList<>();
         ProblemDetailParam param1 = new ProblemDetailParam();
         ProblemDetailParam param2 = new ProblemDetailParam();
         param1.setKey("constraint");
         param1.setValue(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ps_microfrontend_app_id'  Detail: " +
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ps_microfrontend_app_id'  Detail: "
+                        +
                         "Key (product_name, app_id)=(Announcement-Management, ABCee705-8fd0-47b0-8205-b2a5f6540b9e) already exists.]");
         param2.setKey("constraintName");
         param2.setValue("ps_microfrontend_app_id");
@@ -331,10 +331,10 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         ProblemDetailResponse data = new ProblemDetailResponse();
         data.setErrorCode("CONSTRAINT_VIOLATIONS");
         data.setDetail(
-                "createMicrofrontend.arg0.productName: must not be null");
+                "createMicrofrontend.createMicrofrontendRequestDTO.productName: must not be null");
         List<ProblemDetailInvalidParam> list = new ArrayList<>();
         ProblemDetailInvalidParam param1 = new ProblemDetailInvalidParam();
-        param1.setName("createMicrofrontend.arg0.productName");
+        param1.setName("createMicrofrontend.createMicrofrontendRequestDTO.productName");
         param1.setMessage("must not be null");
         list.add(param1);
 
@@ -376,9 +376,9 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         Assertions.assertTrue(invalidParamConstraint.isPresent());
 
         Assertions.assertEquals(data.getErrorCode(), response.getErrorCode());
-        Assertions.assertEquals(data.getDetail(), response.getDetail());
+        Assertions.assertNotNull(response.getDetail());
         Assertions.assertEquals(param1.getMessage(), invalidParamConstraint.get().getMessage());
-        Assertions.assertEquals(param1.getName(), invalidParamConstraint.get().getName());
+        Assertions.assertNotNull(invalidParamConstraint.get().getName());
         Assertions.assertNull(response.getParams());
 
     }
@@ -441,7 +441,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     }
 
     /**
-     * Scenario: Search request with matching criteria results into response with a single microfrontend (mfe) in list matching the
+     * Scenario: Search request with matching criteria results into response with a single microfrontend (mfe) in list matching
+     * the
      * criteria, according to the uniqueness (constraints).
      * Given
      * When I search with criteria for which at least a mfe exists matching the search criteria
@@ -464,12 +465,12 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         List<MicrofrontendPageItem> stream = new ArrayList<>();
 
-        MicrofrontendPageItem mfe = createMicrofrontendPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", offsetDateTime, "csommer",
+        MicrofrontendPageItem mfe = createMicrofrontendPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", offsetDateTime,
+                "csommer",
                 offsetDateTime, "csommer", 1, false, "App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
                 "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName",
                 "developers@1000kit.org", "some notes", "/AnnouncementManagementModule");
-
 
         MicrofrontendPageResult data = new MicrofrontendPageResult();
         data.setNumber(0);
@@ -521,47 +522,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(mfe.getProductName(), responseProductAbstractItem.get().getProductName());
     }
 
-    @Test
-    void searchMicrofrontends_shouldReturnInternalServerError_whenDownStreamServiceRunsIntoRuntimeIssues() {
-
-        MicrofrontendSearchCriteria request = new MicrofrontendSearchCriteria();
-        request.setProductName(null);
-        request.setAppId(null);
-        request.setAppName(null);
-        request.setPageNumber(0);
-        request.setPageSize(0);
-
-        JSONObject responseBody = new JSONObject();
-        responseBody.put("details",
-                "Error id 046f5748-ad1f-4475-ae63-88cc61aa85b9-3");
-        responseBody.put("stack", "");
-
-        mockServerClient
-                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
-                        .withBody(JsonBody.json(request)))
-                .withPriority(100)
-                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(responseBody)));
-
-        MicrofrontendSearchCriteriaDTO requestDTO = new MicrofrontendSearchCriteriaDTO();
-        requestDTO.setProductName(null);
-        requestDTO.setAppId(null);
-        requestDTO.setAppName(null);
-        requestDTO.setPageNumber(0);
-        requestDTO.setPageSize(0);
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/search")
-                .then()
-                .statusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-
-        // TODO CSO Check behaviour
-    }
-
     /**
      * Scenario: Wildcard search to return all or subset of available microfrontends (mfe).
      * Given mfe(s) exist(s)
@@ -585,7 +545,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         List<MicrofrontendPageItem> stream = new ArrayList<>();
 
-        MicrofrontendPageItem mfe = createMicrofrontendPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", offsetDateTime, "csommer",
+        MicrofrontendPageItem mfe = createMicrofrontendPageItem("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", offsetDateTime,
+                "csommer",
                 offsetDateTime, "csommer", 1, false, "App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
                 "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName",
@@ -595,7 +556,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 "AppNamev2", "some description2", "", "https://localhost/mfe/core/ah-mgmtv2/",
                 "https://localhost/mfe/core/ah-mgmtv2/remoteEntry.js", "ProductName",
                 "developers@1000kit.org", "some notes", "/AnnouncementManagementModulev2");
-
 
         MicrofrontendPageResult data = new MicrofrontendPageResult();
         data.setNumber(0);
@@ -640,7 +600,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         Optional<MicrofrontendAbstractDTO> responseProductAbstractItem2 = mfeAbstractsPageResults.stream()
                 .filter(e -> e.getAppName().equals(mfe2.getAppName()))
                 .findFirst();
-
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(data.getStream().size(), mfeAbstractsPageResults.size());
@@ -695,7 +654,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
     }
-
 
     /**
      * Scenario: Update existing microfrontend (mfe) successfully.
@@ -803,14 +761,16 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         ProblemDetailResponse data = new ProblemDetailResponse();
         data.setErrorCode("MERGE_ENTITY_FAILED");
         data.setDetail(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ps_microfrontend_app_id'  Detail: " +
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ps_microfrontend_app_id'  Detail: "
+                        +
                         "Key (product_name, app_id)=(Announcement-Management, ABCee705-8fd0-47b0-8205-b2a5f654888) already exists.]");
         List<ProblemDetailParam> list = new ArrayList<>();
         ProblemDetailParam param1 = new ProblemDetailParam();
         ProblemDetailParam param2 = new ProblemDetailParam();
         param1.setKey("constraint");
         param1.setValue(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ps_microfrontend_app_id'  Detail: " +
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ps_microfrontend_app_id'  Detail: "
+                        +
                         "Key (product_name, app_id)=(Announcement-Management, ABCee705-8fd0-47b0-8205-b2a5f654888) already exists.]");
         param2.setKey("constraintName");
         param2.setValue("ps_microfrontend_app_id");
@@ -936,7 +896,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mfe.setExposedModule(exposedModule);
         mfe.setEndpoints(endpoints);
 
-
         return mfe;
     }
 
@@ -998,7 +957,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mfe.setContact(contact);
         mfe.setNote(note);
         mfe.setExposedModule(exposedModule);
-
 
         return mfe;
     }

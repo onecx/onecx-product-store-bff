@@ -74,9 +74,6 @@ public class MicrofrontendsRestController implements MicrofrontendsApiService {
             Microfrontend resultMfe = response.readEntity(Microfrontend.class);
             MicrofrontendDTO resultProductDTO = mapper.mapMfe(resultMfe);
             return Response.status(response.getStatus()).entity(resultProductDTO).build();
-        } catch (WebApplicationException ex) {
-            return Response.status(ex.getResponse().getStatus())
-                    .entity(problemDetailMapper.map(ex.getResponse().readEntity(ProblemDetailResponse.class))).build();
         }
     }
 

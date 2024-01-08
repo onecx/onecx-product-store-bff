@@ -72,11 +72,7 @@ public class ProductsRestController implements ProductsApiService {
             Product resultProduct = response.readEntity(Product.class);
             ProductDTO resultProductDTO = mapper.mapProduct(resultProduct);
             return Response.status(response.getStatus()).entity(resultProductDTO).build();
-        } catch (WebApplicationException ex) {
-            return Response.status(ex.getResponse().getStatus())
-                    .entity(problemDetailMapper.map(ex.getResponse().readEntity(ProblemDetailResponse.class))).build();
         }
-
     }
 
     @Override

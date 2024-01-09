@@ -1,16 +1,13 @@
 package io.github.onecx.product.store.bff.rs;
 
-import static io.restassured.RestAssured.given;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-
-import java.time.OffsetDateTime;
-import java.util.*;
-
+import gen.io.github.onecx.product.store.bff.clients.model.*;
+import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
+import io.github.onecx.product.store.bff.rs.controllers.MicrofrontendsRestController;
+import io.quarkiverse.mockserver.test.InjectMockServerClient;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.core.Response;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,12 +16,13 @@ import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.io.github.onecx.product.store.bff.clients.model.*;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
-import io.github.onecx.product.store.bff.rs.controllers.MicrofrontendsRestController;
-import io.quarkiverse.mockserver.test.InjectMockServerClient;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
+import java.time.OffsetDateTime;
+import java.util.*;
+
+import static io.restassured.RestAssured.given;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
 @TestHTTPEndpoint(MicrofrontendsRestController.class)

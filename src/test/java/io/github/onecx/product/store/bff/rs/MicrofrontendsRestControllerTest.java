@@ -182,7 +182,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.CREATED.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -275,7 +275,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -346,7 +346,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -678,7 +678,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", uiEndpointSetForRequest);
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NO_CONTENT.getStatusCode()));
 
@@ -723,7 +723,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", null);
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
-                        .withBody(JsonBody.json(request)))
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                         .withBody(JsonBody.json(problemDetailResponse)));
@@ -784,9 +784,9 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient.when(request()
-                        .withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id)
-                        .withMethod(HttpMethod.PUT)
-                        .withBody(JsonBody.json(request)))
+                .withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id)
+                .withMethod(HttpMethod.PUT)
+                .withBody(JsonBody.json(request)))
                 .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withBody(JsonBody.json(data))
@@ -829,47 +829,47 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     /**
      * Helper method to create a microfrontend (mfe) object
      *
-     * @param id                   unique id of the mfe
-     * @param creationDateTime     datetime of creation
-     * @param creationUser         user name
+     * @param id unique id of the mfe
+     * @param creationDateTime datetime of creation
+     * @param creationUser user name
      * @param modificationDateTime datetime of modification
-     * @param modificationUser     user name
-     * @param operator             whether system- or manually created (boolean)
-     * @param appId                unique id of application
-     * @param appVersion           version number
-     * @param appName              unique name of application
-     * @param description          general mfe description
-     * @param technology           representing used technology (angular, react, ...)
-     * @param remoteBaseUrl        uri for remote base path
-     * @param remoteEntry          webpack hook
-     * @param productName          name of associated product
-     * @param classifications      tags for mfe
-     * @param contact              contact details (like mail address) for e.g. application support
-     * @param iconName             identifier of PrimeNG icon lib, z.b. trash, times
-     * @param note                 additional notes
-     * @param exposedModule        module information
-     * @param endpoints            endpoints which can be used to address app pages & services
+     * @param modificationUser user name
+     * @param operator whether system- or manually created (boolean)
+     * @param appId unique id of application
+     * @param appVersion version number
+     * @param appName unique name of application
+     * @param description general mfe description
+     * @param technology representing used technology (angular, react, ...)
+     * @param remoteBaseUrl uri for remote base path
+     * @param remoteEntry webpack hook
+     * @param productName name of associated product
+     * @param classifications tags for mfe
+     * @param contact contact details (like mail address) for e.g. application support
+     * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
+     * @param note additional notes
+     * @param exposedModule module information
+     * @param endpoints endpoints which can be used to address app pages & services
      * @return
      */
     private Microfrontend createMicrofrontend(String id, OffsetDateTime creationDateTime, String creationUser,
-                                              OffsetDateTime modificationDateTime,
-                                              String modificationUser,
-                                              Integer modificationCount,
-                                              Boolean operator,
-                                              String appId,
-                                              String appVersion,
-                                              String appName,
-                                              String description,
-                                              String technology,
-                                              String remoteBaseUrl,
-                                              String remoteEntry,
-                                              String productName,
-                                              Set<String> classifications,
-                                              String contact,
-                                              String iconName,
-                                              String note,
-                                              String exposedModule,
-                                              List<UIEndpoint> endpoints) {
+            OffsetDateTime modificationDateTime,
+            String modificationUser,
+            Integer modificationCount,
+            Boolean operator,
+            String appId,
+            String appVersion,
+            String appName,
+            String description,
+            String technology,
+            String remoteBaseUrl,
+            String remoteEntry,
+            String productName,
+            Set<String> classifications,
+            String contact,
+            String iconName,
+            String note,
+            String exposedModule,
+            List<UIEndpoint> endpoints) {
 
         Microfrontend mfe = new Microfrontend();
         mfe.setId(id);
@@ -900,41 +900,41 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     /**
      * Helper method to create a microfrontend (mfe) object
      *
-     * @param id                   unique id of the mfe
-     * @param creationDateTime     datetime of creation
-     * @param creationUser         user name
+     * @param id unique id of the mfe
+     * @param creationDateTime datetime of creation
+     * @param creationUser user name
      * @param modificationDateTime datetime of modification
-     * @param modificationUser     user name
-     * @param operator             whether system- or manually created (boolean)
-     * @param appId                unique id of application
-     * @param appVersion           version number
-     * @param appName              unique name of application
-     * @param description          general mfe description
-     * @param technology           representing used technology (angular, react, ...)
-     * @param remoteBaseUrl        uri for remote base path
-     * @param remoteEntry          webpack hook
-     * @param productName          name of associated product
-     * @param contact              contact details (like mail address) for e.g. application support
-     * @param note                 additional notes
-     * @param exposedModule        module information
+     * @param modificationUser user name
+     * @param operator whether system- or manually created (boolean)
+     * @param appId unique id of application
+     * @param appVersion version number
+     * @param appName unique name of application
+     * @param description general mfe description
+     * @param technology representing used technology (angular, react, ...)
+     * @param remoteBaseUrl uri for remote base path
+     * @param remoteEntry webpack hook
+     * @param productName name of associated product
+     * @param contact contact details (like mail address) for e.g. application support
+     * @param note additional notes
+     * @param exposedModule module information
      * @return
      */
     private MicrofrontendPageItem createMicrofrontendPageItem(String id, OffsetDateTime creationDateTime, String creationUser,
-                                                              OffsetDateTime modificationDateTime,
-                                                              String modificationUser,
-                                                              Integer modificationCount,
-                                                              Boolean operator,
-                                                              String appId,
-                                                              String appVersion,
-                                                              String appName,
-                                                              String description,
-                                                              String technology,
-                                                              String remoteBaseUrl,
-                                                              String remoteEntry,
-                                                              String productName,
-                                                              String contact,
-                                                              String note,
-                                                              String exposedModule) {
+            OffsetDateTime modificationDateTime,
+            String modificationUser,
+            Integer modificationCount,
+            Boolean operator,
+            String appId,
+            String appVersion,
+            String appName,
+            String description,
+            String technology,
+            String remoteBaseUrl,
+            String remoteEntry,
+            String productName,
+            String contact,
+            String note,
+            String exposedModule) {
 
         MicrofrontendPageItem mfe = new MicrofrontendPageItem();
         mfe.setId(id);
@@ -962,20 +962,20 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     /**
      * Helper method to create a microfrontend (mfe) request object for the backend service (as mock).
      *
-     * @param appId           unique id of application
-     * @param appVersion      version number
-     * @param appName         unique name of application
-     * @param description     general mfe description
-     * @param technology      representing used technology (angular, react, ...)
-     * @param remoteBaseUrl   uri for remote base path
-     * @param remoteEntry     webpack hook
-     * @param productName     name of associated product
+     * @param appId unique id of application
+     * @param appVersion version number
+     * @param appName unique name of application
+     * @param description general mfe description
+     * @param technology representing used technology (angular, react, ...)
+     * @param remoteBaseUrl uri for remote base path
+     * @param remoteEntry webpack hook
+     * @param productName name of associated product
      * @param classifications tags for mfe
-     * @param contact         contact details (like mail address) for e.g. application support
-     * @param iconName        identifier of PrimeNG icon lib, z.b. trash, times
-     * @param note            additional notes
-     * @param exposedModule   module information
-     * @param endpoints       endpoints which can be used to address app pages & services
+     * @param contact contact details (like mail address) for e.g. application support
+     * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
+     * @param note additional notes
+     * @param exposedModule module information
+     * @param endpoints endpoints which can be used to address app pages & services
      * @return
      */
     private CreateMicrofrontendRequest createMicrofrontendRequestSVC(
@@ -1016,20 +1016,20 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     /**
      * Helper method to create a microfrontend (mfe) request object for the bff service (inbound call).
      *
-     * @param appId           unique id of application
-     * @param appVersion      version number
-     * @param appName         unique name of application
-     * @param description     general mfe description
-     * @param technology      representing used technology (angular, react, ...)
-     * @param remoteBaseUrl   uri for remote base path
-     * @param remoteEntry     webpack hook
-     * @param productName     name of associated product
+     * @param appId unique id of application
+     * @param appVersion version number
+     * @param appName unique name of application
+     * @param description general mfe description
+     * @param technology representing used technology (angular, react, ...)
+     * @param remoteBaseUrl uri for remote base path
+     * @param remoteEntry webpack hook
+     * @param productName name of associated product
      * @param classifications tags for mfe
-     * @param contact         contact details (like mail address) for e.g. application support
-     * @param iconName        identifier of PrimeNG icon lib, z.b. trash, times
-     * @param note            additional notes
-     * @param exposedModule   module information
-     * @param endpoints       endpoints which can be used to address app pages & services
+     * @param contact contact details (like mail address) for e.g. application support
+     * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
+     * @param note additional notes
+     * @param exposedModule module information
+     * @param endpoints endpoints which can be used to address app pages & services
      * @return
      */
     private CreateMicrofrontendRequestDTO createMicrofrontendRequestBFF(
@@ -1070,20 +1070,20 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     /**
      * Helper method to update a microfrontend (mfe) request object for the backend service (as mock).
      *
-     * @param appId           unique id of application
-     * @param appVersion      version number
-     * @param appName         unique name of application
-     * @param description     general mfe description
-     * @param technology      representing used technology (angular, react, ...)
-     * @param remoteBaseUrl   uri for remote base path
-     * @param remoteEntry     webpack hook
-     * @param productName     name of associated product
+     * @param appId unique id of application
+     * @param appVersion version number
+     * @param appName unique name of application
+     * @param description general mfe description
+     * @param technology representing used technology (angular, react, ...)
+     * @param remoteBaseUrl uri for remote base path
+     * @param remoteEntry webpack hook
+     * @param productName name of associated product
      * @param classifications tags for mfe
-     * @param contact         contact details (like mail address) for e.g. application support
-     * @param iconName        identifier of PrimeNG icon lib, z.b. trash, times
-     * @param note            additional notes
-     * @param exposedModule   module information
-     * @param endpoints       endpoints which can be used to address app pages & services
+     * @param contact contact details (like mail address) for e.g. application support
+     * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
+     * @param note additional notes
+     * @param exposedModule module information
+     * @param endpoints endpoints which can be used to address app pages & services
      * @return
      */
     private UpdateMicrofrontendRequest updateMicrofrontendRequestSVC(
@@ -1124,20 +1124,20 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     /**
      * Helper method to update a microfrontend (mfe) request object for bff (inbound).
      *
-     * @param appId           unique id of application
-     * @param appVersion      version number
-     * @param appName         unique name of application
-     * @param description     general mfe description
-     * @param technology      representing used technology (angular, react, ...)
-     * @param remoteBaseUrl   uri for remote base path
-     * @param remoteEntry     webpack hook
-     * @param productName     name of associated product
+     * @param appId unique id of application
+     * @param appVersion version number
+     * @param appName unique name of application
+     * @param description general mfe description
+     * @param technology representing used technology (angular, react, ...)
+     * @param remoteBaseUrl uri for remote base path
+     * @param remoteEntry webpack hook
+     * @param productName name of associated product
      * @param classifications tags for mfe
-     * @param contact         contact details (like mail address) for e.g. application support
-     * @param iconName        identifier of PrimeNG icon lib, z.b. trash, times
-     * @param note            additional notes
-     * @param exposedModule   module information
-     * @param endpoints       endpoints which can be used to address app pages & services
+     * @param contact contact details (like mail address) for e.g. application support
+     * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
+     * @param note additional notes
+     * @param exposedModule module information
+     * @param endpoints endpoints which can be used to address app pages & services
      * @return
      */
     private UpdateMicrofrontendRequestDTO updateMicrofrontendRequestBFF(

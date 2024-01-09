@@ -39,7 +39,7 @@ public class MicrofrontendsRestController implements MicrofrontendsApiService {
 
     @Inject
     public MicrofrontendsRestController(MicrofrontendsMapper mapper,
-                                        ProblemDetailMapper problemDetailMapper, ExceptionMapper exceptionMapper) {
+            ProblemDetailMapper problemDetailMapper, ExceptionMapper exceptionMapper) {
 
         this.mapper = mapper;
         this.problemDetailMapper = problemDetailMapper;

@@ -1,5 +1,17 @@
 package io.github.onecx.product.store.bff.rs.controllers;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.quarkus.log.cdi.LogService;
+
 import gen.io.github.onecx.product.store.bff.clients.api.ProductsInternalApi;
 import gen.io.github.onecx.product.store.bff.clients.model.ProblemDetailResponse;
 import gen.io.github.onecx.product.store.bff.clients.model.Product;
@@ -9,16 +21,6 @@ import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
 import io.github.onecx.product.store.bff.rs.mappers.ExceptionMapper;
 import io.github.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
 import io.github.onecx.product.store.bff.rs.mappers.ProductsMapper;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.jboss.resteasy.reactive.RestResponse;
-import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.tkit.quarkus.log.cdi.LogService;
 
 @LogService
 @ApplicationScoped
@@ -37,7 +39,7 @@ public class ProductsRestController implements ProductsApiService {
 
     @Inject
     public ProductsRestController(ProductsMapper mapper,
-                                  ProblemDetailMapper problemDetailMapper, ExceptionMapper exceptionMapper) {
+            ProblemDetailMapper problemDetailMapper, ExceptionMapper exceptionMapper) {
 
         this.mapper = mapper;
         this.problemDetailMapper = problemDetailMapper;

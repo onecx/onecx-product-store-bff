@@ -139,7 +139,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-
   /products:
     post:
       tags:
@@ -275,6 +274,37 @@ paths:
           description: No Content
         "400":
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/{name}:
+    get:
+      tags:
+        - Products
+      description: Return product by (unique) name
+      operationId: getProductByName
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Not Found
           content:
             application/json:
               schema:
@@ -437,6 +467,11 @@ components:
         displayName:
           type: string
           description: name of the product used for displaying to user.
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
     OffsetDateTime:
       format: date-time
       type: string

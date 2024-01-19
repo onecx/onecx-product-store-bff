@@ -22,6 +22,6 @@ public interface ProductsMapper {
     ProductAbstractDTO mapProductAbstract(ProductAbstract productAbstract);
 
     @Mapping(target = "removeStreamItem", ignore = true)
-    public ProductPageResultDTO mapProductSearchPageResponse(ProductPageResult searchResults);
+    ProductPageResultDTO mapProductSearchPageResponse(ProductPageResult searchResults);
 
 }

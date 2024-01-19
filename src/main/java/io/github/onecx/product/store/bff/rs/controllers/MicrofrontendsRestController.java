@@ -12,33 +12,33 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.io.github.onecx.product.store.bff.clients.api.ProductsInternalApi;
+import gen.io.github.onecx.product.store.bff.clients.api.MicrofrontendsInternalApi;
+import gen.io.github.onecx.product.store.bff.clients.model.Microfrontend;
+import gen.io.github.onecx.product.store.bff.clients.model.MicrofrontendPageResult;
 import gen.io.github.onecx.product.store.bff.clients.model.ProblemDetailResponse;
-import gen.io.github.onecx.product.store.bff.clients.model.Product;
-import gen.io.github.onecx.product.store.bff.clients.model.ProductPageResult;
-import gen.io.github.onecx.product.store.bff.rs.internal.ProductsApiService;
+import gen.io.github.onecx.product.store.bff.rs.internal.MicrofrontendsApiService;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
 import io.github.onecx.product.store.bff.rs.mappers.ExceptionMapper;
+import io.github.onecx.product.store.bff.rs.mappers.MicrofrontendsMapper;
 import io.github.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
-import io.github.onecx.product.store.bff.rs.mappers.ProductsMapper;
 
 @LogService
 @ApplicationScoped
 @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
-public class ProductsRestController implements ProductsApiService {
+public class MicrofrontendsRestController implements MicrofrontendsApiService {
 
     @RestClient
     @Inject
-    ProductsInternalApi client;
+    MicrofrontendsInternalApi client;
 
-    private final ProductsMapper mapper;
+    private final MicrofrontendsMapper mapper;
 
     private final ProblemDetailMapper problemDetailMapper;
 
     private final ExceptionMapper exceptionMapper;
 
     @Inject
-    public ProductsRestController(ProductsMapper mapper,
+    public MicrofrontendsRestController(MicrofrontendsMapper mapper,
             ProblemDetailMapper problemDetailMapper, ExceptionMapper exceptionMapper) {
 
         this.mapper = mapper;
@@ -47,12 +47,12 @@ public class ProductsRestController implements ProductsApiService {
     }
 
     @Override
-    public Response createProduct(CreateProductRequestDTO createProductRequestDTO) {
+    public Response createMicrofrontend(CreateMicrofrontendRequestDTO createMicrofrontendRequestDTO) {
 
-        try (Response response = client.createProduct(mapper.mapCreateProduct(createProductRequestDTO))) {
-            Product createdProduct = response.readEntity(Product.class);
-            ProductDTO createdProductDTO = mapper.mapProduct(createdProduct);
-            return Response.status(response.getStatus()).entity(createdProductDTO).build();
+        try (Response response = client.createMicrofrontend(mapper.mapCreateMfe(createMicrofrontendRequestDTO))) {
+            Microfrontend createdMfe = response.readEntity(Microfrontend.class);
+            MicrofrontendDTO createdMfeDTO = mapper.mapMfe(createdMfe);
+            return Response.status(response.getStatus()).entity(createdMfeDTO).build();
         } catch (WebApplicationException ex) {
             return Response.status(ex.getResponse().getStatus())
                     .entity(problemDetailMapper.map(ex.getResponse().readEntity(ProblemDetailResponse.class))).build();
@@ -60,37 +60,37 @@ public class ProductsRestController implements ProductsApiService {
     }
 
     @Override
-    public Response deleteProduct(String id) {
+    public Response deleteMicrofrontend(String id) {
 
-        try (Response response = client.deleteProduct(id)) {
+        try (Response response = client.deleteMicrofrontend(id)) {
             return Response.fromResponse(response).build();
         }
     }
 
     @Override
-    public Response getProduct(String id) {
+    public Response getMicrofrontend(String id) {
 
-        try (Response response = client.getProduct(id)) {
-            Product resultProduct = response.readEntity(Product.class);
-            ProductDTO resultProductDTO = mapper.mapProduct(resultProduct);
+        try (Response response = client.getMicrofrontend(id)) {
+            Microfrontend resultMfe = response.readEntity(Microfrontend.class);
+            MicrofrontendDTO resultProductDTO = mapper.mapMfe(resultMfe);
             return Response.status(response.getStatus()).entity(resultProductDTO).build();
         }
     }
 
     @Override
-    public Response searchProducts(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
+    public Response searchMicrofrontends(MicrofrontendSearchCriteriaDTO microfrontendSearchCriteriaDTO) {
 
-        try (Response response = client.searchProducts(mapper.mapProductSearchCriteria(productSearchCriteriaDTO))) {
-            ProductPageResult searchPageResults = response.readEntity(ProductPageResult.class);
-            ProductPageResultDTO searchPageResultDTO = mapper.mapProductSearchPageResponse(searchPageResults);
+        try (Response response = client.searchMicrofrontends(mapper.mapMfeSearchCriteria(microfrontendSearchCriteriaDTO))) {
+            MicrofrontendPageResult searchPageResults = response.readEntity(MicrofrontendPageResult.class);
+            MicrofrontendPageResultDTO searchPageResultDTO = mapper.mapMfeSearchPageResponse(searchPageResults);
             return Response.status(response.getStatus()).entity(searchPageResultDTO).build();
         }
     }
 
     @Override
-    public Response updateProduct(String id, UpdateProductRequestDTO updateProductRequestDTO) {
+    public Response updateMicrofrontend(String id, UpdateMicrofrontendRequestDTO updateMicrofrontendRequestDTO) {
 
-        try (Response response = client.updateProduct(id, mapper.mapUpdateProduct(updateProductRequestDTO))) {
+        try (Response response = client.updateMicrofrontend(id, mapper.mapUpdateMfe(updateMicrofrontendRequestDTO))) {
             return Response.fromResponse(response).build();
         } catch (WebApplicationException ex) {
             return Response.status(ex.getResponse().getStatus())

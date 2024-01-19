@@ -30,6 +30,14 @@
             <artifactId>quarkus-smallrye-health</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-opentelemetry</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkiverse.openapi.generator</groupId>
             <artifactId>quarkus-openapi-generator</artifactId>
         </dependency>
@@ -92,7 +100,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+ <build>
         <plugins>
             <plugin>
                 <groupId>org.openapitools</groupId>

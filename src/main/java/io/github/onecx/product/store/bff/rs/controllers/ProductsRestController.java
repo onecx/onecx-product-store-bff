@@ -39,7 +39,7 @@ public class ProductsRestController implements ProductsApiService {
 
     @Inject
     public ProductsRestController(ProductsMapper mapper,
-                                  ProblemDetailMapper problemDetailMapper, ExceptionMapper exceptionMapper) {
+            ProblemDetailMapper problemDetailMapper, ExceptionMapper exceptionMapper) {
 
         this.mapper = mapper;
         this.problemDetailMapper = problemDetailMapper;
@@ -85,7 +85,6 @@ public class ProductsRestController implements ProductsApiService {
             ProductDTO resultProductDTO = mapper.mapProduct(resultProduct);
             return Response.status(response.getStatus()).entity(resultProductDTO).build();
         }
-
 
     }
 

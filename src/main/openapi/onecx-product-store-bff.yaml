@@ -278,7 +278,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /products/{name}:
+  /products/name/{name}:
     get:
       tags:
         - Products

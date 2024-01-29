@@ -78,6 +78,17 @@ public class ProductsRestController implements ProductsApiService {
     }
 
     @Override
+    public Response getProductByName(String name) {
+
+        try (Response response = client.getProductByName(name)) {
+            Product resultProduct = response.readEntity(Product.class);
+            ProductDTO resultProductDTO = mapper.mapProduct(resultProduct);
+            return Response.status(response.getStatus()).entity(resultProductDTO).build();
+        }
+
+    }
+
+    @Override
     public Response searchProducts(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
 
         try (Response response = client.searchProducts(mapper.mapProductSearchCriteria(productSearchCriteriaDTO))) {

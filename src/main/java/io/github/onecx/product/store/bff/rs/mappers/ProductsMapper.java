@@ -34,7 +34,7 @@ public interface ProductsMapper {
             Set<String> hashSet = new HashSet<>(Arrays.asList(values));
             return hashSet;
         } else
-            return new HashSet<String>();
+            return new HashSet<>();
     }
 
     default String map(Set<String> classifications) {

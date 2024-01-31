@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
@@ -48,18 +49,16 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND associated product is returned
      */
-    //@Test
+    @Test
     void getProduct_shouldReturnProduct() {
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
         OffsetDateTimeMapper mapper = new OffsetDateTimeMapper();
-        Set<String> classificationSet = new HashSet<>();
-        classificationSet.add("Themes");
-        classificationSet.add("Menu");
+
         Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
-                "/app3", 0, "Product ABC", "Sun", classificationSet);
+                "/app3", 0, "Product ABC", "Sun", "Themes, Menu");
 
         // create mock rest endpoint
         mockServerClient
@@ -93,8 +92,77 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
         Assertions.assertEquals(data.getDisplayName(), response.getDisplayName());
         Assertions.assertEquals(data.getIconName(), response.getIconName());
-        //Assertions.assertEquals(data.getClassifications().size(), response.getClassifications().size());
+        Assertions.assertEquals(Arrays.stream(data.getClassifications().split(",")).toArray().length,
+                response.getClassifications().size());
+    }
 
+    /**
+     * Scenario: Receives product by product-id successfully.
+     * Given
+     * When I query GET endpoint with an existing id
+     * Then I get a 'OK' response code back
+     * AND associated product is returned
+     */
+    @Test
+    void getProductByName_test() {
+
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
+        OffsetDateTimeMapper mapper = new OffsetDateTimeMapper();
+
+        Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
+                null, "test-appl2", "Here is some description 2", false,
+                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "/app3", 0, "Product ABC", "Sun", "Themes, Menu");
+
+        // create mock rest endpoint
+        mockServerClient
+                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/name/" + data.getName())
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(data)));
+
+        var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/name/" + data.getName())
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(ProductDTO.class);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(data.getId(), response.getId());
+        Assertions.assertEquals(data.getName(), response.getName());
+        Assertions.assertEquals(data.getImageUrl(), response.getImageUrl());
+        Assertions.assertEquals(data.getBasePath(), response.getBasePath());
+        Assertions.assertEquals(data.getDescription(), response.getDescription());
+        Assertions.assertEquals(data.getVersion(), response.getVersion());
+        Assertions.assertEquals(mapper.map(data.getCreationDate()), mapper.map(response.getCreationDate()));
+        Assertions.assertEquals(data.getCreationUser(), response.getCreationUser());
+        Assertions.assertEquals(mapper.map(data.getModificationDate()), mapper.map(response.getModificationDate()));
+        Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
+        Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
+        Assertions.assertEquals(data.getDisplayName(), response.getDisplayName());
+        Assertions.assertEquals(data.getIconName(), response.getIconName());
+        Assertions.assertEquals(Arrays.stream(data.getClassifications().split(",")).toArray().length,
+                response.getClassifications().size());
+
+        // getByName for not existing name -> should return not found
+        // create mock rest endpoint
+        mockServerClient
+                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/name/not-existing")
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode()));
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/name/not-existing")
+                .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
 
     /**
@@ -104,7 +172,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'Not Found' response code back
      * AND problem details are within the response body
      */
-    //@Test
+    @Test
     void getProduct_shouldReturnNotFound_whenProductIdDoesNotExist() {
 
         ProblemDetailResponse problemDetailResponse = new ProblemDetailResponse();
@@ -133,7 +201,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND created product is returned
      */
-    //@Test
+    @Test
     void createProduct_shouldAddNewProduct_whenNameAndBasePathAreUnique() {
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
@@ -144,7 +212,7 @@ class ProductsRestControllerTest extends AbstractTest {
         Product data = this.createProduct("ABCee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
                 null, "test-appl35", "Here is some description", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
-                "/app35", 0, "Product ABC", "Sun", classificationSet);
+                "/app35", 0, "Product ABC", "Sun", "Themes,Menu");
 
         CreateProductRequest request = new CreateProductRequest();
         request.setBasePath("/app35");
@@ -199,7 +267,7 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
         Assertions.assertEquals(data.getDisplayName(), response.getDisplayName());
         Assertions.assertEquals(data.getIconName(), response.getIconName());
-        //Assertions.assertEquals(data.getClassifications().size(), response.getClassifications().size());
+        Assertions.assertEquals(data.getClassifications().split(",").length, response.getClassifications().size());
     }
 
     /**
@@ -209,7 +277,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'Bad Request' response code back
      * AND problem details are within the response body
      */
-    //@Test
+    @Test
     void createProduct_shouldReturnBadRequest_whenBasePathIsNotUnique() {
 
         Set<String> classificationSet = new HashSet<>();
@@ -302,7 +370,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'Bad Request' response code back
      * AND problem details are within the response body
      */
-    //@Test
+    @Test
     void createProduct_shouldReturnBadRequest_whenRunningIntoValidationConstraints() {
 
         ProblemDetailResponse data = new ProblemDetailResponse();
@@ -375,7 +443,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND empty product list is returned within
      */
-    //@Test
+    @Test
     void searchProducts_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
 
         ProductSearchCriteria request = new ProductSearchCriteria();
@@ -429,7 +497,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND corresponding product is returned within the list
      */
-    // @Test
+    @Test
     void searchProducts_shouldReturnProductList_whenSearchCriteriaDoesMatch() {
 
         OffsetDateTime dateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
@@ -495,7 +563,7 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(product.getId(), responseProductAbstractItem.get().getId());
     }
 
-    // @Test
+    @Test
     void searchProducts_shouldReturnInternalServerError_whenDownStreamServiceRunsIntoRuntimeIssues() {
 
         ProductSearchCriteria request = new ProductSearchCriteria();
@@ -538,7 +606,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND a product list is returned within the defined range of product-page-size-numbers
      */
-    // @Test
+    @Test
     void searchProducts_shouldReturnProductList_whenSearchCriteriaIsNotGivenButProductsAreAvailable() {
 
         OffsetDateTime dateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
@@ -636,7 +704,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * When I try to delete a product by existing product id
      * Then I get a 'No Content' response code back
      */
-    // @Test
+    @Test
     void deleteProduct_shouldDeleteProduct() {
 
         String id = "82789c64-9473-5555-b30a-8749d784b287";
@@ -662,7 +730,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * When I try to delete a product by existing product id
      * Then I get a 'No Content' response code back
      */
-    // @Test
+    @Test
     void deleteProduct_shouldReturnInternalServerError_whenDownStreamServiceRunsIntoRuntimeIssues() {
 
         String id = "82789c64-9473-457e-b30a-8749d784b287";
@@ -692,7 +760,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * When I try to update a product by existing product id
      * Then I get a 'No Content' response code back
      */
-    // @Test
+    @Test
     void updateProduct_shouldUpdateProduct() {
 
         String id = "7a0ee705-8fd0-47b0-8205-b2a5f6540b9e";
@@ -738,7 +806,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * When I try to update a product by a non-existing product id "nonExisting"
      * Then I get a 'Not Found' response code back
      */
-    // @Test
+    @Test
     void updateProduct_shouldReturnNotFound_whenProductIdDoesNotExist() {
 
         String id = "notExisting";
@@ -789,7 +857,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * Then I get a 'Bad Request' response code back
      * AND a ProblemDetailResponseObject is returned
      */
-    // @Test
+    @Test
     void updateProduct_shouldReturnNotFound_whenRunningIntoValidationConstraints() {
 
         String id = "7a0ee705-8fd0-47b0-8205-b2a5f6540b9e";
@@ -896,7 +964,7 @@ class ProductsRestControllerTest extends AbstractTest {
     private Product createProduct(String id, String version, OffsetDateTime creationDateTime, String creationUser,
             OffsetDateTime modificationDateTime, String modificationUser, String productName,
             String productDescription, boolean operator, String productImageUrl, String productBasePath,
-            int modificationCount, String displayName, String iconName, Set<String> classifications) {
+            int modificationCount, String displayName, String iconName, String classifications) {
 
         Product product = new Product();
         product.setId(id);
@@ -913,7 +981,7 @@ class ProductsRestControllerTest extends AbstractTest {
         product.setModificationCount(modificationCount);
         product.setDisplayName(displayName);
         product.setIconName(iconName);
-        //product.setClassifications(classifications);
+        product.setClassifications(classifications);
         return product;
     }
 

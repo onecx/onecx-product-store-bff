@@ -13,7 +13,7 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 import gen.io.github.onecx.product.store.bff.clients.model.*;
 import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
 
-@Mapper(uses = { OffsetDateTimeMapper.class }, unmappedTargetPolicy = ReportingPolicy.IGNORE) //hotfix
+@Mapper(uses = { OffsetDateTimeMapper.class }, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MicrofrontendsMapper {
 
     @Mapping(target = "removeEndpointsItem", ignore = true)
@@ -30,13 +30,19 @@ public interface MicrofrontendsMapper {
     MicrofrontendSearchCriteria mapMfeSearchCriteria(MicrofrontendSearchCriteriaDTO mfeSearchCriteria);
 
     default Set<String> map(String classifications) {
-        String[] values = classifications.split(",");
-        Set<String> hashSet = new HashSet<>(Arrays.asList(values));
-        return hashSet;
+        if (classifications != null && !classifications.isBlank()) {
+            String[] values = classifications.split(",");
+            Set<String> hashSet = new HashSet<>(Arrays.asList(values));
+            return hashSet;
+        } else
+            return new HashSet<String>();
     }
 
     default String map(Set<String> classifications) {
-        String str = classifications.stream().map(Object::toString).collect(Collectors.joining(","));
-        return str;
+        if (classifications != null && !classifications.isEmpty()) {
+            String str = classifications.stream().map(Object::toString).collect(Collectors.joining(","));
+            return str;
+        } else
+            return "";
     }
 }

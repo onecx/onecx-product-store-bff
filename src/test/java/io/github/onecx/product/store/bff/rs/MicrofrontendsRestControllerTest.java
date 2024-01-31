@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
@@ -47,7 +48,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND associated mfe is returned
      */
-    // @Test
+    @Test
     void getMicrofrontend_shouldReturnMicrofrontend() {
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
@@ -99,10 +100,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getRemoteBaseUrl(), response.getRemoteBaseUrl());
         Assertions.assertEquals(data.getRemoteEntry(), response.getRemoteEntry());
         Assertions.assertEquals(data.getProductName(), response.getProductName());
-        //Assertions.assertEquals(data.getClassifications().size(), response.getClassifications().size());
-        //Object[] arrayItem = data.getClassifications().toArray();
-        //Assertions.assertTrue(response.getClassifications().contains(arrayItem[0]));
-        //Assertions.assertTrue(response.getClassifications().contains(arrayItem[1]));
 
         Assertions.assertEquals(data.getContact(), response.getContact());
         Assertions.assertEquals(data.getIconName(), response.getIconName());
@@ -115,13 +112,97 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     }
 
     /**
+     * Scenario: Receives microfrontend (mfe) by app-id successfully.
+     * Given
+     * When I query GET endpoint with an existing id
+     * Then I get a 'OK' response code back
+     * AND associated mfe is returned
+     */
+    @Test
+    void getMicrofrontendByAppId_shouldReturnMicrofrontend() {
+
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
+        OffsetDateTimeMapper mapper = new OffsetDateTimeMapper();
+        Set<String> classificationSet = new HashSet<>();
+        classificationSet.add("some");
+        classificationSet.add("another");
+        List<UIEndpoint> uiEndpointSet = new ArrayList<>();
+        UIEndpoint uiEndpointItem = new UIEndpoint();
+        uiEndpointItem.setName("Search");
+        uiEndpointItem.setPath("/search");
+        uiEndpointSet.add(uiEndpointItem);
+
+        Microfrontend data = createMicrofrontend("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", offsetDateTime, "csommer",
+                offsetDateTime, "csommer", 1, false, "App-ID", "1.0.0",
+                "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", classificationSet,
+                "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", uiEndpointSet);
+
+        // create mock rest endpoint
+        mockServerClient
+                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/appId/" + data.getAppId())
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(data)));
+
+        var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("appId/" + data.getAppId())
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(MicrofrontendDTO.class);
+
+        Assertions.assertEquals(data.getId(), response.getId());
+        Assertions.assertEquals(data.getCreationUser(), response.getCreationUser());
+        Assertions.assertEquals(mapper.map(data.getCreationDate()), mapper.map(response.getCreationDate()));
+        Assertions.assertEquals(mapper.map(data.getModificationDate()), mapper.map(response.getModificationDate()));
+        Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
+        Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
+        Assertions.assertEquals(data.getOperator(), response.getOperator());
+        Assertions.assertEquals(data.getAppId(), response.getAppId());
+        Assertions.assertEquals(data.getAppVersion(), response.getAppVersion());
+        Assertions.assertEquals(data.getAppName(), response.getAppName());
+        Assertions.assertEquals(data.getDescription(), response.getDescription());
+        Assertions.assertEquals(data.getRemoteBaseUrl(), response.getRemoteBaseUrl());
+        Assertions.assertEquals(data.getRemoteEntry(), response.getRemoteEntry());
+        Assertions.assertEquals(data.getProductName(), response.getProductName());
+
+        Assertions.assertEquals(data.getContact(), response.getContact());
+        Assertions.assertEquals(data.getIconName(), response.getIconName());
+        Assertions.assertEquals(data.getNote(), response.getNote());
+        Assertions.assertEquals(data.getExposedModule(), response.getExposedModule());
+        Assertions.assertEquals(data.getEndpoints().size(), response.getEndpoints().size());
+        Assertions.assertEquals(data.getEndpoints().get(0).getName(), response.getEndpoints().get(0).getName());
+        Assertions.assertEquals(data.getEndpoints().get(0).getPath(), response.getEndpoints().get(0).getPath());
+
+        // create mock rest endpoint
+        mockServerClient
+                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/appId/not-existing")
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode()));
+
+        //expect not found for non-existing appId
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/appId/not-existing")
+                .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    /**
      * Scenario: Receive 404 Not Found when microfrontend (mfe) is not existing in backend service.
      * Given
      * When I query GET endpoint with a non-existing id
      * Then I get a 'Not Found' response code back
      * AND problem details are within the response body
      */
-    // @Test
+    @Test
     void getMicrofrontend_shouldReturnNotFound_whenMFEIdDoesNotExist() {
 
         ProblemDetailResponse problemDetailResponse = new ProblemDetailResponse();
@@ -151,7 +232,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND created mfe is returned
      */
-    // @Test
+    @Test
     void createMicrofrontend_shouldAddNewMicrofrontend_whenProductnameAndAppIdAreUnique() {
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
@@ -223,10 +304,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getRemoteBaseUrl(), response.getRemoteBaseUrl());
         Assertions.assertEquals(data.getRemoteEntry(), response.getRemoteEntry());
         Assertions.assertEquals(data.getProductName(), response.getProductName());
-        //Assertions.assertEquals(data.getClassifications().size(), response.getClassifications().size());
-        //Object[] arrayItem = data.getClassifications().toArray();
-        //Assertions.assertTrue(response.getClassifications().contains(arrayItem[0]));
-        //Assertions.assertTrue(response.getClassifications().contains(arrayItem[1]));
 
         Assertions.assertEquals(data.getContact(), response.getContact());
         Assertions.assertEquals(data.getIconName(), response.getIconName());
@@ -245,7 +322,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * Then I get a 'Bad Request' response code back
      * AND problem details are within the response body
      */
-    // @Test
+    @Test
     void createMicrofrontend_shouldReturnBadRequest_whenBasePathIsNotUnique() {
 
         ProblemDetailResponse data = new ProblemDetailResponse();
@@ -324,7 +401,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * Then I get a 'Bad Request' response code back
      * AND problem details are within the response body
      */
-    // @Test
+    @Test
     void createMicrofrontend_shouldReturnBadRequest_whenRunningIntoValidationConstraints() {
 
         ProblemDetailResponse data = new ProblemDetailResponse();
@@ -389,7 +466,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND empty mfe list is returned within
      */
-    // @Test
+    @Test
     void searchMicrofrontends_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
 
         MicrofrontendSearchCriteria request = new MicrofrontendSearchCriteria();
@@ -448,7 +525,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND corresponding mfe is returned within the list
      */
-    // @Test
+    @Test
     void searchMicrofrontends_shouldReturnMicrofrontendListWithSingleElement_whenSearchCriteriaDoesMatch() {
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
@@ -528,7 +605,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * Then I get a 'OK' response code back
      * AND a product list is returned within the defined range of product-page-size-numbers
      */
-    // @Test
+    @Test
     void searchMicrofrontends_shouldReturnMicrofrontendList_whenSearchCriteriaIsNotGivenButMFEsAreAvailable() {
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
@@ -634,7 +711,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * When I try to delete a mfe by existing mfe id
      * Then I get a 'No Content' response code back
      */
-    // @Test
+    @Test
     void deleteMicrofrontend_shouldDeleteMicrofrontend() {
 
         String id = "82789c64-9473-5555-b30a-8749d784b287";
@@ -660,7 +737,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * When I try to update a mfe by existing mfe id
      * Then I get a 'No Content' response code back
      */
-    // @Test
+    @Test
     void updateMicrofrontend_shouldUpdateMicrofrontend() {
 
         String id = "7a0ee705-8fd0-47b0-8205-b2a5f6540b9e";
@@ -710,7 +787,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * When I try to update a mfe by a non-existing mfe id "nonExisting"
      * Then I get a 'Not Found' response code back
      */
-    // @Test
+    @Test
     void updateMicrofrontend_shouldReturnNotFound_whenMicrofrontendIdDoesNotExist() {
 
         String id = "notExisting";
@@ -752,7 +829,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * Then I get a 'Bad Request' response code back
      * AND a ProblemDetailResponseObject is returned
      */
-    // @Test
+    @Test
     void updateMicrofrontend_shouldReturnNotFound_whenRunningIntoValidationConstraints() {
 
         String id = "7a0ee705-8fd0-47b0-8205-b2a5f6540b9e";

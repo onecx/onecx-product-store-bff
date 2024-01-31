@@ -78,6 +78,14 @@ public class MicrofrontendsRestController implements MicrofrontendsApiService {
     }
 
     @Override
+    public Response getMicrofrontendByAppId(String appId) {
+        try (Response response = client.getMicrofrontendByAppId(appId)) {
+            MicrofrontendDTO result = mapper.mapMfe(response.readEntity(Microfrontend.class));
+            return Response.status(response.getStatus()).entity(result).build();
+        }
+    }
+
+    @Override
     public Response searchMicrofrontends(MicrofrontendSearchCriteriaDTO microfrontendSearchCriteriaDTO) {
 
         try (Response response = client.searchMicrofrontends(mapper.mapMfeSearchCriteria(microfrontendSearchCriteriaDTO))) {
@@ -100,13 +108,11 @@ public class MicrofrontendsRestController implements MicrofrontendsApiService {
 
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
-
         return exceptionMapper.constraint(ex);
     }
 
     @ServerExceptionMapper
     public Response restException(WebApplicationException ex) {
-
         return Response.status(ex.getResponse().getStatus()).build();
     }
 }

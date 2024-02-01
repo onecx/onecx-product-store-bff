@@ -111,13 +111,11 @@ public class ProductsRestController implements ProductsApiService {
 
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
-
         return exceptionMapper.constraint(ex);
     }
 
     @ServerExceptionMapper
     public Response restException(WebApplicationException ex) {
-
         return Response.status(ex.getResponse().getStatus()).build();
     }
 }

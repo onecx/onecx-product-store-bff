@@ -1,4 +1,4 @@
-package io.github.onecx.product.store.bff.rs.mappers;
+package org.tkit.onecx.product.store.bff.rs.mappers;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -7,8 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.io.github.onecx.product.store.bff.clients.model.*;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.bff.clients.model.*;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ProductsMapper {
@@ -31,18 +31,20 @@ public interface ProductsMapper {
     default Set<String> map(String classifications) {
         if (classifications != null && !classifications.isBlank()) {
             String[] values = classifications.split(",");
-            Set<String> hashSet = new HashSet<>(Arrays.asList(values));
-            return hashSet;
+            return new HashSet<>(Arrays.asList(values));
         } else
             return new HashSet<>();
     }
 
     default String map(Set<String> classifications) {
         if (classifications != null && !classifications.isEmpty()) {
-            String str = classifications.stream().map(Object::toString).collect(Collectors.joining(","));
-            return str;
+            return classifications.stream().map(Object::toString).collect(Collectors.joining(","));
         } else
             return "";
     }
 
+    @Mapping(target = "removeClassificationsItem", ignore = true)
+    @Mapping(target = "removeWorkspacesItem", ignore = true)
+    @Mapping(target = "workspaces", source = "workspaceNames")
+    ProductAndWorkspacesDTO mapProductWithWorkspaceNames(Product resultProduct, Set<String> workspaceNames);
 }

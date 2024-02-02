@@ -1,4 +1,4 @@
-package io.github.onecx.product.store.bff.rs.log;
+package org.tkit.onecx.product.store.bff.rs.log;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import org.tkit.quarkus.log.cdi.LogParam;
 
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 
 @ApplicationScoped
 public class ProductStoreLog implements LogParam {

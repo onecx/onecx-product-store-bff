@@ -1,4 +1,4 @@
-package io.github.onecx.product.store.bff.rs;
+package org.tkit.onecx.product.store.bff.rs;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -17,11 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
+import org.tkit.onecx.product.store.bff.rs.controllers.ProductsRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.io.github.onecx.product.store.bff.clients.model.*;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
-import io.github.onecx.product.store.bff.rs.controllers.ProductsRestController;
+import gen.org.tkit.onecx.product.store.bff.clients.model.*;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -113,7 +113,6 @@ class ProductsRestControllerTest extends AbstractTest {
                 null, "test-appl2", "Here is some description 2", false,
                 "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
                 "/app3", 0, "Product ABC", "Sun", "Themes, Menu");
-
         // create mock rest endpoint
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/name/" + data.getName())
@@ -123,6 +122,17 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
+        Set<String> workspaceNames = new HashSet<>();
+        workspaceNames.add("testWorkspace");
+        // create mock rest endpoint
+        mockServerClient
+                .when(request().withPath("/v1/workspaces/productName/test-appl2")
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(workspaceNames)));
+
         var response = given()
                 .when()
                 .contentType(APPLICATION_JSON)
@@ -130,7 +140,7 @@ class ProductsRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
-                .extract().as(ProductDTO.class);
+                .extract().as(ProductAndWorkspacesDTO.class);
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(data.getId(), response.getId());
@@ -148,6 +158,7 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getIconName(), response.getIconName());
         Assertions.assertEquals(Arrays.stream(data.getClassifications().split(",")).toArray().length,
                 response.getClassifications().size());
+        Assertions.assertEquals("testWorkspace", response.getWorkspaces().get(0));
 
         // getByName for not existing name -> should return not found
         // create mock rest endpoint
@@ -163,6 +174,39 @@ class ProductsRestControllerTest extends AbstractTest {
                 .get("/name/not-existing")
                 .then()
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+
+        Product data2 = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
+                null, "test-appl50", "Here is some description 2", false,
+                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "/app3", 0, "Product ABC", "Sun", "Themes, Menu");
+
+        // create mock rest endpoint
+        mockServerClient
+                .when(request().withPath("/v1/workspaces/productName/test-appl50")
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
+
+        // create mock rest endpoint
+        mockServerClient
+                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/name/" + data2.getName())
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(data2)));
+
+        var responseWithoutWorkspaces = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/name/" + data2.getName())
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(ProductAndWorkspacesDTO.class);
+        Assertions.assertNotNull(responseWithoutWorkspaces);
+        Assertions.assertEquals(data2.getId(), responseWithoutWorkspaces.getId());
+        Assertions.assertNull(responseWithoutWorkspaces.getWorkspaces());
     }
 
     /**

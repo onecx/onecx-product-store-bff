@@ -1,4 +1,7 @@
-package io.github.onecx.product.store.bff.rs.controllers;
+package org.tkit.onecx.product.store.bff.rs.controllers;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -10,17 +13,18 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.product.store.bff.rs.mappers.ExceptionMapper;
+import org.tkit.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
+import org.tkit.onecx.product.store.bff.rs.mappers.ProductsMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.io.github.onecx.product.store.bff.clients.api.ProductsInternalApi;
-import gen.io.github.onecx.product.store.bff.clients.model.ProblemDetailResponse;
-import gen.io.github.onecx.product.store.bff.clients.model.Product;
-import gen.io.github.onecx.product.store.bff.clients.model.ProductPageResult;
-import gen.io.github.onecx.product.store.bff.rs.internal.ProductsApiService;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
-import io.github.onecx.product.store.bff.rs.mappers.ExceptionMapper;
-import io.github.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
-import io.github.onecx.product.store.bff.rs.mappers.ProductsMapper;
+import gen.org.tkit.onecx.product.store.bff.clients.api.ProductsInternalApi;
+import gen.org.tkit.onecx.product.store.bff.clients.model.ProblemDetailResponse;
+import gen.org.tkit.onecx.product.store.bff.clients.model.Product;
+import gen.org.tkit.onecx.product.store.bff.clients.model.ProductPageResult;
+import gen.org.tkit.onecx.product.store.bff.clients.workspace_svc.api.WorkspaceExternalApi;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.ProductsApiService;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 
 @LogService
 @ApplicationScoped
@@ -30,6 +34,10 @@ public class ProductsRestController implements ProductsApiService {
     @RestClient
     @Inject
     ProductsInternalApi client;
+
+    @RestClient
+    @Inject
+    WorkspaceExternalApi workspaceClient;
 
     private final ProductsMapper mapper;
 
@@ -79,10 +87,15 @@ public class ProductsRestController implements ProductsApiService {
 
     @Override
     public Response getProductByName(String name) {
-
         try (Response response = client.getProductByName(name)) {
             Product resultProduct = response.readEntity(Product.class);
-            ProductDTO resultProductDTO = mapper.mapProduct(resultProduct);
+            Set<String> workspaceNames = null;
+            try (Response workspaceResponse = workspaceClient.getWorkspacesByProductName(name)) {
+                workspaceNames = workspaceResponse.readEntity(HashSet.class);
+            } catch (WebApplicationException ex) {
+            }
+
+            ProductAndWorkspacesDTO resultProductDTO = mapper.mapProductWithWorkspaceNames(resultProduct, workspaceNames);
             return Response.status(response.getStatus()).entity(resultProductDTO).build();
         }
 

@@ -1,4 +1,4 @@
-package io.github.onecx.product.store.bff.rs.controllers;
+package org.tkit.onecx.product.store.bff.rs.controllers;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -10,17 +10,17 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.product.store.bff.rs.mappers.ExceptionMapper;
+import org.tkit.onecx.product.store.bff.rs.mappers.MicrofrontendsMapper;
+import org.tkit.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.io.github.onecx.product.store.bff.clients.api.MicrofrontendsInternalApi;
-import gen.io.github.onecx.product.store.bff.clients.model.Microfrontend;
-import gen.io.github.onecx.product.store.bff.clients.model.MicrofrontendPageResult;
-import gen.io.github.onecx.product.store.bff.clients.model.ProblemDetailResponse;
-import gen.io.github.onecx.product.store.bff.rs.internal.MicrofrontendsApiService;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
-import io.github.onecx.product.store.bff.rs.mappers.ExceptionMapper;
-import io.github.onecx.product.store.bff.rs.mappers.MicrofrontendsMapper;
-import io.github.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
+import gen.org.tkit.onecx.product.store.bff.clients.api.MicrofrontendsInternalApi;
+import gen.org.tkit.onecx.product.store.bff.clients.model.Microfrontend;
+import gen.org.tkit.onecx.product.store.bff.clients.model.MicrofrontendPageResult;
+import gen.org.tkit.onecx.product.store.bff.clients.model.ProblemDetailResponse;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.MicrofrontendsApiService;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 
 @LogService
 @ApplicationScoped

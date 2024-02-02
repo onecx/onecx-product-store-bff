@@ -1,4 +1,4 @@
-package io.github.onecx.product.store.bff.rs;
+package org.tkit.onecx.product.store.bff.rs;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -17,11 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
+import org.tkit.onecx.product.store.bff.rs.controllers.MicrofrontendsRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.io.github.onecx.product.store.bff.clients.model.*;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
-import io.github.onecx.product.store.bff.rs.controllers.MicrofrontendsRestController;
+import gen.org.tkit.onecx.product.store.bff.clients.model.*;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;

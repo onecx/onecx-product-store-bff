@@ -1,4 +1,4 @@
-package io.github.onecx.product.store.bff.rs.mappers;
+package org.tkit.onecx.product.store.bff.rs.mappers;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,8 +10,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.io.github.onecx.product.store.bff.clients.model.*;
-import gen.io.github.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.bff.clients.model.*;
+import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class }, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MicrofrontendsMapper {

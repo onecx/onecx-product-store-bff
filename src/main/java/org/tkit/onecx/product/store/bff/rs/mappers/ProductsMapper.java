@@ -31,16 +31,14 @@ public interface ProductsMapper {
     default Set<String> map(String classifications) {
         if (classifications != null && !classifications.isBlank()) {
             String[] values = classifications.split(",");
-            Set<String> hashSet = new HashSet<>(Arrays.asList(values));
-            return hashSet;
+            return new HashSet<>(Arrays.asList(values));
         } else
             return new HashSet<>();
     }
 
     default String map(Set<String> classifications) {
         if (classifications != null && !classifications.isEmpty()) {
-            String str = classifications.stream().map(Object::toString).collect(Collectors.joining(","));
-            return str;
+            return classifications.stream().map(Object::toString).collect(Collectors.joining(","));
         } else
             return "";
     }

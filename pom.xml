@@ -172,7 +172,9 @@
                         </goals>
                         <configuration>
                             <url>
-                            https://raw.githubusercontent.com/onecx/onecx-workspace-svc/main/src/main/openapi/onecx-workspace-v1-openapi.yaml                            <outputDirectory>target/tmp/openapi</outputDirectory>
+                            https://raw.githubusercontent.com/onecx/onecx-workspace-svc/main/src/main/openapi/onecx-workspace-v1-openapi.yaml
+                            </url>
+                            <outputDirectory>target/tmp/openapi</outputDirectory>
                             <outputFileName>onecx-workspace-svc-external-v1.yaml</outputFileName>
                             <skipCache>true</skipCache>
                         </configuration>

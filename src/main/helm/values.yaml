@@ -1,5 +1,4 @@
 app:
+  name: bff
   image:
-    app:
-      name: bff
     repository: "onecx/onecx-product-store-bff"

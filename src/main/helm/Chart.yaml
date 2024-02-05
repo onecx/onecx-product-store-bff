@@ -4,8 +4,7 @@ version: 0.0.0
 appVersion: 0.0.0
 description: Onecx Product Store BFF
 keywords:
-  - iam
-  - parameters
+  - product store
 sources:
   - https://github.com/onecx/onecx-product-store-bff
 maintainers:

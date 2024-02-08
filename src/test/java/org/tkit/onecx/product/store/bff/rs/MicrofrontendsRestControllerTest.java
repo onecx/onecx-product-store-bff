@@ -20,8 +20,8 @@ import org.mockserver.model.MediaType;
 import org.tkit.onecx.product.store.bff.rs.controllers.MicrofrontendsRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.product.store.bff.clients.product_store.model.*;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.client.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;

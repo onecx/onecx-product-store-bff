@@ -15,10 +15,10 @@ import org.tkit.onecx.product.store.bff.rs.mappers.MicrofrontendsMapper;
 import org.tkit.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.org.tkit.onecx.product.store.bff.clients.api.MicrofrontendsInternalApi;
-import gen.org.tkit.onecx.product.store.bff.clients.model.Microfrontend;
-import gen.org.tkit.onecx.product.store.bff.clients.model.MicrofrontendPageResult;
-import gen.org.tkit.onecx.product.store.bff.clients.model.ProblemDetailResponse;
+import gen.org.tkit.onecx.product.store.bff.clients.product_store.api.MicrofrontendsInternalApi;
+import gen.org.tkit.onecx.product.store.bff.clients.product_store.model.Microfrontend;
+import gen.org.tkit.onecx.product.store.bff.clients.product_store.model.MicrofrontendPageResult;
+import gen.org.tkit.onecx.product.store.bff.clients.product_store.model.ProblemDetailResponse;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.MicrofrontendsApiService;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 

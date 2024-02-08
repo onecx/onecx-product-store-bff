@@ -11,8 +11,8 @@ import java.util.*;
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.core.Response;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.JsonBody;
@@ -20,8 +20,8 @@ import org.mockserver.model.MediaType;
 import org.tkit.onecx.product.store.bff.rs.controllers.MicrofrontendsRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.product.store.bff.clients.model.*;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.client.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -35,10 +35,15 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     @InjectMockServerClient
     MockServerClient mockServerClient;
 
-    @AfterEach
-    void setUp() {
+    static final String mockId = "MOCK";
 
-        mockServerClient.reset();
+    @BeforeEach
+    void resetExpectation() {
+        try {
+            mockServerClient.clear(mockId);
+        } catch (Exception ex) {
+            //  mockId not existing
+        }
     }
 
     /**
@@ -72,13 +77,14 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + data.getId())
                         .withMethod(HttpMethod.GET))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .get(data.getId())
                 .then()
@@ -142,13 +148,14 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/appId/" + data.getAppId())
                         .withMethod(HttpMethod.GET))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .get("appId/" + data.getAppId())
                 .then()
@@ -183,12 +190,13 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/appId/not-existing")
                         .withMethod(HttpMethod.GET))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode()));
 
         //expect not found for non-existing appId
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .get("/appId/not-existing")
                 .then()
@@ -212,12 +220,14 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id)
                         .withMethod(HttpMethod.GET))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                         .withBody(JsonBody.json(problemDetailResponse)));
 
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
                 .contentType(APPLICATION_JSON)
                 .get(id)
                 .then()
@@ -265,7 +275,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
                 .withBody(JsonBody.json(request)))
-                .withPriority(100)
+                .withId(mockId)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.CREATED.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -282,6 +292,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
@@ -289,6 +301,17 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 .statusCode(Response.Status.CREATED.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract().as(MicrofrontendDTO.class);
+
+        // standard USER get FORBIDDEN with only READ permission
+        given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(USER))
+                .header(APM_HEADER_PARAM, USER)
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post()
+                .then()
+                .statusCode(Response.Status.FORBIDDEN.getStatusCode());
 
         Assertions.assertEquals(data.getId(), response.getId());
         Assertions.assertEquals(data.getCreationUser(), response.getCreationUser());
@@ -354,7 +377,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
                 .withBody(JsonBody.json(request)))
-                .withPriority(100)
+                .withId(mockId)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -366,6 +389,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
@@ -425,7 +450,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
                 .withBody(JsonBody.json(request)))
-                .withPriority(100)
+                .withId(mockId)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -437,6 +462,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
@@ -487,7 +514,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -501,6 +527,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post("/search")
@@ -559,7 +587,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -573,6 +600,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post("/search")
@@ -645,7 +674,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -659,6 +687,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post("/search")
@@ -718,11 +748,12 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.DELETE))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NO_CONTENT.getStatusCode()));
 
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", id)
                 .delete("/{id}")
@@ -757,7 +788,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
                 .withBody(JsonBody.json(request)))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NO_CONTENT.getStatusCode()));
 
         List<UpdateUIEndpointDTO> uiEndpointDTOSetForRequest = new ArrayList<>();
@@ -772,6 +802,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", id)
                 .body(requestDTO)
@@ -802,7 +834,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
                 .withBody(JsonBody.json(request)))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                         .withBody(JsonBody.json(problemDetailResponse)));
 
@@ -813,6 +844,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .put("/{id}", id)
@@ -865,7 +898,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 .withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id)
                 .withMethod(HttpMethod.PUT)
                 .withBody(JsonBody.json(request)))
-                .withPriority(100)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withBody(JsonBody.json(data))
                         .withContentType(MediaType.APPLICATION_JSON));
@@ -877,6 +909,8 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .put("/{id}", id)

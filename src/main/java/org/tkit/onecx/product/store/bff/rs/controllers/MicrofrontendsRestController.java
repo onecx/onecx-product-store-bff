@@ -15,12 +15,12 @@ import org.tkit.onecx.product.store.bff.rs.mappers.MicrofrontendsMapper;
 import org.tkit.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.org.tkit.onecx.product.store.bff.clients.api.MicrofrontendsInternalApi;
-import gen.org.tkit.onecx.product.store.bff.clients.model.Microfrontend;
-import gen.org.tkit.onecx.product.store.bff.clients.model.MicrofrontendPageResult;
-import gen.org.tkit.onecx.product.store.bff.clients.model.ProblemDetailResponse;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.MicrofrontendsApiService;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.client.api.MicrofrontendsInternalApi;
+import gen.org.tkit.onecx.product.store.client.model.Microfrontend;
+import gen.org.tkit.onecx.product.store.client.model.MicrofrontendPageResult;
+import gen.org.tkit.onecx.product.store.client.model.ProblemDetailResponse;
 
 @LogService
 @ApplicationScoped

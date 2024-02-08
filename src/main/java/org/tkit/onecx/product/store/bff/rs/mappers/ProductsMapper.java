@@ -7,8 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.product.store.bff.clients.model.*;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.client.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ProductsMapper {

@@ -18,13 +18,13 @@ import org.tkit.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
 import org.tkit.onecx.product.store.bff.rs.mappers.ProductsMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.org.tkit.onecx.product.store.bff.clients.api.ProductsInternalApi;
-import gen.org.tkit.onecx.product.store.bff.clients.model.ProblemDetailResponse;
-import gen.org.tkit.onecx.product.store.bff.clients.model.Product;
-import gen.org.tkit.onecx.product.store.bff.clients.model.ProductPageResult;
-import gen.org.tkit.onecx.product.store.bff.clients.workspace_svc.api.WorkspaceExternalApi;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.ProductsApiService;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.client.api.ProductsInternalApi;
+import gen.org.tkit.onecx.product.store.client.model.ProblemDetailResponse;
+import gen.org.tkit.onecx.product.store.client.model.Product;
+import gen.org.tkit.onecx.product.store.client.model.ProductPageResult;
+import gen.org.tkit.onecx.workspace.client.api.WorkspaceExternalApi;
 
 @LogService
 @ApplicationScoped

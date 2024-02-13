@@ -541,7 +541,8 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getTotalElements(), response.getTotalElements());
         Assertions.assertEquals(data.getTotalPages(), response.getTotalPages());
         Assertions.assertEquals(data.getNumber(), response.getNumber());
-        Assertions.assertNull(response.getStream());
+        Assertions.assertNotNull(response.getStream());
+        Assertions.assertEquals(0, response.getStream().size());
     }
 
     /**

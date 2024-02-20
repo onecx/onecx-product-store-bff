@@ -28,7 +28,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(MicroservicesRestController.class)
-public class MicroservicesRestControllerTest extends AbstractTest {
+class MicroservicesRestControllerTest extends AbstractTest {
 
     private static final String PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH = "/internal/microservices";
 

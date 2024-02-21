@@ -78,7 +78,7 @@ public class MicroservicesRestController implements MicroservicesApiService {
     }
 
     @Override
-    public Response searchMicroservice(MicroserviceSearchCriteriaDTO microserviceSearchCriteriaDTO) {
+    public Response searchMicroservice(MfeAndMsSearchCriteriaDTO microserviceSearchCriteriaDTO) {
         try (Response response = client.searchMicroservice(mapper.mapMsSearchCriteria(microserviceSearchCriteriaDTO))) {
             MicroservicePageResult searchPageResults = response.readEntity(MicroservicePageResult.class);
             MicroservicePageResultDTO searchPageResultDTO = mapper.mapMsSearchPageResponse(searchPageResults);

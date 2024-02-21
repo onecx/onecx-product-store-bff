@@ -86,7 +86,7 @@ public class MicrofrontendsRestController implements MicrofrontendsApiService {
     }
 
     @Override
-    public Response searchMicrofrontends(MicrofrontendSearchCriteriaDTO microfrontendSearchCriteriaDTO) {
+    public Response searchMicrofrontends(MfeAndMsSearchCriteriaDTO microfrontendSearchCriteriaDTO) {
 
         try (Response response = client.searchMicrofrontends(mapper.mapMfeSearchCriteria(microfrontendSearchCriteriaDTO))) {
             MicrofrontendPageResult searchPageResults = response.readEntity(MicrofrontendPageResult.class);

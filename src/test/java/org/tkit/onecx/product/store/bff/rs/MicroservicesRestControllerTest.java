@@ -89,8 +89,8 @@ class MicroservicesRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
         Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
         Assertions.assertEquals(data.getAppId(), response.getAppId());
-        Assertions.assertEquals(data.getVersion(), response.getVersion());
-        Assertions.assertEquals(data.getName(), response.getName());
+        Assertions.assertEquals(data.getVersion(), response.getAppVersion());
+        Assertions.assertEquals(data.getName(), response.getAppName());
         Assertions.assertEquals(data.getDescription(), response.getDescription());
         ;
         Assertions.assertEquals(data.getProductName(), response.getProductName());
@@ -140,8 +140,8 @@ class MicroservicesRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
         Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
         Assertions.assertEquals(data.getAppId(), response.getAppId());
-        Assertions.assertEquals(data.getVersion(), response.getVersion());
-        Assertions.assertEquals(data.getName(), response.getName());
+        Assertions.assertEquals(data.getVersion(), response.getAppVersion());
+        Assertions.assertEquals(data.getName(), response.getAppName());
         Assertions.assertEquals(data.getDescription(), response.getDescription());
 
         Assertions.assertEquals(data.getProductName(), response.getProductName());
@@ -256,8 +256,8 @@ class MicroservicesRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getModificationUser(), response.getModificationUser());
         Assertions.assertEquals(data.getModificationCount(), response.getModificationCount());
         Assertions.assertEquals(data.getAppId(), response.getAppId());
-        Assertions.assertEquals(data.getVersion(), response.getVersion());
-        Assertions.assertEquals(data.getName(), response.getName());
+        Assertions.assertEquals(data.getVersion(), response.getAppVersion());
+        Assertions.assertEquals(data.getName(), response.getAppName());
         Assertions.assertEquals(data.getDescription(), response.getDescription());
         Assertions.assertEquals(data.getProductName(), response.getProductName());
     }
@@ -435,10 +435,10 @@ class MicroservicesRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
-        MicroserviceSearchCriteriaDTO requestDTO = new MicroserviceSearchCriteriaDTO();
+        MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName("somethingNotMatching");
         requestDTO.setAppId(null);
-        requestDTO.setName(null);
+        requestDTO.setAppName(null);
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(10);
 
@@ -503,10 +503,10 @@ class MicroservicesRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
-        MicroserviceSearchCriteriaDTO requestDTO = new MicroserviceSearchCriteriaDTO();
+        MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName("productA");
         requestDTO.setAppId("7a0ee705-8fd0-47b0");
-        requestDTO.setName("AppA");
+        requestDTO.setAppName("AppA");
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(pageSizeRequest);
 
@@ -526,7 +526,7 @@ class MicroservicesRestControllerTest extends AbstractTest {
 
         Assertions.assertEquals(ms.getId(), response.getStream().get(0).getId());
         Assertions.assertEquals(ms.getAppId(), response.getStream().get(0).getAppId());
-        Assertions.assertEquals(ms.getName(), response.getStream().get(0).getName());
+        Assertions.assertEquals(ms.getName(), response.getStream().get(0).getAppName());
         Assertions.assertEquals(ms.getDescription(), response.getStream().get(0).getDescription());
         Assertions.assertEquals(ms.getProductName(), response.getStream().get(0).getProductName());
     }
@@ -578,10 +578,10 @@ class MicroservicesRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
-        MicroserviceSearchCriteriaDTO requestDTO = new MicroserviceSearchCriteriaDTO();
+        MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName(null);
         requestDTO.setAppId(null);
-        requestDTO.setName(null);
+        requestDTO.setAppName(null);
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(pageSizeRequest);
 
@@ -599,12 +599,12 @@ class MicroservicesRestControllerTest extends AbstractTest {
 
         Assertions.assertNotNull(response);
 
-        List<MicroservicePageItemDTO> msAbstractsPageResults = response.getStream();
-        Optional<MicroservicePageItemDTO> responseProductAbstractItem1 = msAbstractsPageResults.stream()
-                .filter(e -> e.getName().equals(ms.getName()))
+        List<MicroserviceDTO> msAbstractsPageResults = response.getStream();
+        Optional<MicroserviceDTO> responseProductAbstractItem1 = msAbstractsPageResults.stream()
+                .filter(e -> e.getAppName().equals(ms.getName()))
                 .findFirst();
-        Optional<MicroservicePageItemDTO> responseProductAbstractItem2 = msAbstractsPageResults.stream()
-                .filter(e -> e.getName().equals(ms2.getName()))
+        Optional<MicroserviceDTO> responseProductAbstractItem2 = msAbstractsPageResults.stream()
+                .filter(e -> e.getAppName().equals(ms2.getName()))
                 .findFirst();
 
         Assertions.assertNotNull(response);
@@ -615,14 +615,14 @@ class MicroservicesRestControllerTest extends AbstractTest {
         // first ms
         Assertions.assertEquals(ms.getId(), responseProductAbstractItem1.get().getId());
         Assertions.assertEquals(ms.getAppId(), responseProductAbstractItem1.get().getAppId());
-        Assertions.assertEquals(ms.getName(), responseProductAbstractItem1.get().getName());
+        Assertions.assertEquals(ms.getName(), responseProductAbstractItem1.get().getAppName());
         Assertions.assertEquals(ms.getDescription(), responseProductAbstractItem1.get().getDescription());
         Assertions.assertEquals(ms.getProductName(), responseProductAbstractItem1.get().getProductName());
 
         // second ms
         Assertions.assertEquals(ms2.getId(), responseProductAbstractItem2.get().getId());
         Assertions.assertEquals(ms2.getAppId(), responseProductAbstractItem2.get().getAppId());
-        Assertions.assertEquals(ms2.getName(), responseProductAbstractItem2.get().getName());
+        Assertions.assertEquals(ms2.getName(), responseProductAbstractItem2.get().getAppName());
         Assertions.assertEquals(ms2.getDescription(), responseProductAbstractItem2.get().getDescription());
         Assertions.assertEquals(ms2.getProductName(), responseProductAbstractItem2.get().getProductName());
 
@@ -936,8 +936,8 @@ class MicroservicesRestControllerTest extends AbstractTest {
 
         CreateMicroserviceRequestDTO ms = new CreateMicroserviceRequestDTO();
         ms.setAppId(appId);
-        ms.setVersion(version);
-        ms.setName(name);
+        ms.setAppVersion(version);
+        ms.setAppName(name);
         ms.setDescription(description);
         ms.setProductName(productName);
 
@@ -989,8 +989,8 @@ class MicroservicesRestControllerTest extends AbstractTest {
 
         UpdateMicroserviceRequestDTO ms = new UpdateMicroserviceRequestDTO();
         ms.setAppId(appId);
-        ms.setVersion(version);
-        ms.setName(name);
+        ms.setAppVersion(version);
+        ms.setAppName(name);
         ms.setDescription(description);
         ms.setProductName(productName);
         return ms;

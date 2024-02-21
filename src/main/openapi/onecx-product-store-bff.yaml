@@ -64,7 +64,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MicrofrontendSearchCriteria'
+              $ref: '#/components/schemas/MfeAndMsSearchCriteria'
       responses:
         "200":
           description: Corresponding microfrontends
@@ -428,7 +428,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MicroserviceSearchCriteria'
+              $ref: '#/components/schemas/MfeAndMsSearchCriteria'
       responses:
         "200":
           description: Corresponding micro-services
@@ -819,7 +819,7 @@ components:
           description: available endpoints which are exposed by MFE
           items:
             $ref: "#/components/schemas/UIEndpoint"
-    MicrofrontendSearchCriteria:
+    MfeAndMsSearchCriteria:
       type: object
       properties:
         appId:
@@ -1047,9 +1047,9 @@ components:
           type: integer
         appId:
           type: string
-        version:
+        appVersion:
           type: string
-        name:
+        appName:
           type: string
         description:
           type: string
@@ -1060,9 +1060,9 @@ components:
       properties:
         appId:
           type: string
-        version:
+        appVersion:
           type: string
-        name:
+        appName:
           type: string
         description:
           type: string
@@ -1078,9 +1078,9 @@ components:
       properties:
         appId:
           type: string
-        version:
+        appVersion:
           type: string
-        name:
+        appName:
           type: string
         description:
           type: string
@@ -1088,25 +1088,6 @@ components:
           type: string
         type:
           type: string
-    MicroserviceSearchCriteria:
-      type: object
-      properties:
-        appId:
-          type: string
-        name:
-          type: string
-        productName:
-          type: string
-        pageNumber:
-          format: int32
-          description: The number of page.
-          default: 0
-          type: integer
-        pageSize:
-          format: int32
-          description: The size of page
-          default: 10
-          type: integer
     MicroservicePageResult:
       type: object
       properties:
@@ -1126,33 +1107,4 @@ components:
         stream:
           type: array
           items:
-            $ref: '#/components/schemas/MicroservicePageItem'
-    MicroservicePageItem:
-      required:
-        - productName
-        - appId
-      type: object
-      properties:
-        id:
-          type: string
-        creationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        creationUser:
-          type: string
-        modificationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        modificationUser:
-          type: string
-        modificationCount:
-          format: int32
-          type: integer
-        appId:
-          type: string
-        version:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        productName:
-          type: string
+            $ref: '#/components/schemas/Microservice'

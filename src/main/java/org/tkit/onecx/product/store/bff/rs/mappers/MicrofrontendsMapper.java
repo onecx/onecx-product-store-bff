@@ -27,7 +27,7 @@ public interface MicrofrontendsMapper {
     @Mapping(target = "removeStreamItem", ignore = true)
     MicrofrontendPageResultDTO mapMfeSearchPageResponse(MicrofrontendPageResult searchResults);
 
-    MicrofrontendSearchCriteria mapMfeSearchCriteria(MicrofrontendSearchCriteriaDTO mfeSearchCriteria);
+    MicrofrontendSearchCriteria mapMfeSearchCriteria(MfeAndMsSearchCriteriaDTO mfeSearchCriteria);
 
     default Set<String> map(String classifications) {
         if (classifications != null && !classifications.isBlank()) {

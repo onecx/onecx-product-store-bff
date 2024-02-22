@@ -25,12 +25,15 @@ import gen.org.tkit.onecx.product.store.client.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.keycloak.client.KeycloakTestClient;
 
 @QuarkusTest
 @TestHTTPEndpoint(MicrofrontendsRestController.class)
 class MicrofrontendsRestControllerTest extends AbstractTest {
 
     private static final String PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH = "/internal/microfrontends";
+
+    KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
     @InjectMockServerClient
     MockServerClient mockServerClient;

@@ -521,7 +521,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
-        MicrofrontendSearchCriteriaDTO requestDTO = new MicrofrontendSearchCriteriaDTO();
+        MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName("somethingNotMatching");
         requestDTO.setAppId(null);
         requestDTO.setAppName(null);
@@ -595,7 +595,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
-        MicrofrontendSearchCriteriaDTO requestDTO = new MicrofrontendSearchCriteriaDTO();
+        MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName("productA");
         requestDTO.setAppId("7a0ee705-8fd0-47b0");
         requestDTO.setAppName("AppA");
@@ -682,7 +682,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
-        MicrofrontendSearchCriteriaDTO requestDTO = new MicrofrontendSearchCriteriaDTO();
+        MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName(null);
         requestDTO.setAppId(null);
         requestDTO.setAppName(null);

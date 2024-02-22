@@ -23,9 +23,9 @@ public class ProductStoreLog implements LogParam {
                         x -> "UpdateMicrofrontendRequestDTO[appId:" +
                                 ((UpdateMicrofrontendRequestDTO) x).getAppId()
                                 + "]"),
-                this.item(10, MicrofrontendSearchCriteriaDTO.class,
+                this.item(10, MfeAndMsSearchCriteriaDTO.class,
                         x -> "MicrofrontendSearchCriteriaDTO[appId:" +
-                                ((MicrofrontendSearchCriteriaDTO) x).getAppId()
+                                ((MfeAndMsSearchCriteriaDTO) x).getAppId()
                                 + "]"),
                 this.item(10, CreateProductRequestDTO.class,
                         x -> "CreateProductRequestDTO[name:" +

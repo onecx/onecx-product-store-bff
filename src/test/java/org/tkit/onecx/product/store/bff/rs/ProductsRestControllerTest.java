@@ -21,6 +21,8 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.product.store.client.model.*;
+import gen.org.tkit.onecx.workspace.client.model.WorkspaceAbstract;
+import gen.org.tkit.onecx.workspace.client.model.WorkspacePageResult;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -108,7 +110,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
                 null, "test-appl2", "Here is some description 2", false,
-                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "https://my-page.site.url",
                 "/app3", 0, "Product ABC", "Sun", "Themes, Menu");
         // create mock rest endpoint
         mockServerClient
@@ -118,15 +120,18 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
-        Set<String> workspaceNames = new HashSet<>();
-        workspaceNames.add("testWorkspace");
+        var result = new WorkspacePageResult().stream(
+                List.of(
+                        new WorkspaceAbstract().name("testWorkspace").description("testWorkspace")));
+
         // create mock rest endpoint
         mockServerClient
-                .when(request().withPath("/v1/workspaces/productName/test-appl2")
-                        .withMethod(HttpMethod.GET))
+                .when(request().withPath("/v1/workspaces/search")
+                        .withMethod(HttpMethod.POST))
+                .withPriority(10)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(workspaceNames)));
+                        .withBody(JsonBody.json(result)));
 
         var response = given()
                 .when()
@@ -180,8 +185,9 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient
-                .when(request().withPath("/v1/workspaces/productName/test-appl50")
-                        .withMethod(HttpMethod.GET))
+                .when(request().withPath("/v1/workspaces/search")
+                        .withMethod(HttpMethod.POST))
+                .withPriority(11)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
 
         // create mock rest endpoint

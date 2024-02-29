@@ -1,6 +1,5 @@
 package org.tkit.onecx.product.store.bff.rs.controllers;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,6 +24,8 @@ import gen.org.tkit.onecx.product.store.client.model.ProblemDetailResponse;
 import gen.org.tkit.onecx.product.store.client.model.Product;
 import gen.org.tkit.onecx.product.store.client.model.ProductPageResult;
 import gen.org.tkit.onecx.workspace.client.api.WorkspaceExternalApi;
+import gen.org.tkit.onecx.workspace.client.model.WorkspacePageResult;
+import gen.org.tkit.onecx.workspace.client.model.WorkspaceSearchCriteria;
 
 @LogService
 @ApplicationScoped
@@ -90,8 +91,11 @@ public class ProductsRestController implements ProductsApiService {
         try (Response response = client.getProductByName(name)) {
             Product resultProduct = response.readEntity(Product.class);
             Set<String> workspaceNames = null;
-            try (Response workspaceResponse = workspaceClient.getWorkspacesByProductName(name)) {
-                workspaceNames = workspaceResponse.readEntity(HashSet.class);
+
+            try (Response workspaceResponse = workspaceClient
+                    .searchWorkspaces(new WorkspaceSearchCriteria().productName(name))) {
+                var result = workspaceResponse.readEntity(WorkspacePageResult.class);
+                workspaceNames = mapper.workspaceNames(result);
             } catch (WebApplicationException ex) {
             }
 

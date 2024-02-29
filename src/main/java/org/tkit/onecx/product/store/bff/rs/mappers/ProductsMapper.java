@@ -9,9 +9,18 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.product.store.client.model.*;
+import gen.org.tkit.onecx.workspace.client.model.WorkspaceAbstract;
+import gen.org.tkit.onecx.workspace.client.model.WorkspacePageResult;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ProductsMapper {
+
+    default Set<String> workspaceNames(WorkspacePageResult result) {
+        if (result == null || result.getStream() == null) {
+            return Set.of();
+        }
+        return result.getStream().stream().map(WorkspaceAbstract::getName).collect(Collectors.toSet());
+    }
 
     CreateProductRequest mapCreateProduct(CreateProductRequestDTO createProduct);
 

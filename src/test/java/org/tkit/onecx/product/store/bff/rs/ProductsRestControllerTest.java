@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
+import org.mockserver.matchers.Times;
 import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
 import org.tkit.onecx.product.store.bff.rs.controllers.ProductsRestController;
@@ -127,8 +128,7 @@ class ProductsRestControllerTest extends AbstractTest {
         // create mock rest endpoint
         mockServerClient
                 .when(request().withPath("/v1/workspaces/search")
-                        .withMethod(HttpMethod.POST))
-                .withPriority(10)
+                        .withMethod(HttpMethod.POST), Times.exactly(1))
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(result)));
@@ -186,8 +186,7 @@ class ProductsRestControllerTest extends AbstractTest {
         // create mock rest endpoint
         mockServerClient
                 .when(request().withPath("/v1/workspaces/search")
-                        .withMethod(HttpMethod.POST))
-                .withPriority(11)
+                        .withMethod(HttpMethod.POST), Times.exactly(1))
                 .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
 
         // create mock rest endpoint

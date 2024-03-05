@@ -2,6 +2,7 @@ package org.tkit.onecx.product.store.bff.rs.mappers;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public interface MicrofrontendsMapper {
     default Set<String> map(String classifications) {
         if (classifications != null && !classifications.isBlank()) {
             String[] values = classifications.split(",");
-            return new HashSet<>(Arrays.asList(values));
+            return new LinkedHashSet<>(Arrays.asList(values));
         } else
             return new HashSet<>();
     }

@@ -40,7 +40,7 @@ public interface ProductsMapper {
     default Set<String> map(String classifications) {
         if (classifications != null && !classifications.isBlank()) {
             String[] values = classifications.split(",");
-            return new HashSet<>(Arrays.asList(values));
+            return new LinkedHashSet<>(Arrays.asList(values));
         } else
             return new HashSet<>();
     }

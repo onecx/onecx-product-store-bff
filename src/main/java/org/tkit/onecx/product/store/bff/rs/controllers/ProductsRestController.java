@@ -97,6 +97,7 @@ public class ProductsRestController implements ProductsApiService {
                 var result = workspaceResponse.readEntity(WorkspacePageResult.class);
                 workspaceNames = mapper.workspaceNames(result);
             } catch (WebApplicationException ex) {
+                // ignore exception
             }
 
             ProductAndWorkspacesDTO resultProductDTO = mapper.mapProductWithWorkspaceNames(resultProduct, workspaceNames);

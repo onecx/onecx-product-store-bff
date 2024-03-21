@@ -18,7 +18,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - write
       tags:
         - Microfrontends
@@ -53,7 +53,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - read
       tags:
         - Microfrontends
@@ -82,7 +82,7 @@ paths:
     get:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - read
       tags:
         - Microfrontends
@@ -107,7 +107,7 @@ paths:
     get:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - read
       tags:
         - Microfrontends
@@ -131,7 +131,7 @@ paths:
     put:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - write
       tags:
         - Microfrontends
@@ -163,7 +163,7 @@ paths:
     delete:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - delete
       tags:
         - Microfrontends
@@ -188,7 +188,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - write
       tags:
         - Products
@@ -223,7 +223,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - read
       tags:
         - Products
@@ -252,7 +252,7 @@ paths:
     get:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - read
       tags:
         - Products
@@ -286,7 +286,7 @@ paths:
     put:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - write
       tags:
         - Products
@@ -322,7 +322,7 @@ paths:
     delete:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - delete
       tags:
         - Products
@@ -347,7 +347,7 @@ paths:
     get:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - read
       tags:
         - Products
@@ -382,7 +382,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          microservice:
             - write
       tags:
         - Microservices
@@ -417,7 +417,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          microservice:
             - read
       tags:
         - Microservices
@@ -445,7 +445,7 @@ paths:
   /microservices/{id}:
     x-onecx:
       permissions:
-        product-store:
+        microservice:
           - read
     get:
       tags:
@@ -470,7 +470,7 @@ paths:
     put:
       x-onecx:
         permissions:
-          product-store:
+          microservice:
             - write
       tags:
         - Microservices
@@ -502,7 +502,7 @@ paths:
     delete:
       x-onecx:
         permissions:
-          product-store:
+          microservice:
             - delete
       tags:
         - Microservices
@@ -526,7 +526,7 @@ paths:
   /microservices/appId/{appId}:
     x-onecx:
       permissions:
-        product-store:
+        microservice:
           - read
     get:
       tags:
@@ -552,7 +552,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          image:
             - write
       tags:
         - imagesInternal
@@ -595,7 +595,7 @@ paths:
     get:
       x-onecx:
         permissions:
-          product-store:
+          image:
             - read
       tags:
         - imagesInternal
@@ -629,7 +629,7 @@ paths:
     put:
       x-onecx:
         permissions:
-          product-store:
+          image:
             - write
       tags:
         - imagesInternal

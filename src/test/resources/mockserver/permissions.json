@@ -13,7 +13,10 @@
         "json": {
           "appId": "onecx-product-store-bff",
           "permissions": {
+            "microfrontend": ["read", "write", "delete"],
             "product": ["read", "write", "delete"],
+            "microservice": ["read", "write", "delete"],
+            "image": ["read", "write", "delete"],
             "permissions": ["admin-write","admin-read"]
           }
         },
@@ -35,7 +38,10 @@
         "json": {
           "appId": "onecx-product-store-bff",
           "permissions": {
+            "microfrontend": ["read"],
             "product": ["read"],
+            "microservice": ["read"],
+            "image": ["read"],
             "permissions": ["admin-write","admin-read"]
           }
         },

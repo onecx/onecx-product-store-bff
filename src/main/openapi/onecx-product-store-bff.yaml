@@ -945,6 +945,8 @@ components:
           type: string
         operator:
           type: boolean
+        type:
+          $ref: "#/components/schemas/MicrofrontendType"
         classifications:
           type: array
           uniqueItems: true
@@ -1022,6 +1024,8 @@ components:
           type: string
         exposedModule:
           type: string
+        type:
+          $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
           type: array
           items:
@@ -1079,6 +1083,8 @@ components:
           type: string
         exposedModule:
           type: string
+        type:
+          $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
           type: array
           items:
@@ -1151,10 +1157,15 @@ components:
           type: string
         exposedModule:
           type: string
+        type:
+          $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
           type: array
           items:
             $ref: "#/components/schemas/UIEndpoint"
+    MicrofrontendType:
+      type: string
+      enum: [ MODULE, COMPONENT ]
     UIEndpoint:
       required:
         - path

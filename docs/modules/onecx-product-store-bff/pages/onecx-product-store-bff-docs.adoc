@@ -1,0 +1,85 @@
+
+include::onecx-product-store-bff-attributes.adoc[opts=optional]
+
+=== Default properties
+
+.{properties-file}
+[%collapsible%open]
+====
+[source,properties,subs=attributes+]
+----
+quarkus.http.auth.permission.health.paths=/q/*
+quarkus.http.auth.permission.health.policy=permit
+quarkus.http.auth.permission.default.paths=/*
+quarkus.http.auth.permission.default.policy=authenticated
+onecx.permissions.application-id=${quarkus.application.name}
+org.eclipse.microprofile.rest.client.propagateHeaders=apm-principal-token
+%prod.quarkus.rest-client.onecx_product_store_internal.url=http://onecx-product-store-svc:8080
+%prod.quarkus.rest-client.onecx_image_internal.url=http://onecx-product-store-svc:8080
+%prod.quarkus.rest-client.onecx_workspace_svc_external_v1.url=http://onecx-workspace-svc:8080
+%prod.quarkus.oidc-client.client-id=${quarkus.application.name}
+quarkus.openapi-generator.codegen.spec.onecx_product_store_internal_yaml.config-key=onecx_product_store_internal
+quarkus.openapi-generator.codegen.spec.onecx_product_store_internal_yaml.base-package=gen.org.tkit.onecx.product.store.client
+quarkus.openapi-generator.codegen.spec.onecx_product_store_internal_yaml.return-response=true
+quarkus.openapi-generator.codegen.spec.onecx_product_store_internal_yaml.additional-api-type-annotations=@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
+quarkus.openapi-generator.codegen.spec.onecx_product_store_internal_yaml.additional-model-type-annotations=@io.quarkus.runtime.annotations.RegisterForReflection;
+quarkus.openapi-generator.codegen.spec.onecx_image_internal_yaml.config-key=onecx_image_internal
+quarkus.openapi-generator.codegen.spec.onecx_image_internal_yaml.base-package=gen.org.tkit.onecx.product.store.client
+quarkus.openapi-generator.codegen.spec.onecx_image_internal_yaml.return-response=true
+quarkus.openapi-generator.codegen.spec.onecx_image_internal_yaml.additional-api-type-annotations=@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
+quarkus.openapi-generator.codegen.spec.onecx_image_internal_yaml.type-mappings.File=byte[]
+quarkus.openapi-generator.codegen.spec.onecx_image_internal_yaml.additional-model-type-annotations=@io.quarkus.runtime.annotations.RegisterForReflection;
+quarkus.openapi-generator.codegen.spec.onecx_workspace_svc_external_v1_yaml.config-key=onecx_workspace_svc_external_v1
+quarkus.openapi-generator.codegen.spec.onecx_workspace_svc_external_v1_yaml.base-package=gen.org.tkit.onecx.workspace.client
+quarkus.openapi-generator.codegen.spec.onecx_workspace_svc_external_v1_yaml.return-response=true
+quarkus.openapi-generator.codegen.spec.onecx_workspace_svc_external_v1_yaml.additional-api-type-annotations=@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
+quarkus.openapi-generator.codegen.spec.onecx_workspace_svc_external_v1_yaml.additional-model-type-annotations=@io.quarkus.runtime.annotations.RegisterForReflection;
+quarkus.openapi-generator.codegen.input-base-dir=target/tmp/openapi
+----
+====
+
+=== Extensions
+
+include::onecx-product-store-bff-extensions.adoc[opts=optional]
+
+=== Container
+
+{docker-registry}[Docker registry]
+
+
+=== Helm
+
+{helm-registry}[Helm registry]
+
+Default values
+
+.{helm-file}
+[source,yaml]
+----
+app:
+  name: bff
+  image:
+    repository: "onecx/onecx-product-store-bff"
+  operator:
+    # Permission
+    permission:
+      enabled: true
+      spec:
+        permissions:
+          microfrontend:
+            read: permission on all GET requests and POST search
+            write: permission on PUT, POST, PATCH requests, where objects are saved or updated
+            delete: permission on all DELETE requests
+          product:
+            read: permission on all GET requests and POST search
+            write: permission on PUT, POST, PATCH requests, where objects are saved or updated
+            delete: permission on all DELETE requests
+          microservice:
+            read: permission on all GET requests and POST search
+            write: permission on PUT, POST, PATCH requests, where objects are saved or updated
+            delete: permission on all DELETE requests
+          image:
+            read: permission on all GET requests and POST search
+            write: permission on PUT, POST, PATCH requests, where objects are saved or updated
+----
+

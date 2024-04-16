@@ -1,0 +1,8 @@
+include::onecx-product-store-bff-attributes.adoc[opts=optional]
+
+== onecx-product-store-bff
+
+include::docs.adoc[opts=optional]
+
+
+include::onecx-product-store-bff-docs.adoc[opts=optional]

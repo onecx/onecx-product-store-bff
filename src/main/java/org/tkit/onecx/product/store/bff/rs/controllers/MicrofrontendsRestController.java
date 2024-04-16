@@ -78,14 +78,6 @@ public class MicrofrontendsRestController implements MicrofrontendsApiService {
     }
 
     @Override
-    public Response getMicrofrontendByAppId(String appId) {
-        try (Response response = client.getMicrofrontendByAppId(appId)) {
-            MicrofrontendDTO result = mapper.mapMfe(response.readEntity(Microfrontend.class));
-            return Response.status(response.getStatus()).entity(result).build();
-        }
-    }
-
-    @Override
     public Response searchMicrofrontends(MfeAndMsSearchCriteriaDTO microfrontendSearchCriteriaDTO) {
 
         try (Response response = client.searchMicrofrontends(mapper.mapMfeSearchCriteria(microfrontendSearchCriteriaDTO))) {

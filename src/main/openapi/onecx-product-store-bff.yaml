@@ -12,7 +12,7 @@ info:
 servers:
   - url: "http://onecx-product-store-bff:8080"
 tags:
-  - name: OneCX Product Store
+  - name: Microfrontends
 paths:
   /microfrontends:
     post:
@@ -78,31 +78,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /microfrontends/appId/{appId}:
-    get:
-      x-onecx:
-        permissions:
-          microfrontend:
-            - read
-      tags:
-        - Microfrontends
-      description: Return micro-frontend by its appId
-      operationId: getMicrofrontendByAppId
-      parameters:
-        - name: appId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Microfrontend'
-        "404":
-          description: Not Found
   /microfrontends/{id}:
     get:
       x-onecx:
@@ -750,6 +725,8 @@ components:
           uniqueItems: true
           items:
             type: string
+        undeployed:
+          type: boolean
     UpdateProductRequest:
       type: object
       required:
@@ -776,6 +753,8 @@ components:
           uniqueItems: true
           items:
             type: string
+        undeployed:
+          type: boolean
     Product:
       type: object
       required:
@@ -817,6 +796,8 @@ components:
           uniqueItems: true
           items:
             type: string
+        undeployed:
+          type: boolean
     ProductAndWorkspaces:
       type: object
       allOf:
@@ -849,10 +830,12 @@ components:
           description: name of the product used for displaying to user.
         classifications:
           type: array
-          description: like tags for grouing and labeling. Used in frontend to enable filtering.
+          description: like tags for grouping and labeling. Used in frontend to enable filtering.
           uniqueItems: true
           items:
             type: string
+        undeployed:
+          type: boolean
     OffsetDateTime:
       format: date-time
       type: string
@@ -945,6 +928,8 @@ components:
           type: string
         operator:
           type: boolean
+        deprecated:
+          type: boolean
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         classifications:
@@ -1024,6 +1009,8 @@ components:
           type: string
         exposedModule:
           type: string
+        deprecated:
+          type: boolean
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
@@ -1083,6 +1070,8 @@ components:
           type: string
         exposedModule:
           type: string
+        deprecated:
+          type: boolean
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
@@ -1157,6 +1146,8 @@ components:
           type: string
         exposedModule:
           type: string
+        deprecated:
+          type: boolean
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
@@ -1204,6 +1195,8 @@ components:
           type: string
         operator:
           type: boolean
+        undeployed:
+          type: boolean
     UpdateMicroserviceRequest:
       type: object
       properties:
@@ -1219,6 +1212,8 @@ components:
           type: string
         type:
           type: string
+        undeployed:
+          type: boolean
     CreateMicroserviceRequest:
       required:
         - productName
@@ -1237,6 +1232,8 @@ components:
           type: string
         type:
           type: string
+        undeployed:
+          type: boolean
     MicroservicePageResult:
       type: object
       properties:

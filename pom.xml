@@ -184,7 +184,7 @@
                         </goals>
                         <configuration>
                             <url>
-                                https://raw.githubusercontent.com/onecx/onecx-product-store-svc/feat/remote_components/src/main/openapi/onecx-product-store-internal.yaml
+                                https://raw.githubusercontent.com/onecx/onecx-product-store-svc/main/src/main/openapi/onecx-product-store-internal.yaml
                             </url>
                             <outputDirectory>target/tmp/openapi</outputDirectory>
                             <outputFileName>onecx-product-store-internal.yaml</outputFileName>

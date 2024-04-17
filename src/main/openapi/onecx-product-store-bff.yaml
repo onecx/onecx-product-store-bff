@@ -930,6 +930,8 @@ components:
           type: boolean
         deprecated:
           type: boolean
+        undeployed:
+          type: boolean
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         classifications:
@@ -1011,6 +1013,8 @@ components:
           type: string
         deprecated:
           type: boolean
+        undeployed:
+          type: boolean
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
@@ -1071,6 +1075,8 @@ components:
         exposedModule:
           type: string
         deprecated:
+          type: boolean
+        undeployed:
           type: boolean
         type:
           $ref: "#/components/schemas/MicrofrontendType"
@@ -1147,6 +1153,8 @@ components:
         exposedModule:
           type: string
         deprecated:
+          type: boolean
+        undeployed:
           type: boolean
         type:
           $ref: "#/components/schemas/MicrofrontendType"

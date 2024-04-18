@@ -209,7 +209,7 @@ class ProductsRestControllerTest extends AbstractTest {
                 .extract().as(ProductAndWorkspacesDTO.class);
         Assertions.assertNotNull(responseWithoutWorkspaces);
         Assertions.assertEquals(data2.getId(), responseWithoutWorkspaces.getId());
-        Assertions.assertNull(responseWithoutWorkspaces.getWorkspaces());
+        Assertions.assertTrue(responseWithoutWorkspaces.getWorkspaces().isEmpty());
     }
 
     /**
@@ -494,7 +494,7 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertNotNull(response.getDetail());
         Assertions.assertEquals(param1.getMessage(), invalidParamConstraint.get().getMessage());
         Assertions.assertNotNull(invalidParamConstraint.get().getName());
-        Assertions.assertNull(response.getParams());
+        Assertions.assertTrue(response.getParams().isEmpty());
 
     }
 

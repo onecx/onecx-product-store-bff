@@ -399,7 +399,7 @@ class MicroservicesRestControllerTest extends AbstractTest {
         Assertions.assertNotNull(response.getDetail());
         Assertions.assertEquals(param1.getMessage(), invalidParamConstraint.get().getMessage());
         Assertions.assertNotNull(invalidParamConstraint.get().getName());
-        Assertions.assertNull(response.getParams());
+        Assertions.assertTrue(response.getParams().isEmpty());
 
     }
 

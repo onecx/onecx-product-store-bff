@@ -662,7 +662,7 @@ class ProductsRestControllerTest extends AbstractTest {
                 .body(requestDTO)
                 .post("/search")
                 .then()
-                .statusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     /**
@@ -820,7 +820,7 @@ class ProductsRestControllerTest extends AbstractTest {
                 .pathParam("id", id)
                 .delete("/{id}")
                 .then()
-                .statusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     /**

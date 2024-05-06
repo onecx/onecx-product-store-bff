@@ -16,6 +16,7 @@
             "microfrontend": ["read", "write", "delete"],
             "product": ["read", "write", "delete"],
             "microservice": ["read", "write", "delete"],
+            "slot": ["read", "write", "delete"],
             "image": ["read", "write", "delete"],
             "permissions": ["admin-write","admin-read"]
           }
@@ -42,6 +43,7 @@
             "product": ["read"],
             "microservice": ["read"],
             "image": ["read"],
+            "slot": ["read"],
             "permissions": ["admin-write","admin-read"]
           }
         },

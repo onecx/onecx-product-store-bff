@@ -14,6 +14,8 @@ quarkus.http.auth.permission.default.paths=/*
 quarkus.http.auth.permission.default.policy=authenticated
 onecx.permissions.application-id=${quarkus.application.name}
 org.eclipse.microprofile.rest.client.propagateHeaders=apm-principal-token
+quarkus.http.filter.images.header."Cache-Control"=max-age=432000
+quarkus.http.filter.images.matches=/images/*
 %prod.quarkus.rest-client.onecx_product_store_internal.url=http://onecx-product-store-svc:8080
 %prod.quarkus.rest-client.onecx_image_internal.url=http://onecx-product-store-svc:8080
 %prod.quarkus.rest-client.onecx_workspace_svc_external_v1.url=http://onecx-workspace-svc:8080

@@ -1013,6 +1013,71 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertNull(response.getInvalidParams());
     }
 
+    @Test
+    void getProductDetailsByNameTest() {
+        MicrofrontendSearchCriteria mfeCriteria = new MicrofrontendSearchCriteria();
+        mfeCriteria.productName("p1");
+        MicrofrontendPageResult mfeResult = new MicrofrontendPageResult();
+        mfeResult.setStream(List.of(new MicrofrontendPageItem().productName("p1").appName("mfe1"),
+                new MicrofrontendPageItem().productName("p1").appName("mfe2"),
+                new MicrofrontendPageItem().productName("p1").appName("mfe3")));
+        mockServerClient
+                .when(request().withPath("/internal/microfrontends/search")
+                        .withMethod(HttpMethod.POST)
+                        .withBody(JsonBody.json(mfeCriteria)))
+                .withId("mock1")
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(mfeResult)));
+
+        SlotSearchCriteria slotCriteria = new SlotSearchCriteria();
+        slotCriteria.productName("p1");
+        SlotPageResult slotPageResult = new SlotPageResult();
+        slotPageResult.setStream(List.of(new SlotPageItem().productName("p1")));
+        mockServerClient
+                .when(request().withPath("/internal/slots/search")
+                        .withMethod(HttpMethod.POST)
+                        .withBody(JsonBody.json(slotCriteria)))
+                .withId("mock2")
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(slotPageResult)));
+
+        MicroserviceSearchCriteria msCriteria = new MicroserviceSearchCriteria();
+        msCriteria.productName("p1");
+        MicroservicePageResult msResult = new MicroservicePageResult();
+        msResult.setStream(List.of(new MicroservicePageItem().productName("p1")));
+
+        mockServerClient
+                .when(request().withPath("/internal/microservices/search")
+                        .withMethod(HttpMethod.POST)
+                        .withBody(JsonBody.json(msCriteria)))
+                .withId("mock3")
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(msResult)));
+
+        var response = given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
+                .body(new ProductSearchCriteria().name("p1"))
+                .post("/details")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(ProductDetailsDTO.class);
+
+        Assertions.assertEquals(3, response.getMicrofrontends().size());
+        Assertions.assertEquals(1, response.getMicroservices().size());
+        Assertions.assertEquals(1, response.getSlots().size());
+        mockServerClient.clear("mock1");
+        mockServerClient.clear("mock2");
+        mockServerClient.clear("mock3");
+
+    }
+
     /**
      * Helper method to create products
      *

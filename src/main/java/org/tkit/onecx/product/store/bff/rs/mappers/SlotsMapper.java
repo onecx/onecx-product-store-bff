@@ -1,5 +1,7 @@
 package org.tkit.onecx.product.store.bff.rs.mappers;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -19,4 +21,11 @@ public interface SlotsMapper {
     SlotPageResultDTO map(SlotPageResult slotPageResult);
 
     UpdateSlotRequest map(UpdateSlotRequestDTO updateSlotRequestDTO);
+
+    default List<SlotPageItemDTO> mapToList(SlotPageResult slotPageResult) {
+        return slotPageResult.getStream().stream().map(this::map).toList();
+    }
+
+    SlotPageItemDTO map(SlotPageItem pageItem);
+
 }

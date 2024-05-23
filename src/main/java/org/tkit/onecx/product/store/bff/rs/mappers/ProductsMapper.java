@@ -56,4 +56,17 @@ public interface ProductsMapper {
     @Mapping(target = "removeWorkspacesItem", ignore = true)
     @Mapping(target = "workspaces", source = "workspaceNames")
     ProductAndWorkspacesDTO mapProductWithWorkspaceNames(Product resultProduct, Set<String> workspaceNames);
+
+    @Mapping(target = "productName", source = "name")
+    @Mapping(target = "appName", ignore = true)
+    @Mapping(target = "appId", ignore = true)
+    MicrofrontendSearchCriteria map(ProductSearchCriteriaDTO productSearchCriteriaDTO);
+
+    @Mapping(target = "productName", source = "name")
+    @Mapping(target = "appId", ignore = true)
+    MicroserviceSearchCriteria mapMsCriteria(ProductSearchCriteriaDTO productSearchCriteriaDTO);
+
+    @Mapping(target = "productName", source = "name")
+    @Mapping(target = "appId", ignore = true)
+    SlotSearchCriteria mapSlotCriteria(ProductSearchCriteriaDTO productSearchCriteriaDTO);
 }

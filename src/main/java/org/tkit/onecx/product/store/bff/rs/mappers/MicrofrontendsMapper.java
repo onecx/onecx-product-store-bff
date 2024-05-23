@@ -1,9 +1,6 @@
 package org.tkit.onecx.product.store.bff.rs.mappers;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
@@ -44,4 +41,10 @@ public interface MicrofrontendsMapper {
         } else
             return "";
     }
+
+    default List<MicrofrontendAbstractDTO> map(MicrofrontendPageResult microfrontendPageResult) {
+        return microfrontendPageResult.getStream().stream().map(this::map).toList();
+    }
+
+    MicrofrontendAbstractDTO map(MicrofrontendPageItem pageItem);
 }

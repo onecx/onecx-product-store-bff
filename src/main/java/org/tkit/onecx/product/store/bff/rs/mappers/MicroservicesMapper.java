@@ -1,5 +1,7 @@
 package org.tkit.onecx.product.store.bff.rs.mappers;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -32,4 +34,7 @@ public interface MicroservicesMapper {
     @Mapping(target = "name", source = "appName")
     MicroserviceSearchCriteria mapMsSearchCriteria(MfeAndMsSearchCriteriaDTO msSearchCriteria);
 
+    default List<MicroserviceDTO> map(MicroservicePageResult microservicePageResult) {
+        return microservicePageResult.getStream().stream().map(this::map).toList();
+    }
 }

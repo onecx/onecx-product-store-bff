@@ -13,17 +13,16 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.ClientWebApplicationException;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.tkit.onecx.product.store.bff.rs.mappers.ExceptionMapper;
-import org.tkit.onecx.product.store.bff.rs.mappers.ProblemDetailMapper;
-import org.tkit.onecx.product.store.bff.rs.mappers.ProductsMapper;
+import org.tkit.onecx.product.store.bff.rs.mappers.*;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.product.store.bff.rs.internal.ProductsApiService;
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.product.store.client.api.MicrofrontendsInternalApi;
+import gen.org.tkit.onecx.product.store.client.api.MicroservicesInternalApi;
 import gen.org.tkit.onecx.product.store.client.api.ProductsInternalApi;
-import gen.org.tkit.onecx.product.store.client.model.ProblemDetailResponse;
-import gen.org.tkit.onecx.product.store.client.model.Product;
-import gen.org.tkit.onecx.product.store.client.model.ProductPageResult;
+import gen.org.tkit.onecx.product.store.client.api.SlotsInternalApi;
+import gen.org.tkit.onecx.product.store.client.model.*;
 import gen.org.tkit.onecx.workspace.client.api.WorkspaceExternalApi;
 import gen.org.tkit.onecx.workspace.client.model.WorkspacePageResult;
 import gen.org.tkit.onecx.workspace.client.model.WorkspaceSearchCriteria;
@@ -41,7 +40,29 @@ public class ProductsRestController implements ProductsApiService {
     @Inject
     WorkspaceExternalApi workspaceClient;
 
-    private final ProductsMapper mapper;
+    @RestClient
+    @Inject
+    MicroservicesInternalApi msClient;
+
+    @RestClient
+    @Inject
+    MicrofrontendsInternalApi mfeClient;
+
+    @RestClient
+    @Inject
+    SlotsInternalApi slotClient;
+
+    @Inject
+    ProductsMapper mapper;
+
+    @Inject
+    MicrofrontendsMapper mfeMapper;
+
+    @Inject
+    MicroservicesMapper msMapper;
+
+    @Inject
+    SlotsMapper slotMapper;
 
     private final ProblemDetailMapper problemDetailMapper;
 
@@ -105,6 +126,25 @@ public class ProductsRestController implements ProductsApiService {
             return Response.status(response.getStatus()).entity(resultProductDTO).build();
         }
 
+    }
+
+    @Override
+    public Response getProductDetailsByCriteria(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
+        ProductDetailsDTO detailsDTO = new ProductDetailsDTO();
+        detailsDTO.setName(productSearchCriteriaDTO.getName());
+        try (Response mfeResponse = mfeClient.searchMicrofrontends(mapper.map(productSearchCriteriaDTO))) {
+            detailsDTO.setMicrofrontends(mfeMapper.map(mfeResponse.readEntity(MicrofrontendPageResult.class)));
+        }
+
+        try (Response msResponse = msClient.searchMicroservice(mapper.mapMsCriteria(productSearchCriteriaDTO))) {
+            detailsDTO.setMicroservices(msMapper.map(msResponse.readEntity(MicroservicePageResult.class)));
+        }
+
+        try (Response slotResponse = slotClient.searchSlots(mapper.mapSlotCriteria(productSearchCriteriaDTO))) {
+            detailsDTO.setSlots(slotMapper.mapToList(slotResponse.readEntity(SlotPageResult.class)));
+        }
+
+        return Response.status(Response.Status.OK).entity(detailsDTO).build();
     }
 
     @Override

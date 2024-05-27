@@ -1067,13 +1067,13 @@ components:
         appId:
           type: string
           description: BID of an app
-        remoteName:
-          type: string
         tagName:
           type: string
         appName:
           type: string
           description: Readable name of the app
+        exposedModule:
+          type: string
         description:
           type: string
           description: textual description of MFE

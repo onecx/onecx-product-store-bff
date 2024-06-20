@@ -19,7 +19,6 @@ quarkus.http.filter.images.matches=/images/*
 %prod.quarkus.rest-client.onecx_product_store_internal.url=http://onecx-product-store-svc:8080
 %prod.quarkus.rest-client.onecx_image_internal.url=http://onecx-product-store-svc:8080
 %prod.quarkus.rest-client.onecx_workspace_svc_external_v1.url=http://onecx-workspace-svc:8080
-%prod.quarkus.oidc-client.client-id=${quarkus.application.name}
 quarkus.openapi-generator.codegen.spec.onecx_product_store_internal_yaml.config-key=onecx_product_store_internal
 quarkus.openapi-generator.codegen.spec.onecx_product_store_internal_yaml.base-package=gen.org.tkit.onecx.product.store.client
 quarkus.openapi-generator.codegen.spec.onecx_product_store_internal_yaml.return-response=true
@@ -37,6 +36,10 @@ quarkus.openapi-generator.codegen.spec.onecx_workspace_svc_external_v1_yaml.retu
 quarkus.openapi-generator.codegen.spec.onecx_workspace_svc_external_v1_yaml.additional-api-type-annotations=@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 quarkus.openapi-generator.codegen.spec.onecx_workspace_svc_external_v1_yaml.additional-model-type-annotations=@io.quarkus.runtime.annotations.RegisterForReflection;
 quarkus.openapi-generator.codegen.input-base-dir=target/tmp/openapi
+%prod.quarkus.rest-client.onecx_product_store_internal_yaml.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
+%prod.quarkus.rest-client.onecx_image_internal_yaml.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
+%prod.quarkus.rest-client.onecx_workspace_svc_external_v1_yaml.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
+%prod.quarkus.oidc-client.client-id=${quarkus.application.name}
 ----
 ====
 
@@ -87,5 +90,8 @@ app:
           image:
             read: permission on all GET requests and POST search
             write: permission on PUT, POST, PATCH requests, where objects are saved or updated
+    keycloak:
+      client:
+        enabled: true
 ----
 

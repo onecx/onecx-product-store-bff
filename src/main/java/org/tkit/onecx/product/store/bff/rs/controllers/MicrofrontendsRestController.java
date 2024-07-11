@@ -62,9 +62,8 @@ public class MicrofrontendsRestController implements MicrofrontendsApiService {
 
     @Override
     public Response deleteMicrofrontend(String id) {
-
         try (Response response = client.deleteMicrofrontend(id)) {
-            return Response.fromResponse(response).build();
+            return Response.status(response.getStatus()).build();
         }
     }
 
@@ -92,7 +91,7 @@ public class MicrofrontendsRestController implements MicrofrontendsApiService {
     public Response updateMicrofrontend(String id, UpdateMicrofrontendRequestDTO updateMicrofrontendRequestDTO) {
 
         try (Response response = client.updateMicrofrontend(id, mapper.mapUpdateMfe(updateMicrofrontendRequestDTO))) {
-            return Response.fromResponse(response).build();
+            return Response.status(response.getStatus()).build();
         } catch (WebApplicationException ex) {
             return Response.status(ex.getResponse().getStatus())
                     .entity(problemDetailMapper.map(ex.getResponse().readEntity(ProblemDetailResponse.class))).build();

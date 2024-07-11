@@ -57,7 +57,7 @@ public class MicroservicesRestController implements MicroservicesApiService {
     @Override
     public Response deleteMicroservice(String id) {
         try (Response response = client.deleteMicroservice(id)) {
-            return Response.fromResponse(response).build();
+            return Response.status(response.getStatus()).build();
         }
     }
 
@@ -82,7 +82,7 @@ public class MicroservicesRestController implements MicroservicesApiService {
     @Override
     public Response updateMicroservice(String id, UpdateMicroserviceRequestDTO updateMicroserviceRequestDTO) {
         try (Response response = client.updateMicroservice(id, mapper.mapUpdateMs(updateMicroserviceRequestDTO))) {
-            return Response.fromResponse(response).build();
+            return Response.status(response.getStatus()).build();
         } catch (WebApplicationException ex) {
             return Response.status(ex.getResponse().getStatus())
                     .entity(problemDetailMapper.map(ex.getResponse().readEntity(ProblemDetailResponse.class))).build();

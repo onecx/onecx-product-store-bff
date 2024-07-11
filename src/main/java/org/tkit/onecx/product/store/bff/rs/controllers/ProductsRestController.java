@@ -92,9 +92,8 @@ public class ProductsRestController implements ProductsApiService {
 
     @Override
     public Response deleteProduct(String id) {
-
         try (Response response = client.deleteProduct(id)) {
-            return Response.fromResponse(response).build();
+            return Response.status(response.getStatus()).build();
         }
     }
 
@@ -161,7 +160,7 @@ public class ProductsRestController implements ProductsApiService {
     public Response updateProduct(String id, UpdateProductRequestDTO updateProductRequestDTO) {
 
         try (Response response = client.updateProduct(id, mapper.mapUpdateProduct(updateProductRequestDTO))) {
-            return Response.fromResponse(response).build();
+            return Response.status(response.getStatus()).build();
         } catch (WebApplicationException ex) {
             return Response.status(ex.getResponse().getStatus())
                     .entity(problemDetailMapper.map(ex.getResponse().readEntity(ProblemDetailResponse.class))).build();

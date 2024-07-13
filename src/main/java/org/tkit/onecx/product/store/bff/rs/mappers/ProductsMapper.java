@@ -19,7 +19,7 @@ public interface ProductsMapper {
         if (result == null || result.getStream() == null) {
             return Set.of();
         }
-        return result.getStream().stream().map(WorkspaceAbstract::getName).collect(Collectors.toSet());
+        return result.getStream().stream().map(WorkspaceAbstract::getDisplayName).collect(Collectors.toSet());
     }
 
     CreateProductRequest mapCreateProduct(CreateProductRequestDTO createProduct);

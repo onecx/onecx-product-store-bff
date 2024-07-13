@@ -123,7 +123,8 @@ class ProductsRestControllerTest extends AbstractTest {
 
         var result = new WorkspacePageResult().stream(
                 List.of(
-                        new WorkspaceAbstract().name("testWorkspace").description("testWorkspace")));
+                        new WorkspaceAbstract().name("testWorkspace").displayName("testWorkspace")
+                                .description("testWorkspace")));
 
         // create mock rest endpoint
         mockServerClient

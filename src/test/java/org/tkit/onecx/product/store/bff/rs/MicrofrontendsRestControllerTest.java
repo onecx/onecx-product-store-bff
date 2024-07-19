@@ -38,12 +38,12 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     @InjectMockServerClient
     MockServerClient mockServerClient;
 
-    static final String mockId = "MOCK";
+    static final String MOCK_ID = "MOCK";
 
     @BeforeEach
     void resetExpectation() {
         try {
-            mockServerClient.clear(mockId);
+            mockServerClient.clear(MOCK_ID);
         } catch (Exception ex) {
             //  mockId not existing
         }
@@ -73,7 +73,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         Microfrontend data = createMicrofrontend("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", offsetDateTime, "csommer",
                 offsetDateTime, "csommer", 1, false, "App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
-                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", classificationSet,
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName",
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", uiEndpointSet);
 
         // create mock rest endpoint
@@ -176,7 +176,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         Microfrontend data = createMicrofrontend("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", offsetDateTime, "csommer",
                 offsetDateTime, "csommer", 1, false, "App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
-                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", classificationSet,
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName",
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", uiEndpointSet);
 
         List<CreateUIEndpoint> uiEndpointSetForRequest = new ArrayList<>();
@@ -186,13 +186,13 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         uiEndpointSetForRequest.add(uiEndpointItemForRequest);
         CreateMicrofrontendRequest request = createMicrofrontendRequestSVC("App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
-                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", classificationSet,
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName",
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", uiEndpointSetForRequest);
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
                 .withBody(JsonBody.json(request)))
-                .withId(mockId)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.CREATED.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -288,13 +288,13 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         CreateMicrofrontendRequest request = createMicrofrontendRequestSVC("App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
-                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", null,
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName",
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", null);
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
                 .withBody(JsonBody.json(request)))
-                .withId(mockId)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -361,13 +361,13 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         CreateMicrofrontendRequest request = createMicrofrontendRequestSVC("App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
-                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", null, null,
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", null,
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", null);
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
                 .withBody(JsonBody.json(request)))
-                .withId(mockId)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -431,7 +431,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .withId(mockId)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -506,7 +506,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .withId(mockId)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -594,7 +594,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .withId(mockId)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -704,7 +704,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         uiEndpointSetForRequest.add(uiEndpointItemForRequest);
         UpdateMicrofrontendRequest request = updateMicrofrontendRequestSVC("App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
-                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", classificationSet,
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName",
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", uiEndpointSetForRequest);
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
@@ -750,7 +750,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         UpdateMicrofrontendRequest request = updateMicrofrontendRequestSVC("App-ID", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
-                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName", null,
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "ProductName",
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", null);
 
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
@@ -811,7 +811,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         UpdateMicrofrontendRequest request = updateMicrofrontendRequestSVC("ABCee705-8fd0-47b0-8205-b2a5f654888", "1.0.0",
                 "AppName", "some description", "", "https://localhost/mfe/core/ah-mgmt/",
-                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "Announcement-Management", null,
+                "https://localhost/mfe/core/ah-mgmt/remoteEntry.js", "Announcement-Management",
                 "developers@1000kit.org", "sun", "some notes", "/AnnouncementManagementModule", null);
 
         // create mock rest endpoint
@@ -876,13 +876,11 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * @param remoteBaseUrl uri for remote base path
      * @param remoteEntry webpack hook
      * @param productName name of associated product
-     * @param classifications tags for mfe
      * @param contact contact details (like mail address) for e.g. application support
      * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
      * @param note additional notes
      * @param exposedModule module information
      * @param endpoints endpoints which can be used to address app pages & services
-     * @return
      */
     private Microfrontend createMicrofrontend(String id, OffsetDateTime creationDateTime, String creationUser,
             OffsetDateTime modificationDateTime,
@@ -897,7 +895,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
             String remoteBaseUrl,
             String remoteEntry,
             String productName,
-            Set<String> classifications,
             String contact,
             String iconName,
             String note,
@@ -920,7 +917,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mfe.setRemoteBaseUrl(remoteBaseUrl);
         mfe.setRemoteEntry(remoteEntry);
         mfe.setProductName(productName);
-        //mfe.setClassifications(classifications);
         mfe.setContact(contact);
         mfe.setIconName(iconName);
         mfe.setNote(note);
@@ -1003,7 +999,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * @param remoteBaseUrl uri for remote base path
      * @param remoteEntry webpack hook
      * @param productName name of associated product
-     * @param classifications tags for mfe
      * @param contact contact details (like mail address) for e.g. application support
      * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
      * @param note additional notes
@@ -1020,7 +1015,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
             String remoteBaseUrl,
             String remoteEntry,
             String productName,
-            Set<String> classifications,
             String contact,
             String iconName,
             String note,
@@ -1036,7 +1030,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mfe.setRemoteBaseUrl(remoteBaseUrl);
         mfe.setRemoteEntry(remoteEntry);
         mfe.setProductName(productName);
-        //mfe.setClassifications(classifications);
         mfe.setContact(contact);
         mfe.setIconName(iconName);
         mfe.setNote(note);
@@ -1111,13 +1104,11 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      * @param remoteBaseUrl uri for remote base path
      * @param remoteEntry webpack hook
      * @param productName name of associated product
-     * @param classifications tags for mfe
      * @param contact contact details (like mail address) for e.g. application support
      * @param iconName identifier of PrimeNG icon lib, z.b. trash, times
      * @param note additional notes
      * @param exposedModule module information
      * @param endpoints endpoints which can be used to address app pages & services
-     * @return
      */
     private UpdateMicrofrontendRequest updateMicrofrontendRequestSVC(
             String appId,
@@ -1128,7 +1119,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
             String remoteBaseUrl,
             String remoteEntry,
             String productName,
-            Set<String> classifications,
             String contact,
             String iconName,
             String note,
@@ -1144,7 +1134,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         mfe.setRemoteBaseUrl(remoteBaseUrl);
         mfe.setRemoteEntry(remoteEntry);
         mfe.setProductName(productName);
-        //mfe.setClassifications(classifications);
         mfe.setContact(contact);
         mfe.setIconName(iconName);
         mfe.setNote(note);

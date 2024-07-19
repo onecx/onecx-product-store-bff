@@ -271,7 +271,6 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setDisplayName("Product ABC");
         request.setIconName("Sun");
         request.setVersion("0");
-        //request.setClassifications(classificationSet);
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)
@@ -373,7 +372,6 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setDisplayName("Product ABC");
         request.setIconName("Sun");
         request.setVersion("0");
-        //request.setClassifications(classificationSet);
 
         // create mock rest endpoint
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH).withMethod(HttpMethod.POST)

@@ -831,6 +831,7 @@ components:
           nullable: true
         displayName:
           type: string
+          nullable: true
         pageNumber:
           format: int32
           description: The number of page.

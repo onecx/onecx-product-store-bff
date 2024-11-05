@@ -340,7 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductAndWorkspaces'
+                $ref: '#/components/schemas/Product'
         "400":
           description: Bad Request
           content:
@@ -967,15 +967,6 @@ components:
           type: boolean
         provider:
           type: string
-    ProductAndWorkspaces:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Product'
-      properties:
-        workspaces:
-          type: array
-          items:
-            type: string
     ProductAbstract:
       type: object
       required:

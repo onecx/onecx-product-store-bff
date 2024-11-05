@@ -9,18 +9,9 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.product.store.client.model.*;
-import gen.org.tkit.onecx.workspace.client.model.WorkspaceAbstract;
-import gen.org.tkit.onecx.workspace.client.model.WorkspacePageResult;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ProductsMapper {
-
-    default Set<String> workspaceNames(WorkspacePageResult result) {
-        if (result == null || result.getStream() == null) {
-            return Set.of();
-        }
-        return result.getStream().stream().map(WorkspaceAbstract::getDisplayName).collect(Collectors.toSet());
-    }
 
     CreateProductRequest mapCreateProduct(CreateProductRequestDTO createProduct);
 
@@ -51,11 +42,6 @@ public interface ProductsMapper {
         } else
             return "";
     }
-
-    @Mapping(target = "removeClassificationsItem", ignore = true)
-    @Mapping(target = "removeWorkspacesItem", ignore = true)
-    @Mapping(target = "workspaces", source = "workspaceNames")
-    ProductAndWorkspacesDTO mapProductWithWorkspaceNames(Product resultProduct, Set<String> workspaceNames);
 
     @Mapping(target = "productName", source = "name")
     @Mapping(target = "appName", ignore = true)

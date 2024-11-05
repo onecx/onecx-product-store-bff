@@ -1,7 +1,5 @@
 package org.tkit.onecx.product.store.bff.rs.controllers;
 
-import java.util.Set;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -23,9 +21,6 @@ import gen.org.tkit.onecx.product.store.client.api.MicroservicesInternalApi;
 import gen.org.tkit.onecx.product.store.client.api.ProductsInternalApi;
 import gen.org.tkit.onecx.product.store.client.api.SlotsInternalApi;
 import gen.org.tkit.onecx.product.store.client.model.*;
-import gen.org.tkit.onecx.workspace.client.api.WorkspaceExternalApi;
-import gen.org.tkit.onecx.workspace.client.model.WorkspacePageResult;
-import gen.org.tkit.onecx.workspace.client.model.WorkspaceSearchCriteria;
 
 @LogService
 @ApplicationScoped
@@ -35,10 +30,6 @@ public class ProductsRestController implements ProductsApiService {
     @RestClient
     @Inject
     ProductsInternalApi client;
-
-    @RestClient
-    @Inject
-    WorkspaceExternalApi workspaceClient;
 
     @RestClient
     @Inject
@@ -111,20 +102,9 @@ public class ProductsRestController implements ProductsApiService {
     public Response getProductByName(String name) {
         try (Response response = client.getProductByName(name)) {
             Product resultProduct = response.readEntity(Product.class);
-            Set<String> workspaceNames = null;
-
-            try (Response workspaceResponse = workspaceClient
-                    .searchWorkspaces(new WorkspaceSearchCriteria().productName(name))) {
-                var result = workspaceResponse.readEntity(WorkspacePageResult.class);
-                workspaceNames = mapper.workspaceNames(result);
-            } catch (WebApplicationException ex) {
-                // ignore exception
-            }
-
-            ProductAndWorkspacesDTO resultProductDTO = mapper.mapProductWithWorkspaceNames(resultProduct, workspaceNames);
+            ProductDTO resultProductDTO = mapper.mapProduct(resultProduct);
             return Response.status(response.getStatus()).entity(resultProductDTO).build();
         }
-
     }
 
     @Override

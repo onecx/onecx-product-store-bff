@@ -14,7 +14,6 @@ import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
-import org.mockserver.matchers.Times;
 import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
 import org.tkit.onecx.product.store.bff.rs.controllers.ProductsRestController;
@@ -22,8 +21,6 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.product.store.client.model.*;
-import gen.org.tkit.onecx.workspace.client.model.WorkspaceAbstract;
-import gen.org.tkit.onecx.workspace.client.model.WorkspacePageResult;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -121,19 +118,6 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 
-        var result = new WorkspacePageResult().stream(
-                List.of(
-                        new WorkspaceAbstract().name("testWorkspace").displayName("testWorkspace")
-                                .description("testWorkspace")));
-
-        // create mock rest endpoint
-        mockServerClient
-                .when(request().withPath("/v1/workspaces/search")
-                        .withMethod(HttpMethod.POST), Times.exactly(1))
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(result)));
-
         var response = given()
                 .when()
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
@@ -143,7 +127,7 @@ class ProductsRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
-                .extract().as(ProductAndWorkspacesDTO.class);
+                .extract().as(ProductDTO.class);
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(data.getId(), response.getId());
@@ -161,7 +145,6 @@ class ProductsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(data.getIconName(), response.getIconName());
         Assertions.assertEquals(Arrays.stream(data.getClassifications().split(",")).toArray().length,
                 response.getClassifications().size());
-        Assertions.assertEquals("testWorkspace", response.getWorkspaces().get(0));
 
         // getByName for not existing name -> should return not found
         // create mock rest endpoint
@@ -186,19 +169,13 @@ class ProductsRestControllerTest extends AbstractTest {
 
         // create mock rest endpoint
         mockServerClient
-                .when(request().withPath("/v1/workspaces/search")
-                        .withMethod(HttpMethod.POST), Times.exactly(1))
-                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
-
-        // create mock rest endpoint
-        mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/name/" + data2.getName())
                         .withMethod(HttpMethod.GET))
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data2)));
 
-        var responseWithoutWorkspaces = given()
+        var response2 = given()
                 .when()
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
@@ -207,10 +184,9 @@ class ProductsRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
-                .extract().as(ProductAndWorkspacesDTO.class);
-        Assertions.assertNotNull(responseWithoutWorkspaces);
-        Assertions.assertEquals(data2.getId(), responseWithoutWorkspaces.getId());
-        Assertions.assertTrue(responseWithoutWorkspaces.getWorkspaces().isEmpty());
+                .extract().as(ProductDTO.class);
+        Assertions.assertNotNull(response2);
+        Assertions.assertEquals(data2.getId(), response2.getId());
     }
 
     /**

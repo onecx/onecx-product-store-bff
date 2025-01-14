@@ -53,7 +53,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         Product data = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
                 null, "test-appl2", "Here is some description 2", false,
-                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "https://rndmImageUrl.rnmd/rndmImage.jpg",
                 "/app3", 0, "Product ABC", "Sun", "Themes, Menu");
 
         // create mock rest endpoint
@@ -164,7 +164,7 @@ class ProductsRestControllerTest extends AbstractTest {
 
         Product data2 = createProduct("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
                 null, "test-appl50", "Here is some description 2", false,
-                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "https://rndmImageUrl.rnmd/rndmImage.jpg",
                 "/app3", 0, "Product ABC", "Sun", "Themes, Menu");
 
         // create mock rest endpoint
@@ -236,14 +236,14 @@ class ProductsRestControllerTest extends AbstractTest {
         classificationSet.add("Menu");
         Product data = this.createProduct("ABCee705-8fd0-47b0-8205-b2a5f6540b9e", "0", offsetDateTime, null, offsetDateTime,
                 null, "test-appl35", "Here is some description", false,
-                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "https://rndmImageUrl.rnmd/rndmImage.jpg",
                 "/app35", 0, "Product ABC", "Sun", "Themes,Menu");
 
         CreateProductRequest request = new CreateProductRequest();
         request.setBasePath("/app35");
         request.setDescription("Here is some more description");
         request.setName("test-appl35");
-        request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+        request.setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         request.setDisplayName("Product ABC");
         request.setIconName("Sun");
         request.setVersion("0");
@@ -260,7 +260,7 @@ class ProductsRestControllerTest extends AbstractTest {
         requestDTO.setDescription("Here is some more description");
         requestDTO.setName("test-appl35");
         requestDTO
-                .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+                .setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         requestDTO.setDisplayName("Product ABC");
         requestDTO.setIconName("Sun");
         requestDTO.setVersion("0");
@@ -344,7 +344,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setBasePath("/app6");
         request.setDescription("Here is some description 2");
         request.setName("test-appl2");
-        request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+        request.setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         request.setDisplayName("Product ABC");
         request.setIconName("Sun");
         request.setVersion("0");
@@ -361,7 +361,7 @@ class ProductsRestControllerTest extends AbstractTest {
         requestDTO.setDescription("Here is some description 2");
         requestDTO.setName("test-appl2");
         requestDTO
-                .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+                .setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         requestDTO.setDisplayName("Product ABC");
         requestDTO.setIconName("Sun");
         requestDTO.setVersion("0");
@@ -425,7 +425,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setBasePath("/app6");
         request.setDescription("Here is some description 2");
         request.setName(null);
-        request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+        request.setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         request.setDisplayName("Product ABC");
         request.setIconName("Sun");
         request.setVersion("0");
@@ -442,7 +442,7 @@ class ProductsRestControllerTest extends AbstractTest {
         requestDTO.setDescription("Here is some description 2");
         requestDTO.setName(null);
         requestDTO
-                .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+                .setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         requestDTO.setDisplayName("Product ABC");
         requestDTO.setIconName("Sun");
         requestDTO.setVersion("0");
@@ -553,7 +553,7 @@ class ProductsRestControllerTest extends AbstractTest {
         ProductAbstract product = this.createProductAbstract("7a0ee705-8fd0-47b0-8205-b2a5f6540b9e", "0", dateTime,
                 null, dateTime,
                 null, "test-appl2", "Here is some description 2", false,
-                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "https://rndmImageUrl.rnmd/rndmImage.jpg",
                 "/app3", 0, "MyName", "Times");
 
         ProductPageResult data = new ProductPageResult();
@@ -665,14 +665,14 @@ class ProductsRestControllerTest extends AbstractTest {
                 null,
                 dateTime,
                 null, "test-appl2", "Here is some description 2", false,
-                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "https://rndmImageUrl.rnmd/rndmImage.jpg",
                 "/app3", 0, "Product 1", "Icon");
 
         ProductAbstract productAbstractTwo = this.createProductAbstract("e72a1699-9e60-4531-9422-8c325bed7e6a", "0", dateTime,
                 "CSommer",
                 dateTime,
                 "CSommer", "test-appl5", "Here is some description 5", true,
-                "https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg",
+                "https://rndmImageUrl.rnmd/rndmImage.jpg",
                 "/app5", 1, "Product 2", "Sunny");
 
         ProductPageResult data = new ProductPageResult();
@@ -813,7 +813,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setBasePath("/app3");
         request.setDescription("Some changes");
         request.setName("test-appl2");
-        request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+        request.setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         request.setVersion("1.0.0");
         request.setClassifications(null);
         request.setIconName("Sunny");
@@ -827,7 +827,7 @@ class ProductsRestControllerTest extends AbstractTest {
         updateProductRequestDTO.setDescription("Some changes");
         updateProductRequestDTO.setName("test-appl2");
         updateProductRequestDTO
-                .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+                .setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         updateProductRequestDTO.setVersion("1.0.0");
         updateProductRequestDTO.setClassifications(null);
         updateProductRequestDTO.setIconName("Sunny");
@@ -863,7 +863,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setBasePath("/app3");
         request.setDescription("Some changes");
         request.setName("test-appl2");
-        request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+        request.setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         request.setClassifications(null);
         request.setIconName("Trash");
         request.setVersion("1.0.0");
@@ -878,7 +878,7 @@ class ProductsRestControllerTest extends AbstractTest {
         updateProductRequestDTO.setDescription("Some changes");
         updateProductRequestDTO.setName("test-appl2");
         updateProductRequestDTO
-                .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+                .setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         updateProductRequestDTO.setClassifications(null);
         updateProductRequestDTO.setIconName("Trash");
         updateProductRequestDTO.setVersion("1.0.0");
@@ -933,7 +933,7 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setBasePath("/app15");
         request.setDescription("Here is some description 2");
         request.setName("test-appl10");
-        request.setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+        request.setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         request.setVersion("1.0.0");
         request.setIconName("Trash");
         request.setClassifications(null);
@@ -952,7 +952,7 @@ class ProductsRestControllerTest extends AbstractTest {
         requestDTO.setDescription("Here is some description 2");
         requestDTO.setName("test-appl10");
         requestDTO
-                .setImageUrl("https://prod.ucwe.capgemini.com/wp-content/uploads/2023/11/world-cloud-report-banner1_2023.jpg");
+                .setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
         requestDTO.version("1.0.0");
         requestDTO.setIconName("Trash");
         requestDTO.setClassifications(null);

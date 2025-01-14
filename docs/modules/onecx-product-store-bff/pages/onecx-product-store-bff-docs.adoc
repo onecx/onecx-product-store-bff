@@ -90,7 +90,10 @@ app:
         enabled: true
         spec:
           kcConfig:
-            defaultClientScopes: [ ocx-ps:all, ocx-ws:read, ocx-pm:read ]
+            defaultClientScopes: [ ocx-ps:all, ocx-pm:read ]
+----
+
+read ]
 ----
 
 uct:

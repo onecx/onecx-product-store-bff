@@ -43,6 +43,7 @@ public interface ProductsMapper {
             return "";
     }
 
+    @Mapping(target = "type", ignore = true)
     @Mapping(target = "productName", source = "name")
     @Mapping(target = "appName", ignore = true)
     @Mapping(target = "appId", ignore = true)

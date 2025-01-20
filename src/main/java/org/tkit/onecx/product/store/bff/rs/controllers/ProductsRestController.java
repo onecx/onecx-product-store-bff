@@ -140,7 +140,7 @@ public class ProductsRestController implements ProductsApiService {
     public Response updateProduct(String id, UpdateProductRequestDTO updateProductRequestDTO) {
 
         try (Response response = client.updateProduct(id, mapper.mapUpdateProduct(updateProductRequestDTO))) {
-            return Response.status(response.getStatus()).build();
+            return Response.status(response.getStatus()).entity(mapper.mapProduct(response.readEntity(Product.class))).build();
         } catch (WebApplicationException ex) {
             return Response.status(ex.getResponse().getStatus())
                     .entity(problemDetailMapper.map(ex.getResponse().readEntity(ProblemDetailResponse.class))).build();

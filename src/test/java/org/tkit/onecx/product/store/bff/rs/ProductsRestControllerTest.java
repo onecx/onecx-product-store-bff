@@ -818,9 +818,19 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setClassifications(null);
         request.setIconName("Sunny");
 
+        Product response = new Product();
+        response.setBasePath("/app3");
+        response.setDescription("Some changes");
+        response.setName("test-appl2");
+        response.setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
+        response.setVersion("1.0.0");
+        response.setClassifications(null);
+        response.setIconName("Sunny");
+
         mockServerClient.when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.PUT)
                 .withBody(JsonBody.json(request)))
-                .respond(httpRequest -> response().withStatusCode(Response.Status.NO_CONTENT.getStatusCode()));
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withBody(JsonBody.json(response)));
 
         UpdateProductRequestDTO updateProductRequestDTO = new UpdateProductRequestDTO();
         updateProductRequestDTO.setBasePath("/app3");
@@ -832,7 +842,16 @@ class ProductsRestControllerTest extends AbstractTest {
         updateProductRequestDTO.setClassifications(null);
         updateProductRequestDTO.setIconName("Sunny");
 
-        given()
+        ProductDTO dto = new ProductDTO();
+        dto.setBasePath("/app3");
+        dto.setDescription("Some changes");
+        dto.setName("test-appl2");
+        dto.setImageUrl("https://rndmImageUrl.rnmd/rndmImage.jpg");
+        dto.setVersion("1.0.0");
+        dto.setClassifications(null);
+        dto.setIconName("Sunny");
+
+        var responseDTO = given()
                 .when()
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
@@ -841,8 +860,9 @@ class ProductsRestControllerTest extends AbstractTest {
                 .body(updateProductRequestDTO)
                 .put("/{id}")
                 .then()
-                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+                .statusCode(Response.Status.OK.getStatusCode()).extract().as(ProductDTO.class);
 
+        Assertions.assertEquals(request.getBasePath(), responseDTO.getBasePath());
     }
 
     /**

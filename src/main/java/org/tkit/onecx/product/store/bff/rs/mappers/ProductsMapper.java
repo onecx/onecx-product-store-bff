@@ -22,6 +22,7 @@ public interface ProductsMapper {
     @Mapping(target = "removeClassificationsItem", ignore = true)
     ProductDTO mapProduct(Product product);
 
+    @Mapping(target = "removeApplicationsItem", ignore = true)
     @Mapping(target = "removeClassificationsItem", ignore = true)
     ProductAbstractDTO mapProductAbstract(ProductAbstract productAbstract);
 

@@ -91,14 +91,13 @@ app:
         spec:
           kcConfig:
             defaultClientScopes: [ ocx-ps:all, ocx-pm:read ]
+    microservice:
+      spec:
+        description: OneCX Product Store Backend For Frontend
+        name: OneCX Product Store BFF
 ----
 
-read ]
-----
-
-uct:
-            read: permission on all GET requests and POST search
-            write: permission on PUT, POST, PATCH requests, where objects are saved or updated
+CH requests, where objects are saved or updated
             delete: permission on all DELETE requests
           microservice:
             read: permission on all GET requests and POST search

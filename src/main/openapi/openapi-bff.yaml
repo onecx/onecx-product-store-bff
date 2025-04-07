@@ -392,6 +392,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/criteria:
+    get:
+      x-onecx:
+        permissions:
+          product:
+            - read
+      tags:
+        - Products
+      description: return products search criteria
+      operationId: getProductSearchCriteria
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCriteria'
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /microservices:
     post:
       x-onecx:
@@ -778,6 +801,17 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
+    ProductCriteria:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            type: string
+        classifications:
+          type: array
+          items:
+            type: string
     RefType:
       type: string
       enum: [ logo, favicon ]
@@ -819,6 +853,14 @@ components:
         displayName:
           type: string
           nullable: true
+        providers:
+          type: array
+          items:
+            type: string
+        classifications:
+          type: array
+          items:
+            type: string
         pageNumber:
           format: int32
           description: The number of page.

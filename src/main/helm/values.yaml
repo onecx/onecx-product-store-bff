@@ -33,3 +33,7 @@ app:
         spec:
           kcConfig:
             defaultClientScopes: [ ocx-ps:all, ocx-pm:read ]
+    microservice:
+      spec:
+        description: OneCX Product Store Backend For Frontend
+        name: OneCX Product Store BFF

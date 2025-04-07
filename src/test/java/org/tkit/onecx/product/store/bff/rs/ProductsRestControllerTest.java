@@ -1073,6 +1073,31 @@ class ProductsRestControllerTest extends AbstractTest {
 
     }
 
+    @Test
+    void getProductSearchCriteriasTest() {
+        mockServerClient
+                .when(request().withPath("/internal/products/criteria")
+                        .withMethod(HttpMethod.GET))
+                .withId("mock1")
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(new ProductCriteria().classifications(List.of("class1", "class2"))
+                                .providers(List.of("provider1")))));
+
+        var response = given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .get("/criteria")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(ProductCriteriaDTO.class);
+        Assertions.assertEquals(2, response.getClassifications().size());
+        Assertions.assertEquals(1, response.getProviders().size());
+        mockServerClient.clear("mock1");
+    }
+
     /**
      * Helper method to create products
      *

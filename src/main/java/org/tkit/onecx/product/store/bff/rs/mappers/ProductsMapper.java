@@ -59,4 +59,8 @@ public interface ProductsMapper {
     @Mapping(target = "name", ignore = true)
     @Mapping(target = "appId", ignore = true)
     SlotSearchCriteria mapSlotCriteria(ProductSearchCriteriaDTO productSearchCriteriaDTO);
+
+    @Mapping(target = "removeProvidersItem", ignore = true)
+    @Mapping(target = "removeClassificationsItem", ignore = true)
+    ProductCriteriaDTO mapCriteriaLists(ProductCriteria productCriteria);
 }

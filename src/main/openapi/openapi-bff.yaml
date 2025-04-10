@@ -223,7 +223,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/products/load:
+  /products/load:
     post:
       x-onecx:
         permissions:

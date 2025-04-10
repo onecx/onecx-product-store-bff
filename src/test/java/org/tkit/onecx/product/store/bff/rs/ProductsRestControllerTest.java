@@ -1119,6 +1119,7 @@ class ProductsRestControllerTest extends AbstractTest {
                 .when()
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
                 .body(criteriaDTO)
                 .post("/load")
                 .then()

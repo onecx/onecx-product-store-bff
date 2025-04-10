@@ -63,4 +63,16 @@ public interface ProductsMapper {
     @Mapping(target = "removeProvidersItem", ignore = true)
     @Mapping(target = "removeClassificationsItem", ignore = true)
     ProductCriteriaDTO mapCriteriaLists(ProductCriteria productCriteria);
+
+    ProductLoadSearchCriteria mapLoadCriteria(ProductLoadSearchCriteriaDTO productLoadSearchCriteriaDTO);
+
+    @Mapping(target = "removeStreamItem", ignore = true)
+    ProductsLoadResultDTO mapLoadResult(ProductsLoadResult productsLoadResult);
+
+    MfeAbstractDTO map(MicrofrontendAbstract mfeAbstract);
+
+    @Mapping(target = "removeSlotsItem", ignore = true)
+    @Mapping(target = "removeMicroservicesItem", ignore = true)
+    @Mapping(target = "removeMicrofrontendsItem", ignore = true)
+    LoadProductDTO map(LoadProduct product);
 }

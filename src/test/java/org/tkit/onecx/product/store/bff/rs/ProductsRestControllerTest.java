@@ -1098,6 +1098,37 @@ class ProductsRestControllerTest extends AbstractTest {
         mockServerClient.clear("mock1");
     }
 
+    @Test
+    void loadProductsByCriteriaTest() {
+        ProductLoadSearchCriteria criteria = new ProductLoadSearchCriteria();
+        criteria.setProductNames(List.of("abc"));
+
+        ProductsLoadResult result = new ProductsLoadResult();
+        result.setStream(List.of(new LoadProduct().name("testProduct")));
+        mockServerClient
+                .when(request().withPath("/internal/products/load")
+                        .withMethod(HttpMethod.POST).withBody(JsonBody.json(criteria)))
+                .withId("mock1")
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(result)));
+
+        ProductLoadSearchCriteriaDTO criteriaDTO = new ProductLoadSearchCriteriaDTO();
+        criteriaDTO.setProductNames(List.of("abc"));
+        var response = given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .body(criteriaDTO)
+                .post("/load")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(ProductsLoadResultDTO.class);
+        Assertions.assertEquals(result.getStream().get(0).getName(), response.getStream().get(0).getName());
+        mockServerClient.clear("mock1");
+    }
+
     /**
      * Helper method to create products
      *

@@ -33,7 +33,7 @@ public class ProductStoreLog implements LogParam {
                 this.item(10, UpdateProductRequestDTO.class,
                         x -> "UpdateProductRequestDTO[name:" + ((UpdateProductRequestDTO) x).getName() + "]"),
                 this.item(10, ProductSearchCriteriaDTO.class,
-                        x -> "ProductSearchCriteriaDTO[name:" + ((ProductSearchCriteriaDTO) x).getName()
+                        x -> "ProductSearchCriteriaDTO[name:" + ((ProductSearchCriteriaDTO) x).getNames()
                                 + "]"));
     }
 

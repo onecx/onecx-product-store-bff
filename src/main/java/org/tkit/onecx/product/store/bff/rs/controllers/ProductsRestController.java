@@ -110,7 +110,7 @@ public class ProductsRestController implements ProductsApiService {
     @Override
     public Response getProductDetailsByCriteria(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
         ProductDetailsDTO detailsDTO = new ProductDetailsDTO();
-        detailsDTO.setName(productSearchCriteriaDTO.getName());
+        detailsDTO.setName(productSearchCriteriaDTO.getNames().get(0));
         try (Response mfeResponse = mfeClient.searchMicrofrontends(mapper.map(productSearchCriteriaDTO))) {
             detailsDTO.setMicrofrontends(mfeMapper.map(mfeResponse.readEntity(MicrofrontendPageResult.class)));
         }

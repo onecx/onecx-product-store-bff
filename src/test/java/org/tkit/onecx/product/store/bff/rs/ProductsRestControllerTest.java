@@ -484,7 +484,7 @@ class ProductsRestControllerTest extends AbstractTest {
     void searchProducts_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
 
         ProductSearchCriteria request = new ProductSearchCriteria();
-        request.setName("somethingNotMatching");
+        request.setNames(List.of("somethingNotMatching"));
         request.setPageNumber(null);
         request.setPageSize(10);
 
@@ -504,7 +504,7 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(data)));
 
         ProductSearchCriteriaDTO requestDTO = new ProductSearchCriteriaDTO();
-        requestDTO.setName("somethingNotMatching");
+        requestDTO.setNames(List.of("somethingNotMatching"));
         requestDTO.setPageNumber(null);
         requestDTO.setPageSize(10);
 
@@ -544,7 +544,7 @@ class ProductsRestControllerTest extends AbstractTest {
         int pageSizeRequest = 10;
 
         ProductSearchCriteria request = new ProductSearchCriteria();
-        request.setName("test-appl2");
+        request.setNames(List.of("test-appl2"));
         request.setPageNumber(0);
         request.setPageSize(pageSizeRequest);
 
@@ -572,7 +572,7 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(data)));
 
         ProductSearchCriteriaDTO requestDTO = new ProductSearchCriteriaDTO();
-        requestDTO.setName("test-appl2");
+        requestDTO.setNames(List.of("test-appl2"));
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(pageSizeRequest);
 
@@ -607,7 +607,7 @@ class ProductsRestControllerTest extends AbstractTest {
     void searchProducts_shouldReturnInternalServerError_whenDownStreamServiceRunsIntoRuntimeIssues() {
 
         ProductSearchCriteria request = new ProductSearchCriteria();
-        request.setName("");
+        request.setNames(List.of(""));
         request.setPageNumber(0);
         request.setPageSize(1);
 
@@ -625,7 +625,7 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(responseBody)));
 
         ProductSearchCriteriaDTO requestDTO = new ProductSearchCriteriaDTO();
-        requestDTO.setName("");
+        requestDTO.setNames(List.of(""));
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(1);
 
@@ -655,7 +655,7 @@ class ProductsRestControllerTest extends AbstractTest {
         int pageSizeRequest = 10;
 
         ProductSearchCriteria request = new ProductSearchCriteria();
-        request.setName(null);
+        request.setNames(List.of());
         request.setPageNumber(0);
         request.setPageSize(pageSizeRequest);
 
@@ -692,7 +692,7 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(data)));
 
         ProductSearchCriteriaDTO requestDTO = new ProductSearchCriteriaDTO();
-        requestDTO.setName(null);
+        requestDTO.setNames(List.of());
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(pageSizeRequest);
 
@@ -1057,7 +1057,7 @@ class ProductsRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .body(new ProductSearchCriteria().name("p1"))
+                .body(new ProductSearchCriteria().names(List.of("p1")))
                 .post("/details")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())

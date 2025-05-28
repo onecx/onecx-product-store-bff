@@ -1016,6 +1016,7 @@ class ProductsRestControllerTest extends AbstractTest {
         mfeResult.setStream(List.of(new MicrofrontendPageItem().productName("p1").appName("mfe1"),
                 new MicrofrontendPageItem().productName("p1").appName("mfe2"),
                 new MicrofrontendPageItem().productName("p1").appName("mfe3")));
+
         mockServerClient
                 .when(request().withPath("/internal/microfrontends/search")
                         .withMethod(HttpMethod.POST)
@@ -1057,7 +1058,7 @@ class ProductsRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .body(new ProductSearchCriteria().names(List.of("p1")))
+                .body(new ProductDetailsCriteriaDTO().name("p1"))
                 .post("/details")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
@@ -1070,7 +1071,6 @@ class ProductsRestControllerTest extends AbstractTest {
         mockServerClient.clear("mock1");
         mockServerClient.clear("mock2");
         mockServerClient.clear("mock3");
-
     }
 
     @Test

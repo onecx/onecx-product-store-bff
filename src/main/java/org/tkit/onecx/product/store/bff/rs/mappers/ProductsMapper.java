@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
@@ -46,28 +45,20 @@ public interface ProductsMapper {
     }
 
     @Mapping(target = "type", ignore = true)
-    @Mapping(target = "productName", source = "names", qualifiedByName = "getFirstEntry")
+    @Mapping(target = "productName", source = "name")
     @Mapping(target = "appName", ignore = true)
     @Mapping(target = "appId", ignore = true)
-    MicrofrontendSearchCriteria map(ProductSearchCriteriaDTO productSearchCriteriaDTO);
+    MicrofrontendSearchCriteria map(ProductDetailsCriteriaDTO productSearchCriteriaDTO);
 
-    @Mapping(target = "productName", source = "names", qualifiedByName = "getFirstEntry")
+    @Mapping(target = "productName", source = "name")
     @Mapping(target = "name", ignore = true)
     @Mapping(target = "appId", ignore = true)
-    MicroserviceSearchCriteria mapMsCriteria(ProductSearchCriteriaDTO productSearchCriteriaDTO);
+    MicroserviceSearchCriteria mapMsCriteria(ProductDetailsCriteriaDTO productSearchCriteriaDTO);
 
-    @Mapping(target = "productName", source = "names", qualifiedByName = "getFirstEntry")
+    @Mapping(target = "productName", source = "name")
     @Mapping(target = "name", ignore = true)
     @Mapping(target = "appId", ignore = true)
-    SlotSearchCriteria mapSlotCriteria(ProductSearchCriteriaDTO productSearchCriteriaDTO);
-
-    @Named("getFirstEntry")
-    default String cleanStringList(List<String> input) {
-        if (input == null || input.isEmpty()) {
-            return null;
-        }
-        return input.get(0);
-    }
+    SlotSearchCriteria mapSlotCriteria(ProductDetailsCriteriaDTO productSearchCriteriaDTO);
 
     @Mapping(target = "removeProvidersItem", ignore = true)
     @Mapping(target = "removeClassificationsItem", ignore = true)

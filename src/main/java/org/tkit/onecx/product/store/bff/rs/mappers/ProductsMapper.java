@@ -47,12 +47,10 @@ public interface ProductsMapper {
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "productName", source = "name")
     @Mapping(target = "appName", ignore = true)
-    @Mapping(target = "appId", ignore = true)
     MicrofrontendSearchCriteria map(ProductDetailsCriteriaDTO productSearchCriteriaDTO);
 
+    @Mapping(target = "appName", ignore = true)
     @Mapping(target = "productName", source = "name")
-    @Mapping(target = "name", ignore = true)
-    @Mapping(target = "appId", ignore = true)
     MicroserviceSearchCriteria mapMsCriteria(ProductDetailsCriteriaDTO productSearchCriteriaDTO);
 
     @Mapping(target = "productName", source = "name")

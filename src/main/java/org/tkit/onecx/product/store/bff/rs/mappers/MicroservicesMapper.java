@@ -31,7 +31,6 @@ public interface MicroservicesMapper {
     @Mapping(target = "appName", source = "name")
     MicroserviceDTO map(MicroservicePageItem pageItem);
 
-    @Mapping(target = "name", source = "appName")
     MicroserviceSearchCriteria mapMsSearchCriteria(MfeAndMsSearchCriteriaDTO msSearchCriteria);
 
     default List<MicroserviceDTO> map(MicroservicePageResult microservicePageResult) {

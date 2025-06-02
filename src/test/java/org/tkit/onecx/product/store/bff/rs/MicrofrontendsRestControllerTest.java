@@ -415,7 +415,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         MicrofrontendSearchCriteria request = new MicrofrontendSearchCriteria();
         request.setProductName("somethingNotMatching");
-        request.setAppId(null);
         request.setAppName(null);
         request.setPageNumber(0);
         request.setPageSize(10);
@@ -438,7 +437,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName("somethingNotMatching");
-        requestDTO.setAppId(null);
         requestDTO.setAppName(null);
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(10);
@@ -481,7 +479,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         MicrofrontendSearchCriteria request = new MicrofrontendSearchCriteria();
         request.setProductName("productA");
-        request.setAppId("7a0ee705-8fd0-47b0");
         request.setAppName("AppA");
         request.setPageNumber(0);
         request.setPageSize(pageSizeRequest);
@@ -513,7 +510,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName("productA");
-        requestDTO.setAppId("7a0ee705-8fd0-47b0");
         requestDTO.setAppName("AppA");
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(pageSizeRequest);
@@ -563,7 +559,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         MicrofrontendSearchCriteria request = new MicrofrontendSearchCriteria();
         request.setProductName(null);
-        request.setAppId(null);
         request.setAppName(null);
         request.setPageNumber(0);
         request.setPageSize(pageSizeRequest);
@@ -601,7 +596,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
 
         MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName(null);
-        requestDTO.setAppId(null);
         requestDTO.setAppName(null);
         requestDTO.setPageNumber(0);
         requestDTO.setPageSize(pageSizeRequest);

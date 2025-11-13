@@ -1,2 +1,2 @@
 # onecx-product-store-bff
-OneCx product store BFF
+OneCX Product Store Backend-For-Frontend (BFF)

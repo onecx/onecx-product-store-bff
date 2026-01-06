@@ -97,27 +97,3 @@ app:
         name: OneCX Product Store BFF
 ----
 
-iption: OneCX Product Store Backend For Frontend
-        name: OneCX Product Store BFF
-----
-
-requests
-          microservice:
-            read: permission on all GET requests and POST search
-            write: permission on PUT, POST, PATCH requests, where objects are saved or updated
-            delete: permission on all DELETE requests
-          slot:
-            read: permission on all GET requests and POST search
-            write: permission on PUT, POST, PATCH requests, where objects are saved or updated
-            delete: permission on all DELETE requests
-          image:
-            read: permission on all GET requests and POST search
-            write: permission on PUT, POST, PATCH requests, where objects are saved or updated
-    keycloak:
-      client:
-        enabled: true
-        spec:
-          kcConfig:
-            defaultClientScopes: [ ocx-ps:all, ocx-ws:read, ocx-pm:read ]
-----
-

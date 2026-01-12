@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>onecx-product-store-bff</artifactId>
+    <name>OneCX Product Store Backend For Frontend</name>
     <version>999-SNAPSHOT</version>
 
     <dependencies>

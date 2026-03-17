@@ -1303,6 +1303,8 @@ components:
           type: boolean
         undeployed:
           type: boolean
+        shareScope:
+          type: string
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         classifications:
@@ -1386,6 +1388,8 @@ components:
           type: boolean
         undeployed:
           type: boolean
+        shareScope:
+          type: string
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
@@ -1449,6 +1453,8 @@ components:
           type: boolean
         undeployed:
           type: boolean
+        shareScope:
+          type: string
         type:
           $ref: "#/components/schemas/MicrofrontendType"
         endpoints:
@@ -1525,6 +1531,8 @@ components:
           type: string
         deprecated:
           type: boolean
+        shareScope:
+          type: string
         undeployed:
           type: boolean
         type:

@@ -20,6 +20,9 @@ import org.mockserver.model.MediaType;
 import org.tkit.onecx.product.store.bff.rs.controllers.MicroservicesRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.product.store.client.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
@@ -41,7 +44,7 @@ class MicroservicesRestControllerTest extends AbstractTest {
     void resetExpectation() {
         try {
             mockServerClient.clear(MOCK_ID);
-        } catch (Exception ex) {
+        } catch (Exception _) {
             //  mockId not existing
         }
     }
@@ -344,8 +347,8 @@ class MicroservicesRestControllerTest extends AbstractTest {
      * AND empty ms list is returned within
      */
     @Test
-    void searchMicroservices_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
-
+    void searchMicroservices_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
         MicroserviceSearchCriteria request = new MicroserviceSearchCriteria();
         request.setProductName("somethingNotMatching");
         request.setAppName(null);
@@ -364,9 +367,9 @@ class MicroservicesRestControllerTest extends AbstractTest {
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
                 .withId(MOCK_ID)
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(data)));
+                        .withBody(objectMapper.writeValueAsString(data)));
 
         MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName("somethingNotMatching");

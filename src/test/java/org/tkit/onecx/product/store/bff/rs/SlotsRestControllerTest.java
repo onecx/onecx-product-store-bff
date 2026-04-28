@@ -18,6 +18,9 @@ import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
 import org.tkit.onecx.product.store.bff.rs.controllers.SlotsRestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.product.store.client.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
@@ -42,7 +45,7 @@ class SlotsRestControllerTest extends AbstractTest {
     void resetExpectation() {
         try {
             mockServerClient.clear(MOCK_ID);
-        } catch (Exception ex) {
+        } catch (Exception _) {
             //  mockId not existing
         }
     }
@@ -240,8 +243,8 @@ class SlotsRestControllerTest extends AbstractTest {
      * AND empty slot list is returned within
      */
     @Test
-    void searchSlots_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
-
+    void searchSlots_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
         SlotSearchCriteria request = new SlotSearchCriteria();
         request.setProductName("somethingNotMatching");
         request.setAppId(null);
@@ -259,9 +262,9 @@ class SlotsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(data)));
+                        .withBody(objectMapper.writeValueAsString(data)));
 
         SlotSearchCriteriaDTO requestDTO = new SlotSearchCriteriaDTO();
         requestDTO.setProductName("somethingNotMatching");

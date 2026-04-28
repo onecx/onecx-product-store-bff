@@ -19,13 +19,15 @@ import org.mockserver.model.MediaType;
 import org.tkit.onecx.product.store.bff.rs.controllers.ProductsRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.product.store.client.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.keycloak.client.KeycloakTestClient;
-import net.minidev.json.JSONObject;
 
 @QuarkusTest
 @TestHTTPEndpoint(ProductsRestController.class)
@@ -481,8 +483,8 @@ class ProductsRestControllerTest extends AbstractTest {
      * AND empty product list is returned within
      */
     @Test
-    void searchProducts_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
-
+    void searchProducts_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
         ProductSearchCriteria request = new ProductSearchCriteria();
         request.setNames(List.of("somethingNotMatching"));
         request.setPageNumber(null);
@@ -499,9 +501,9 @@ class ProductsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(data)));
+                        .withBody(objectMapper.writeValueAsString(data)));
 
         ProductSearchCriteriaDTO requestDTO = new ProductSearchCriteriaDTO();
         requestDTO.setNames(List.of("somethingNotMatching"));
@@ -611,18 +613,10 @@ class ProductsRestControllerTest extends AbstractTest {
         request.setPageNumber(0);
         request.setPageSize(1);
 
-        JSONObject responseBody = new JSONObject();
-        responseBody.put("details",
-                "Error id 1e82bc38-185a-40c7-bf51-7524fcbe2e37-2, org.tkit.quarkus.jpa.exceptions.DAOException: ErrorKeys," +
-                        "key:ERROR_FIND_PRODUCTS_BY_CRITERIA,parameters:[],namedParameters:{}");
-        responseBody.put("stack", "ERROR_FIND_PRODUCTS_BY_CRITERIA\\n\\ta");
-
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(responseBody)));
+                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
 
         ProductSearchCriteriaDTO requestDTO = new ProductSearchCriteriaDTO();
         requestDTO.setNames(List.of(""));
@@ -777,15 +771,10 @@ class ProductsRestControllerTest extends AbstractTest {
     void deleteProduct_shouldReturnInternalServerError_whenDownStreamServiceRunsIntoRuntimeIssues() {
 
         String id = "82789c64-9473-457e-b30a-8749d784b287";
-        JSONObject responseBody = new JSONObject();
-        responseBody.put("details", "Error id 1e82bc38-185a-40c7-bf51-7524fcbe2e37-2, org.tkit.quarkus.jpa.exceptions");
-        responseBody.put("stack", "SOME RUNTIME ERROR\\n\\ta");
 
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/" + id).withMethod(HttpMethod.DELETE))
-                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(responseBody)));
+                .respond(httpRequest -> response().withStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
 
         given()
                 .when()

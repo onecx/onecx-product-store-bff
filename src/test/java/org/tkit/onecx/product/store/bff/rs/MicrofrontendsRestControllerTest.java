@@ -44,7 +44,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
     void resetExpectation() {
         try {
             mockServerClient.clear(MOCK_ID);
-        } catch (Exception ex) {
+        } catch (Exception _) {
             //  mockId not existing
         }
     }
@@ -412,7 +412,6 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
      */
     @Test
     void searchMicrofrontends_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
-
         MicrofrontendSearchCriteria request = new MicrofrontendSearchCriteria();
         request.setProductName("somethingNotMatching");
         request.setAppName(null);
@@ -431,7 +430,7 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
                 .withId(MOCK_ID)
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 

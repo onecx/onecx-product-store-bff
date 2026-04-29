@@ -42,7 +42,7 @@ class SlotsRestControllerTest extends AbstractTest {
     void resetExpectation() {
         try {
             mockServerClient.clear(MOCK_ID);
-        } catch (Exception ex) {
+        } catch (Exception _) {
             //  mockId not existing
         }
     }
@@ -241,7 +241,6 @@ class SlotsRestControllerTest extends AbstractTest {
      */
     @Test
     void searchSlots_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
-
         SlotSearchCriteria request = new SlotSearchCriteria();
         request.setProductName("somethingNotMatching");
         request.setAppId(null);
@@ -259,7 +258,7 @@ class SlotsRestControllerTest extends AbstractTest {
         mockServerClient
                 .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
                         .withBody(JsonBody.json(request)))
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
 

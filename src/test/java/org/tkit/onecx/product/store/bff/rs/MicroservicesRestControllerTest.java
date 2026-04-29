@@ -20,8 +20,6 @@ import org.mockserver.model.MediaType;
 import org.tkit.onecx.product.store.bff.rs.controllers.MicroservicesRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gen.org.tkit.onecx.product.store.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.product.store.client.model.*;
@@ -347,8 +345,7 @@ class MicroservicesRestControllerTest extends AbstractTest {
      * AND empty ms list is returned within
      */
     @Test
-    void searchMicroservices_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    void searchMicroservices_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
         MicroserviceSearchCriteria request = new MicroserviceSearchCriteria();
         request.setProductName("somethingNotMatching");
         request.setAppName(null);
@@ -369,7 +366,7 @@ class MicroservicesRestControllerTest extends AbstractTest {
                 .withId(MOCK_ID)
                 .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(objectMapper.writeValueAsString(data)));
+                        .withBody(JsonBody.json(data)));
 
         MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
         requestDTO.setProductName("somethingNotMatching");

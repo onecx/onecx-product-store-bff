@@ -243,8 +243,7 @@ class SlotsRestControllerTest extends AbstractTest {
      * AND empty slot list is returned within
      */
     @Test
-    void searchSlots_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    void searchSlots_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
         SlotSearchCriteria request = new SlotSearchCriteria();
         request.setProductName("somethingNotMatching");
         request.setAppId(null);
@@ -264,7 +263,7 @@ class SlotsRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(request)))
                 .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(objectMapper.writeValueAsString(data)));
+                        .withBody(JsonBody.json(data)));
 
         SlotSearchCriteriaDTO requestDTO = new SlotSearchCriteriaDTO();
         requestDTO.setProductName("somethingNotMatching");

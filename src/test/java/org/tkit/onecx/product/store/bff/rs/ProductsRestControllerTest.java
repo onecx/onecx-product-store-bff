@@ -483,8 +483,7 @@ class ProductsRestControllerTest extends AbstractTest {
      * AND empty product list is returned within
      */
     @Test
-    void searchProducts_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    void searchProducts_shouldReturnEmptyList_whenSearchCriteriaDoesNotMatch() {
         ProductSearchCriteria request = new ProductSearchCriteria();
         request.setNames(List.of("somethingNotMatching"));
         request.setPageNumber(null);
@@ -503,7 +502,7 @@ class ProductsRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(request)))
                 .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(objectMapper.writeValueAsString(data)));
+                        .withBody(JsonBody.json(data)));
 
         ProductSearchCriteriaDTO requestDTO = new ProductSearchCriteriaDTO();
         requestDTO.setNames(List.of("somethingNotMatching"));

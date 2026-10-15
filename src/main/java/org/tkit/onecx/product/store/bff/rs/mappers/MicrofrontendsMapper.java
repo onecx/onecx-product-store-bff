@@ -25,7 +25,21 @@ public interface MicrofrontendsMapper {
     @Mapping(target = "removeStreamItem", ignore = true)
     MicrofrontendPageResultDTO mapMfeSearchPageResponse(MicrofrontendPageResult searchResults);
 
-    MicrofrontendSearchCriteria mapMfeSearchCriteria(MfeAndMsSearchCriteriaDTO mfeSearchCriteria);
+    default MicrofrontendSearchCriteria mapMfeSearchCriteria(MfeAndMsSearchCriteriaDTO mfeSearchCriteria) {
+        if (mfeSearchCriteria == null) {
+            return null;
+        }
+
+        var criteria = new MicrofrontendSearchCriteria()
+                .productDisplayName(mfeSearchCriteria.getProductDisplayName());
+        criteria.appName(mfeSearchCriteria.getAppName());
+        criteria.productName(mfeSearchCriteria.getProductName());
+        criteria.type(mfeSearchCriteria.getType() == null ? null
+                : MicrofrontendType.fromString(mfeSearchCriteria.getType().toString()));
+        criteria.pageNumber(mfeSearchCriteria.getPageNumber());
+        criteria.pageSize(mfeSearchCriteria.getPageSize());
+        return criteria;
+    }
 
     default Set<String> map(String classifications) {
         if (classifications != null && !classifications.isBlank()) {

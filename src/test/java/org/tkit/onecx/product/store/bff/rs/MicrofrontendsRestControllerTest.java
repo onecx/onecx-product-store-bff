@@ -542,6 +542,53 @@ class MicrofrontendsRestControllerTest extends AbstractTest {
         Assertions.assertEquals(mfe.getProductName(), responseProductAbstractItem.get().getProductName());
     }
 
+    @Test
+    void searchMicrofrontends_shouldForwardProductDisplayName_whenPresentInSearchCriteria() {
+        int pageSizeRequest = 10;
+
+        MicrofrontendPageResult data = new MicrofrontendPageResult();
+        data.setNumber(0);
+        data.setSize(pageSizeRequest);
+        data.setTotalElements(0L);
+        data.setTotalPages(0L);
+        data.setStream(new ArrayList<>());
+
+        mockServerClient
+                .when(request().withPath(PRODUCT_STORE_SVC_INTERNAL_API_BASE_PATH + "/search").withMethod(HttpMethod.POST)
+                        .withBody(JsonBody.json("""
+                                {
+                                  "productDisplayName": "Portal",
+                                  "pageNumber": 0,
+                                  "pageSize": 10
+                                }
+                                """)))
+                .withId(MOCK_ID)
+                .respond(response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(data)));
+
+        MfeAndMsSearchCriteriaDTO requestDTO = new MfeAndMsSearchCriteriaDTO();
+        requestDTO.setProductDisplayName("Portal");
+        requestDTO.setPageNumber(0);
+        requestDTO.setPageSize(pageSizeRequest);
+
+        var response = given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/search")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(MicrofrontendPageResultDTO.class);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStream());
+        Assertions.assertTrue(response.getStream().isEmpty());
+    }
+
     /**
      * Scenario: Wildcard search to return all or subset of available microfrontends (mfe).
      * Given mfe(s) exist(s)

@@ -44,6 +44,7 @@ public interface ProductsMapper {
             return "";
     }
 
+    @Mapping(target = "productDisplayName", ignore = true)
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "productName", source = "name")
     @Mapping(target = "appName", ignore = true)
@@ -53,6 +54,7 @@ public interface ProductsMapper {
     @Mapping(target = "productName", source = "name")
     MicroserviceSearchCriteria mapMsCriteria(ProductDetailsCriteriaDTO productSearchCriteriaDTO);
 
+    @Mapping(target = "productDisplayName", ignore = true)
     @Mapping(target = "productName", source = "name")
     @Mapping(target = "name", ignore = true)
     @Mapping(target = "appId", ignore = true)
